@@ -1,0 +1,90 @@
+\documentclass[12pt]{article}
+%
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx,subfig}
+\usepackage{amstext,amsmath,amssymb,bm,bbm,mathtools}
+\usepackage[linesnumbered,lined,boxed,commentsnumbered]{algorithm2e}
+\usepackage[export]{adjustbox}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+
+\newcommand{\todo}[1]{{\textcolor{blue}{#1}}}
+\newcommand{\jaco}[1]{{\textcolor{green!50!black}{#1}}}
+\newcommand{\HT}[1]{{\textcolor{violet}{#1}}}
+\newcommand{\daniel}[1]{\textcolor{NavyBlue}{#1}}
+
+\begin{document}
+%
+\title{Elastica energy regularization via graph cuts}
+
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+
+\section{Introduction}
+
+\section{Related work}
+\begin{itemize}
+\item{Curvature regularization:
+\begin{itemize}
+\item{Continuous contour evolution: \cite{kass1988snakes}
+\cite{chan01}.}
+\item{Morphological contour evolution: \cite{marquezneila14} }
+\item{Other discrete approaches: \cite{schoenemann09linear} 
+\cite{zehiry10fast}
+\cite{nieuwenhuis14efficient} \cite{antunes19} \cite{antunes20}}
+\end{itemize}
+}
+\end{itemize}
+
+\section{Geometric properties estimation on digital data}
+\begin{itemize}
+\item{Digitization as a spatial constrained discretization process and its consequences in geometric properties estimation.}
+\item{Digital estimators of perimeter, curvature and elastica.}
+\end{itemize}
+
+\section{Elastica minimization of digital shapes via graph cuts}
+
+\begin{itemize}
+\item{Local shape optimization by computing the zero level of the II estimation function extended to some domain $\Omega$ containing the shape.}
+\item{Description of the model for single shape elastica optimization}
+\item{Local minimum avoidance strategies
+	\begin{itemize}
+	\item{Comparison of strategies: Advance only if energy decreases x Advance to the neighbor shape of minimum energy value.}
+	\item{Consequences of adopting an uniform neighborhood x Dynamic neighborhood}
+	\item{Shape evolution and choice of the estimation ball radius.}
+	\end{itemize}
+}
+\end{itemize}
+%
+%
+\section{Applications in image segmentation}
+\begin{itemize}
+\item{The interest in use elastica regularization (completion property) }
+\item{Pros of local combinatorial approaches: Parallelizable; neighborhood choice flexibility. }
+\item{Cons of local combinatorial approaches: Possibly bad local minima; possibly failure to realize the completion property.}
+\item{Model flexibility
+\begin{itemize}
+\item{Boundary term based (alike active contours)}
+\item{Regional term based (alike classical graph-cut)}
+\item{Homogeneity regions (alike chan-vese)}
+\end{itemize}
+}
+\item{Graph models: \cite{rother04grabcut}
+\cite{boykov01graphcut}
+}
+\end{itemize}
+%
+%
+%
+\bibliographystyle{alpha}
+\bibliography{gf-paper}
+
+\end{document}
+
