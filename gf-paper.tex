@@ -1,12 +1,14 @@
-\documentclass[12pt]{article}
+%\documentclass[12pt]{article}
+\documentclass[smallextended]{svjour3}
 %
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx,subfig}
 \usepackage{amstext,amsmath,amssymb,bm,bbm,mathtools}
 \usepackage[linesnumbered,lined,boxed,commentsnumbered]{algorithm2e}
 \usepackage[export]{adjustbox}
-\usepackage{array}
+\usepackage{array,multirow}
 \usepackage[dvipsnames]{xcolor}
+\usepackage{cite}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclarePairedDelimiter\norm{\lVert}{\rVert}%
@@ -20,69 +22,416 @@
 \begin{document}
 %
 \title{Elastica energy regularization via graph cuts}
+\titlerunning{Elastica energy regularization via graph cuts}
+\author{Daniel Antunes%\inst{1}
+\and Jacques-Olivier Lachaud}%\inst{1}
 
 \maketitle
 
-\begin{abstract}
-
-\end{abstract}
-
 \section{Introduction}
 
+A digital set is referred as any collection of points that can be positioned in a regular grid. In the bidimensional case, it is usually denoted as $S \subset \Omega \subset \mathbb{Z}^2$, where $\Omega$ is a compact set, i.e., we restict digital sets to a bounded subset of $\mathbb{Z}^2$. One of the most prevalent examples of digital sets and also an important source of applications are digital images.
+
+Common tasks in digital images are recognizing shapes or objects (segmentation), removing noise (denoising), interpolate information (inpainting) and compression. An important class of models consists in optimize a convenient energy adapted to the problem to be solved. In this class, the use of geometric priors as perimeter, area and curvature are commonly employed.
+
+These models are built on classic mathematical theory, in which continuity is assumed. A common issue with most of models using geometric priors lies in their discretization step, where the digital nature of the images are often ignored. This results in poor estimations of geometric quantities, and that is particularly important for high-order measures as curvature.
+
+An important and challenging energy to optimize is the elastica. Previous works reported its benefits in inpainting and the segmentation. In particular, the squared curvature penalization favors connected segmentations, a property that is usually called the completion property and useful in the segmentation of thin and elongated objects as blood vessels. In continuous term, the elastica is defined for a contour $C$ as
+%
+\begin{align*}
+	E(C) &= \int_{C}{\alpha + \beta \kappa^2 ds}.
+\end{align*}
+%
+In this paper, we propose a discrete model to minimize the elastica energy using multigrid convergent estimators. These estimators are conceived for digital sets and give us guarantees of convergence with respect the image grid resolution. We show that our model correctly evolve digital shapes to the shape of optimum elastica energy, escaping local minimum. Moreover, we show how to use our model in image processing tasks. Finally, the model is parallelizable and present competitive running times that we strongly believe can be improved in a GPU setting.
+
 \section{Related work}
+\todo{
 \begin{itemize}
 \item{Curvature regularization:
 \begin{itemize}
 \item{Continuous contour evolution: \cite{kass1988snakes}
 \cite{chan01}.}
 \item{Morphological contour evolution: \cite{marquezneila14} }
+\item{Gaussian filter + thresholding: \cite{merriman1992diffusion} }
 \item{Other discrete approaches: \cite{schoenemann09linear} 
 \cite{zehiry10fast}
 \cite{nieuwenhuis14efficient} \cite{antunes19} \cite{antunes20}}
-\end{itemize}
-}
-\end{itemize}
+\end{itemize}}
+\end{itemize}}
 
 \section{Geometric properties estimation on digital data}
-\begin{itemize}
-\item{Digitization as a spatial constrained discretization process and its consequences in geometric properties estimation.}
-\item{Digital estimators of perimeter, curvature and elastica.}
-\end{itemize}
+
+Let $C:[0,t] \rightarrow \mathbb{R}^2$ a parameterized plane curve with continuous first and second derivatives. In this case, we can easily compute the curvature at some point $p(t) = \big( x(t),y(t) \big) \in C$ by using the formula
+
+\begin{align*}
+\kappa (t) &= \frac{y'x'' -x'y''}{x'^2 + y'^2}^{3/2}.
+\end{align*}
+
+What about if we do not know the curve equations, but instead, we have an \emph{exact sampling} of points in the curve? In this case, we can represent the curve by a sequence of lines and estimate the curvature by computing the angle defect between consecutive lines. The estimation is convergent (in the epi-convergent sense) as long as the sampling is sufficiently large~\cite{bruckstein01discrete,bruckstein01convergence}.
+
+The result above is not valid for digital domains. We do not have an exact sampling, instead, samples are constrained to lie in the digital grid. This is made clear in~\ref{}. The same digitization represents two quite distinct shapes. Of course one may refine the grid to such a precision to have an almost exact sampling, but this is highly undesirable due to memory and running time complexity, in particular for image processing tasks. 
+
+Ideally, we would have a criteria to evaluate the quality and speed of convergence according to the resolution of the digital grid. Such criteria is the \emph{multgrid convergence property}.
+
+
+\begin{definition}[Multigrid convergence for local geometric quantites]
+  A local discrete geometric estimator $\hat{z}$ of some geometric
+  quantity $z$ is (uniformly) multigrid convergent for some family $\mathbb{X}$ of Euclidean shapes if
+  and only if, for any $X \in \mathbb{X}$, there exists a grid step
+  $h_X>0$ such that the estimate $\hat{z}(D(X,h), p,h)$ is
+  defined for all $p \in \partial_hX$ with $ 0 < h < h_X$, and
+  for any $x \in \partial X$,
+  \begin{equation*}
+    \forall p \in  \partial_hX \text{ with } \norm{ p - x }_{\infty} \leq h, \norm{ \hat{z}(D(X,h),p,h) - z(X,x)} \leq \tau_{X}(h),			
+  \end{equation*}
+  where $\tau_{X}:\mathbb{R}^{+}\setminus\{0\} \rightarrow
+  \mathbb{R}^{+}$ has null limit at $0$. This function defines the
+  speed of convergence of $\hat{z}$ towards $z$ for $X$.
+\end{definition}
+	
+For a global geometric quantity (e.g. perimeter, area, volume), the definition remains the same, except that the mapping
+between $\partial X$ and $\partial_h X$ is no longer necessary.
+
+Recently, multigrid convergent for curvature and perimeter estimators have been proved. We propose to use such estimators to estimate the elastica energy of digital shapes. 
+
+\begin{align}
+	\hat{E}\big( D(X,h),h,r,\alpha,\beta) \big) = \sum_{\vec{e} \in \partial D(X,h)}{ \hat{s}(\vec{e})\left(\; \alpha + \beta \hat{\kappa}_{r}^2(D(X,h),\dot{\vec{e}},h) \; \right)},
+	\label{eq:digital-energy}
+\end{align}
+
+The function $\hat{s}$ denotes the elementary length estimator, i.e., a measure of length is assigned to each edge $\vec{e}$ of curve $\partial D(X,h)$. The elementary length is computed using the \emph{$\lambda$-MST} estimator of tangent~\cite{lachaud07tangent,lachaud06hdr}, proven multigrid convergent for the family of convex shapes that are twice differentiable and have continuous curvature. The speed of convergence is $O(h^{1/3})$.
+
+The function $\hat{\kappa} _r$ denotes an estimator of curvature. We use the integral \emph{invariant estimator}~\cite{coeurjolly13integral}, proven multigrid convergent for the family of compact shapes in the plane with $3$-smooth contour. Its convergence speed is of the order of $O(h^{\frac{1}{3}})$ for radii chosen as $r=\Theta (h^{\frac{1}{3}})$~\cite{lachaud2017robust}. We present its definition since it is in the core of the proposed model in this paper.
+
+\begin{align}
+  \tilde{\kappa}_r(D(X,h),h,p) \coloneqq \frac{3}{r^3}\left( \frac{\pi r^2}{2} - \widehat{\text{Area}}\big( D(B_r(p),h) \cap D(X,h),h\big) \right),
+  \label{eq:curvature_approximation}
+\end{align}
+
+where the estimation of area for some digital set $S$ can be defined as $\widehat{\text{Area}}(S,h) \coloneqq h^2\text{Card}\left( S \right).$ 
+
+Equation~\ref{eq:curvature_approximation} estimates the curvature as a scaling factor of the difference between the intersection area of a disk of radius $r$ centered at point $p$ of the contour with half of the disk area. Therefore, we can say that the \emph{squared} curvature is lower at points in which the balance between intersected and non intersected points is closer to zero.
+
+In the following, we simply write $S$ to specify a digital shape and we group the parameters in the vector $\vec{\Theta}=(h,r,\alpha,\beta)$. Therefore, we denote $\hat{E}_{\vec{\Theta}}(S)$ the elastica estimator for $S$. Since it is composed of multigrid convergent estimators, the elastica estimator is multigrid convergent itself~\cite{lachaud06hdr}.
+
 
 \section{Elastica minimization of digital shapes via graph cuts}
 
+We are going to extend equation~\ref{eq:curvature_approximation} to the whole digital domain. In fact, since we are more interested in the  balance of intersected and non-intersected points, we slightly change equation~\ref{eq:curvature_approximation} and give it another name. We define the \emph{balance coefficient} as
+
+\begin{align*}
+	u(S,h,r,p) &= \left( \frac{\pi r^2}{2} - \widehat{\text{Area}}(D(B_r(p),h) \cap S,h) \right)^2.
+\end{align*}
+
+ The balance coefficient at $p$ gives us as an \emph{approximation} of the new squared curvature value were the shape perturbed a little around $p$. Therefore, it is reasonable to evolve the shape towards the zero level set of the balance coefficient function (see figure~\ref{fig:balance-coefficient-zero-level-set}).
+ 
+\begin{figure}
+ \center
+ \includegraphics[scale=0.32]{figures/zero-level-set/balance-coefficient-zero-level-set.png}
+ \caption{\textbf{Balance coefficient zero level set}. We notice that evolving the initial contour (colored in white) to the zero level set of the balance coefficient (colored in magenta) regularizes the shape with respect to the squared curvature.}
+ \label{fig:balance-coefficient-zero-level-set}
+ \end{figure}
+ 
+\subsection{Graph cut model}
+
+We are going to evolve the initial contour $\partial S$ of some digital shape $S$ to the zero level set of its balance coeficient by computing the minimum cut of some directed graph. Since the balance coefficient is a local quantity, it is sufficient to define the graph in a band around the initial contour.
+
+Let $d_{S}:\Omega \rightarrow \mathbb{R}$ be the signed Euclidean distance transformation with respect to shape $S$. The value $d_{S}(p)$ gives the Euclidean distance between $p \notin S$ and the closest point in $S$. For points $p \in S$, $d_{S}(p)$ gives the negative of the distance between $p$ and the closest point not in $S$.
+
+\begin{definition}{Optimization band}
+Let $S \subset \Omega \subset \mathbb{Z}^2$ a digital set and natural number $n>0$. The optimization band $O_n(S)$ is defined as
+\begin{align*}
+	O_n(S) &:=\left\{ p \in \Omega \; | \; -n \leq d_{S}(p) \leq n \right\}.
+\end{align*}
+\end{definition}
+
+\begin{definition}{Candidate graph}
+Let $S \subset \Omega \subset \mathbb{Z}^2$ a digital set and natural number $n>0$. We define $\mathcal{G}(n,S,\mathcal{V},\mathcal{E})$ as the candidate graph of $S$ with optimization band $n$ such that
+
+\begin{align*}
+\mathcal{V} &= \big\{\; v_p \; | \; p \in O_n(S) \;\} \cup \{s,t \big\} \\
+\mathcal{E} &= \big\{ \; \{v_p,v_q\} \; | \; p \in O_n(S) \text{ and } q \in \mathcal{N}_4(p) \; \big\} \cup \mathcal{E}_{st}\\
+\mathcal{E}_{st} &= \big\{\; \{s,v_p\} \; | \; d_S(p)=-n \; \big\} \cup \big\{\; \{v_p,t\} \; | \; d_S(p)=n \; \big\}.
+\end{align*}
+
+\end{definition}
+
+The vertices $s,t$ are virtual vertices representing the source and target vertices as it is usual in a minimum cut framework. In particular, after the minimum cut is computed, vertices connected to the source will define the new digital shape. The inner (outer) most pixels of the optimization band are connected to the source (target), and we identify such vertices as
+
+\begin{align*}
+	\mathcal{V}_s &:=\left\{ v_p \in \Omega \; | \; d_{S}(p) = -n \right\} \\
+	\mathcal{V}_t &:=\left\{ v_p \in \Omega \; | \; d_{S}(p) = n \right\}.
+\end{align*}
+
+The set $\mathcal{E}_{st}$ comprises all the edges having the source as their starting point or the target as their endpoint. Next, we describe how to set the edges' capacities.
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{edge} $e$ & $\mathbf{c(e)}$ & \textbf{for}\\
+\hline
+$\{v_p, v_q\}$ & $ u(S,h,r,p) + u(S,h,r,q) $ & $\{v_p,v_q\} \in \mathcal{E}_{u}$\\
+\hline
+$\{v_p, s\}$ & $M$ & $v_p \in \mathcal{V}_{s}$ \\
+\hline
+$\{v_p, t\}$ & $M$ & $v_p \in \mathcal{V}_{t}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+
+,where $M$ is set as twice the highest value of the balance coefficient plus one, i.e.,
+\begin{align*}
+	M &= 1+\max_{p \in O_n(S)} 2*u(S,h,r,p).
+\end{align*}
+
+\todo{
+We need to be careful when defining the candidate graph on small digital sets. We explain how to handle such extreme cases in the appendix.}
+
+\subsection{Shape evolution with empty neighborhood of shapes}
+
+In the following, we will refer to the candidate graph of $S$ as $\mathcal{G}(S)$. If necessary, we explicitly define the optimization band value $n$. Starting with digital shape $S^{(t)}$, we construct the candidate graph $\mathcal{G}(S^{(t)})$ and set $S^{(t+1)}$ as the source component of the minimum cut of $\mathcal{G}(S^{(t)})$. We stop the evolution after a given number of iterations.  In figure~\ref{fig:no-neighborhood-shapes-evolution} we show some examples of this process.
+
+\begin{figure}
+	\center
+	\subfloat[\label{}]{%
+	\includegraphics[scale=0.12]{figures/no-neighborhood-flow/triangle.png}}\hspace{2em}%
+	\subfloat[\label{}]{%
+	\includegraphics[scale=0.11]{figures/no-neighborhood-flow/square.png}}\hspace{2em}%	
+	\subfloat[\label{}]{%
+	\includegraphics[scale=0.14]{figures/no-neighborhood-flow/flower.png}}	
+	\caption{\textbf{No neighborhood of shapes}. Evolution with no neighborhood of shapes defined $(h=1/8,r=2)$. Regions of negative curvature are eliminated and shape tends to converge to a single point. Initial contour is colored in red and each other contour is ploted every 10 iterations.}
+	\label{fig:no-neighborhood-shapes-evolution}
+\end{figure}
+
+Looking at figure~\ref{fig:no-neighborhood-shapes-evolution}, we may wonder about some properties of this process. For example, a tendance to evolve to convex shapes or shrinking. In fact, we can prove the following
+
+\begin{lemma}[Convexity bias]
+\label{claim:convexity-bias} For any initial digital shape $S^{(0)}$, there exists a value $T$ for which $S^{(t)}$ is convex for all $t>T$.
+\begin{proof}
+The zero level set of $u$ encloses regions of negative curvature. Therefore, such regions vanish away.
+\end{proof}
+\end{lemma}
+
+\begin{lemma}[Shrinking bias]
+\label{claim:shrinking-bias} For all $t$, $Per(S^{(t)}) > Per(S^{(t+1)})$.
+\begin{proof}
+If $S^{(t)}$ is non-convex, $S^{(t+1)}$ has shorter perimeter by property~\ref{claim:convexity-bias}. If $S^{(t)}$ is convex then curvature is positive everywhere, indicating a shortage of pixels in the balance coefficient. Therefore, the zero level set of balance coeficient is slightly shifted towards the internal part of the shape. The shape shrinks and $Per(S^{(t)}) > Per(S^{(t+1)})$.
+\end{proof}
+\end{lemma}
+
+
+These properties are also present in the classical curve shortening flow~\cite{grayson1987heat,ecker2008heat}. This flow is commonly described as the flow that decreases the curve length the quickest. In fact, under the curve shortening flow, one can show that the length varies according to
+%
+\begin{align*}
+\frac{\partial L}{\partial t} = - \int{\kappa ^2 ds}.
+\end{align*}
+%
+The current evolution process does not fulfil the goal of elastica minimization. There is a clear regularization with respect to the squared curvature, but the elastica value eventually increases. We can partially solve this problem by stoping the evolution as soon as the elastica energy increases. However, as shown in figure~\ref{fig:no-neighborhood-shapes-evolution-improve-always}, that may leads to bad local minimum. We can escape local minimum by defining a neighborhood of shapes.
+
+\begin{figure}
+	\center
+	\subfloat[\label{}]{%
+	\includegraphics[scale=0.12]{figures/no-neighborhood-flow-improve-always/triangle.png}}\hspace{2em}%
+	\subfloat[\label{}]{%
+	\includegraphics[scale=0.11]{figures/no-neighborhood-flow-improve-always/square.png}}\hspace{2em}%	
+	\subfloat[\label{}]{%
+	\includegraphics[scale=0.14]{figures/no-neighborhood-flow-improve-always/flower.png}}	
+	\caption{\textbf{Stop if elastica increases}. In red the initial contour and in blue the final contour given by the evolution process with no neighborhood of shapes $\vec{\Theta} = (h=1/8,r=2,\alpha=1/64,\beta=1)$. The optimum contour is highlighted in green (a disk of radius $8$). Intermediate contours are ploted every 10 iterations.}
+	\label{fig:no-neighborhood-shapes-evolution-improve-always}
+\end{figure}
+
+\subsection{Neighborhood of shapes}
+
+The model as stated is incapable to find global optimal solutions. Consider the following example: we start with a disk of radius $8$ and we want to minimize it with respect the elastica with $\alpha =1/256, \beta=1$. The optimum shape is the disk of radius $16$. However, by lemmas~\ref{claim:convexity-bias} and~\ref{claim:shrinking-bias}, the shape will never evolve to a disk of higher radius.
+
+Fortunately, we can fix this problem by defining a neighborhood of shapes. 
+
+\begin{definition}[Neighborhood of shapes]
+	Let $S$ a digital shape. We define its neighborhood $\mathcal{N}(S)$ as the set
+	\begin{align*}
+		\mathcal{N}(S) &= S \cup S^{+1} \cup S^{-1},
+	\end{align*}
+	where $S^{+1}$ ($S^{-1}$) denotes a morphologic dilation (erosion) by a square of side $1$.
+\end{definition}
+
+Instead of setting $S^{(t+1)}$ as the source component of the minimum cut of $G(S^{(t)})$, we construct a collection of candidate graphs, one for each member of $\mathcal{N}(S^{(y)}$. Then, we compute the minimum cut and evaluate the elastica energy in the resulting digital set. Finally, we pick the one with lowest energy. The GraphFlow (GF) algorithm~\ref{alg:graphflow-algorithm} summarizes the process and figure~\ref{fig:graph-flow-experiments} include some experiments.
+
+\begin{algorithm}
+ \SetKwData{It}{k}
+ \SetKwData{MIt}{maxIt}
+ \SetKwData{Delta}{delta}
+ \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+ \SetKwComment{comment}{//}{}
+ 
+ \Input{A digital set $S$; the optimization band $n$; parameter vector $\vec{\theta}=(h,r,\alpha,\beta)$; the maximum number of iterations \MIt;} 
+ \BlankLine
+ $S^{(0)} \longleftarrow S$\; 
+ \BlankLine
+ $k \longleftarrow 0$\;
+ \While{ \It $<$ \MIt  }{ 	
+	\comment{Candidate selection} 
+	$\mathcal{C}^{(k)} \longleftarrow \bigcup_{S' \in \mathcal{N}(S^{(k)})} \Big\{ D(Q) \; | \; mincut(Q,\mathcal{G}(S') \Big\}$ \;
+
+	\BlankLine
+	\comment{Candidate validation}
+	$S^{(k+1)} \longleftarrow \displaystyle \argmin_{ S' \in \mathcal{C}^{(k)} }{ \hat{E}_{\vec{\theta}}(S')}$\; 	
+	\It $\longleftarrow$ \It $+1$\;
+	
+ }
+ \caption{GraphFlow algorithm.}
+ \label{alg:graphflow-algorithm}  
+\end{algorithm}
+
+\begin{figure}
+\begin{minipage}{0.25\textwidth}
+\center
+\includegraphics[scale=0.10]{figures/shape-flow/summaries-r8/triangle.png}
+
+\vspace{1.5em}
+
+\includegraphics[scale=0.08]{figures/shape-flow/summaries-r8/square.png}
+
+\vspace{1.5em}
+
+\includegraphics[scale=0.10]{figures/shape-flow/summaries-r8/flower.png}
+
+\vspace{1.5em}
+
+\includegraphics[scale=0.10]{figures/shape-flow/summaries-r8/bean.png}
+\end{minipage}%
+\begin{minipage}{0.75\textwidth}
+\center
+\includegraphics[scale=0.22]{figures/shape-flow/plots/elastica.png}
+
+\includegraphics[scale=0.22]{figures/shape-flow/plots/bars.png}
+\end{minipage}
+\caption{\textbf{GraphFlow experiments}. In the left, the evolution of various shapes given by the GraphFlow algorithm $(h=1/8,r=2)$. The red and blue contours highlight initial and final contour. The green contour is the optimum solution. The top right graph describes the reduction in elastica energy. The dotted line marks the optimum energy value (a disk of radius $8$). The bottom right graph points out the importance of a right choice of the balance coefficient radius (the optimum solution in this case is a disk of radius 32).}
+\label{fig:graph-flow-experiments}
+\end{figure}
+
+Remarkably, the GF algorithm escapes premature local minimum and even achieves the global optimum of the elastica energy for some cases. Moreover, due to the neighborhood of shapes, the GF algorithm can also expand. In figure~\ref{fig:graph-flow-expand} we show the results of elastica minimization for $\vec{\Theta} = ( r=2,h=1/8,\alpha=1/1024,\beta=1 )$. The GF algorithm correctly expands the shapes to the optimum disk of radius $32$. However, we may have a premature interruption of the evolution if a small balance coefficient radius is chosen, as illustrated in the bottom right graph of figure~\ref{fig:graph-flow-experiments}.
+
+\begin{figure}
+\center
+\subfloat[]{
+\includegraphics[scale=0.13]{figures/shape-flow/summaries-r32/triangle.png}}\hspace{1.5em}%
+\subfloat[]{
+\includegraphics[scale=0.13]{figures/shape-flow/summaries-r32/square.png}}\hspace{1.5em}%
+\subfloat[]{
+\includegraphics[scale=0.15]{figures/shape-flow/summaries-r32/flower.png}}
+\caption{\textbf{GF algorithm can expand}. Shapes evolutions given by GF algorithm with $\vec{\Theta}(h=1/8,r=2,\alpha=1/1024, \beta=1)$ as the digital elastica parameters. The green contour highlights the optimum shape (a disk of radius $32$).}
+\label{fig:graph-flow-expand}
+\end{figure}
+
+The GF algorithm with neighborhood of shapes is faster. The lower density of plotted curves in figure~\ref{fig:graph-flow-experiments} compared with those of figure~\ref{fig:no-neighborhood-shapes-evolution-improve-always} indicates that the speed of convergence to global optimum is increased when a neighborhood of shapes is used. Moreover,  all the steps of the GF algorithm, except the min-cut computation, can be executed in parallel. Table~\ref{tab:summary-graph-flow-running-time} shows the running times where the candidate graphs are evaluated in parallel. These times can be further improved by making parallel the computation of the balance coefficient and also the digital elastica evaluation.
+
+\begin{figure}[h!]
+\center
+\captionsetup{type=table}
+\footnotesize
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+& Pixels & It & Time & Time/It\\
+\hline
+Triangle & 33256 & 100 & 15s & 0.3s \\
+Square & 51259 & 50 & 31s & 0.3s \\
+Flower & 119789 & 150 & 78s & 0.5s \\
+\hline
+\end{tabular}
+\caption{\textbf{Running time of GF algorithm}. The GF algorithm achieves running times lower than one second per iteration when the shape neighbors are evaluated separately. The algorithm is completly parallelizable and these running times can be further improved.}
+\label{tab:summary-graph-flow-running-time} 
+\end{figure}
+
+Finnaly, the GF algorithm is easily modifiable to accomodate image terms, which makes it suitable for image processing tasks. Next, we are going to explore some of these possibilitites in image segmentation.
+
+\section{Applications in image processing}
+
+
+In this section we explore the potential of the GF algorithm to be used in image processing tasks. Since we do not have a mathematical model of the shapes we are going to handle it, the grid resolution is set to $h=1$ in all the experiments. The balance coefficient radius should be carefully set accordingly to the input image. The experiments were executed on a 32-core 2.4Ghz CPU.
+
+\subsection{Contour correction}
+
+The contour correction application is a pos-processing step to be executed on the output of image segmentation algorithms. We do not use a neighborhood of shapes in this case as we wish to stay close from the given initial contour. It is sufficient to execute two iterations to drastically reduce the number of critical points in the contour (a measure of jaggness).
+
+In figure~\ref{fig:GF-contour-correction}, we show some examples of the contour correction applied in contours generated by the standard graph-cut segmentation algorithm~\cite{boykov01graphcut, rother04grabcut}. Since only few iterations are executed, the data term can be ignored, although better results are obtained if provided. In our examples, we use the same data term defined in the graph-cut framework.
+
+\todo{
 \begin{itemize}
-\item{Local shape optimization by computing the zero level of the II estimation function extended to some domain $\Omega$ containing the shape.}
-\item{Description of the model for single shape elastica optimization}
-\item{Local minimum avoidance strategies
-	\begin{itemize}
-	\item{Comparison of strategies: Advance only if energy decreases x Advance to the neighbor shape of minimum energy value.}
-	\item{Consequences of adopting an uniform neighborhood x Dynamic neighborhood}
-	\item{Shape evolution and choice of the estimation ball radius.}
-	\end{itemize}
-}
-\end{itemize}
-%
-%
-\section{Applications in image segmentation}
-\begin{itemize}
-\item{The interest in use elastica regularization (completion property) }
-\item{Pros of local combinatorial approaches: Parallelizable; neighborhood choice flexibility. }
-\item{Cons of local combinatorial approaches: Possibly bad local minima; possibly failure to realize the completion property.}
-\item{Model flexibility
-\begin{itemize}
-\item{Boundary term based (alike active contours)}
-\item{Regional term based (alike classical graph-cut)}
-\item{Homogeneity regions (alike chan-vese)}
+\item{Compare with length regularization alone.}
+\item{Execute contour correction as a pos-processing step in more recent models. For example,~\cite{kiefer2020Palms}.}
+\item{Compilate a table of results from a standard data set. Possible evaluation measures: ratio Perimeter/Area; Inflection points; Elastica energy.}
 \end{itemize}
 }
-\item{Graph models: \cite{rother04grabcut}
-\cite{boykov01graphcut}
-}
-\end{itemize}
-%
-%
-%
+
+\begin{figure}
+\center
+\subfloat[Segmentation with graph-cut]{
+\includegraphics[scale=0.25]{figures/contour-correction/cat/gc-seg.png}\hspace{1em}
+\includegraphics[scale=0.25]{figures/contour-correction/vase/gc-seg.png}\hspace{1em}
+\includegraphics[scale=0.25]{figures/contour-correction/motorcycle/gc-seg.png}}
+
+\subfloat[Contour correction with 2 iterations of GF]{
+\includegraphics[scale=0.25]{figures/contour-correction/cat/corrected-seg.png}\hspace{1em}
+\includegraphics[scale=0.25]{figures/contour-correction/vase/corrected-seg.png}\hspace{1em}
+\includegraphics[scale=0.25]{figures/contour-correction/motorcycle/corrected-seg.png}}
+\caption{\textbf{Contour correction.} We use the GF algorithm with no neighborhood of shapes to correct the contour. Image sizes are $260\times400$ ($400\times260$). The running time is lower than one second.}
+\label{fig:GF-contour-correction}
+\end{figure}
+
+\subsection{Contour completion}
+
+An alternative pos-processing application is to execute the GF algorithm with a neighbrhood of shapes. We can expect a completion effect as elastica favors single connected components over a multisegmented image. However, in order to escape bad local minimum, we make two modifications: first,  we execute the GF algorithm for a certain number of iterations and we set final solution as the iteration with lowest energy; second, we define a random neighborhood of shapes. Each connected component is randomly perturbed along its contour before computation of the minimum cut.
+
+We found this application particularly useful in cases where the input image is corrupted with noise (see figure~\ref{fig:GF-completion}). Differently from the contour correction, a data term is necessary for contour completion. In figure~\ref{fig:GF-completion}, the data term is defined in the same way as standard graph-cut. 
+
+
+\subsection{Unsupervised binary segmentation}
+We set the data term as in the classical Chan-Vese model~\cite{chan01}, i.e., we penalize the square mean error between pixel intensity and the average foreground color (similarly for the background). We define the initial solution as an uniform collection of disks covering the image domain.
+
+In this application, our strategy to avoid local minima is slightly different. We use a larger random neighborhood of shapes and we allow evolution if and only if the previous energy value is reduced. We believe that running times can be vastly reduced by further parallelization. 
+
+The algorithm can evolve in such a way to favor completion or tearing the components apart according to the relative weights given for the elastica and data terms. We show the results of some experiments in figure~\ref{fig:GF-chan-vese-alike}.
+
+\begin{figure}
+\center
+\subfloat[$50$ iterations ($48$s). ]{
+\includegraphics[scale=0.18]{figures/completion/brown-snake.jpg}
+\includegraphics[scale=0.18]{figures/completion/brown-snake/gc-seg.png}
+\includegraphics[scale=0.18]{figures/completion/brown-snake/corrected-seg.png}}\hspace{0.25em}
+\subfloat[$5$ iterations ($1$s).]{
+\includegraphics[scale=0.18]{figures/completion/pear.jpg}
+\includegraphics[scale=0.18]{figures/completion/pear/gc-seg.png}
+\includegraphics[scale=0.18]{figures/completion/pear/corrected-seg.png}}
+\caption{\textbf{Contour completion.} We use the GF algorithm with a random naighborhood of shapes. In both snake and pear pictures ($260\times400$), the leftmost picture is the original image with background and foreground seeds for the graph-cut; the middle picture is the solution given by graph-cut in a noisy version of the input; and the rightmost picture the solution given by the GF algorithm.}
+\label{fig:GF-completion}
+\end{figure}
+
+\begin{figure}
+\center
+\subfloat[$34$ iterations ($63$s).]{
+\includegraphics[scale=0.5]{figures/chan-vese-alike/branch/branch-noisy.png}
+\includegraphics[scale=0.5]{figures/chan-vese-alike/branch/contours.png}
+}\hspace{1em}%
+\subfloat[$35$ iterations ($53$s).]{
+\includegraphics[scale=0.5]{figures/chan-vese-alike/simple-geometry/simple-geometry-noisy.png}
+\includegraphics[scale=0.5]{figures/chan-vese-alike/simple-geometry/contours.png}
+}%
+\caption{\textbf{Chan-Vese alike data term.} The initial contour is highlighted in pink and the final contour in yellow. An intermediate contour is also highlighted in green. A proper parameter setting favors component completion (left) or component break (right). Images are $100\times100$. }
+\label{fig:GF-chan-vese-alike}
+\end{figure}
+
+
+
+\section{Conclusion}
+
+We presented a discrete shape evolution algorithm driven by the elastica energy. The GF algorithm is built on recent results on the multigrid convergence of curvature and tangent estimators and its main step consists in to compute the minimum cut of candidate graphs. A candidate graph is constructed for each element in the neighborhood of the current shape and its minimum cut gives a candidate shape. At each iteration, the GF algorithm selects the candidate shape with lowest elastica energy.
+
+We have shown that our model can escape local minimum in the shape evolution problem by using a very simple neighborhood scheme of shapes. Indeed, our experiments converged to the shape of minimum elastica. Next, we presented some applications as pos-processing steps of image processing tasks. The contour correction regularizes contours with respect the elastica and the contour completion can be used to improve initial segmentation, especially when handling noisy images. Finally, we presented an unsupervised segmentation algorithm based on the classical Chan-Vese data term.
+
+Among the strengths of our model are the fact that a mathematical representation of the evolved shapes are not necessary and that the underlying algorithm is highly parallelizable. We believe that a GPU implementation can drastically reduce the running times of our algorithm for all the presented applications when dealing with high resolution images in conjunction or not with the random neighborhood scheme. The bottleneck is in the minimum cut computation, but since this one is computed along a thin band of the shape contour, we believe that this will not be a problem. 
+
+
 \bibliographystyle{alpha}
 \bibliography{gf-paper}
 
