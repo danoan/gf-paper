@@ -70,9 +70,9 @@ Let $C:[0,t] \rightarrow \mathbb{R}^2$ a parameterized plane curve with continuo
 
 What about if we do not know the curve equations, but instead, we have an \emph{exact sampling} of points in the curve? In this case, we can represent the curve by a sequence of lines and estimate the curvature by computing the angle defect between consecutive lines. The estimation is convergent (in the epi-convergent sense) as long as the sampling is sufficiently large~\cite{bruckstein01discrete,bruckstein01convergence}.
 
-The result above is not valid for digital domains. We do not have an exact sampling, instead, samples are constrained to lie in the digital grid. This is made clear in~\ref{}. The same digitization represents two quite distinct shapes. Of course one may refine the grid to such a precision to have an almost exact sampling, but this is highly undesirable due to memory and running time complexity, in particular for image processing tasks. 
+The result above is not valid for digital domains. We do not have an exact sampling, instead, samples are constrained to lie in the digital grid. This is made clear in figure~\ref{} where the same digitization represents two quite distinct shapes. Of course, one may refine the grid to such a precision to have an almost exact sampling, but this is highly undesirable due to memory and running time complexity, in particular for image processing tasks. 
 
-Ideally, we would have a criteria to evaluate the quality and speed of convergence according to the resolution of the digital grid. Such criteria is the \emph{multgrid convergence property}.
+Ideally, we would have a criteria to evaluate the quality and speed of convergence according to the resolution of the digital grid. Such criteria is the \emph{multgrid convergence property}. Let $X$ be an Euclidean shape and $D(X,h)$ a possible digitization (for example, using Gauss digitization).
 
 
 \begin{definition}[Multigrid convergence for local geometric quantites]
@@ -93,10 +93,10 @@ Ideally, we would have a criteria to evaluate the quality and speed of convergen
 For a global geometric quantity (e.g. perimeter, area, volume), the definition remains the same, except that the mapping
 between $\partial X$ and $\partial_h X$ is no longer necessary.
 
-Recently, multigrid convergent for curvature and perimeter estimators have been proved. We propose to use such estimators to estimate the elastica energy of digital shapes. 
+Recently, multigrid convergent for curvature and perimeter estimators have been proved. We propose to use such estimators to estimate the elastica energy of digital shapes
 
 \begin{align}
-	\hat{E}\big( D(X,h),h,r,\alpha,\beta) \big) = \sum_{\vec{e} \in \partial D(X,h)}{ \hat{s}(\vec{e})\left(\; \alpha + \beta \hat{\kappa}_{r}^2(D(X,h),\dot{\vec{e}},h) \; \right)},
+	\hat{E}\big( D(X,h),h,r,\alpha,\beta) \big) = \sum_{\vec{e} \in \partial D(X,h)}{ \hat{s}(\vec{e})\left(\; \alpha + \beta \hat{\kappa}_{r}^2(D(X,h),\dot{\vec{e}},h) \; \right)}.
 	\label{eq:digital-energy}
 \end{align}
 
@@ -118,7 +118,7 @@ In the following, we simply write $S$ to specify a digital shape and we group th
 
 \section{Elastica minimization of digital shapes via graph cuts}
 
-We are going to extend equation~\ref{eq:curvature_approximation} to the whole digital domain. In fact, since we are more interested in the  balance of intersected and non-intersected points, we slightly change equation~\ref{eq:curvature_approximation} and give it another name. We define the \emph{balance coefficient} as
+We are going to extend equation~\ref{eq:curvature_approximation} to the whole digital domain. In fact, since we are more interested in the  balance of intersected and non-intersected points, we slightly change equation~\ref{eq:curvature_approximation} and give it different name. We define the \emph{balance coefficient} as
 
 \begin{align*}
 	u(S,h,r,p) &= \left( \frac{\pi r^2}{2} - \widehat{\text{Area}}(D(B_r(p),h) \cap S,h) \right)^2.
@@ -158,14 +158,14 @@ Let $S \subset \Omega \subset \mathbb{Z}^2$ a digital set and natural number $n>
 
 \end{definition}
 
-The vertices $s,t$ are virtual vertices representing the source and target vertices as it is usual in a minimum cut framework. In particular, after the minimum cut is computed, vertices connected to the source will define the new digital shape. The inner (outer) most pixels of the optimization band are connected to the source (target), and we identify such vertices as
+The vertices $s,t$ are virtual vertices representing the source and target vertices as it is usual in a minimum cut framework. In particular, after the minimum cut is computed, vertices connected to the source will define the new digital shape. The set $\mathcal{N}_4(p)$ is the set of $4$-adjacent neighbors of $p$. The innermost (outermost) pixels of the optimization band are connected to the source (target), and we identify such vertices as
 
 \begin{align*}
 	\mathcal{V}_s &:=\left\{ v_p \in \Omega \; | \; d_{S}(p) = -n \right\} \\
 	\mathcal{V}_t &:=\left\{ v_p \in \Omega \; | \; d_{S}(p) = n \right\}.
 \end{align*}
 
-The set $\mathcal{E}_{st}$ comprises all the edges having the source as their starting point or the target as their endpoint. Next, we describe how to set the edges' capacities.
+The set $\mathcal{E}_{st}$ comprises all the edges having the source as their starting point or the target as their endpoint. In table~ref{tab:edge-capacity} we describe the edge capacity function.
 
 \begin{table}
 \begin{center}
@@ -208,42 +208,33 @@ In the following, we will refer to the candidate graph of $S$ as $\mathcal{G}(S)
 	\label{fig:no-neighborhood-shapes-evolution}
 \end{figure}
 
-Looking at figure~\ref{fig:no-neighborhood-shapes-evolution}, we may wonder about some properties of this process. For example, a tendance to evolve to convex shapes or shrinking. In fact, we can prove the following
-
-\begin{lemma}[Convexity bias]
-\label{claim:convexity-bias} For any initial digital shape $S^{(0)}$, there exists a value $T$ for which $S^{(t)}$ is convex for all $t>T$.
-\begin{proof}
-The zero level set of $u$ encloses regions of negative curvature. Therefore, such regions vanish away.
-\end{proof}
-\end{lemma}
-
-\begin{lemma}[Shrinking bias]
-\label{claim:shrinking-bias} For all $t$, $Per(S^{(t)}) > Per(S^{(t+1)})$.
-\begin{proof}
-If $S^{(t)}$ is non-convex, $S^{(t+1)}$ has shorter perimeter by property~\ref{claim:convexity-bias}. If $S^{(t)}$ is convex then curvature is positive everywhere, indicating a shortage of pixels in the balance coefficient. Therefore, the zero level set of balance coeficient is slightly shifted towards the internal part of the shape. The shape shrinks and $Per(S^{(t)}) > Per(S^{(t+1)})$.
-\end{proof}
-\end{lemma}
-
-
-These properties are also present in the classical curve shortening flow~\cite{grayson1987heat,ecker2008heat}. This flow is commonly described as the flow that decreases the curve length the quickest. In fact, under the curve shortening flow, one can show that the length varies according to
+The flow in figure~\ref{} is quite similar to the curve-shortening flow~\cite{grayson1987heat,ecker2008heat}. This flow is commonly described as the flow that decreases the curve length the quickest. In fact, under the curve shortening flow, one can show that the length varies according to
 %
 \begin{align*}
 \frac{\partial L}{\partial t} = - \int{\kappa ^2 ds}.
 \end{align*}
 %
-The current evolution process does not fulfil the goal of elastica minimization. There is a clear regularization with respect to the squared curvature, but the elastica value eventually increases. We can partially solve this problem by stoping the evolution as soon as the elastica energy increases. However, as shown in figure~\ref{fig:no-neighborhood-shapes-evolution-improve-always}, that may leads to bad local minimum. We can escape local minimum by defining a neighborhood of shapes.
 
-\begin{figure}
-	\center
-	\subfloat[\label{}]{%
-	\includegraphics[scale=0.12]{figures/no-neighborhood-flow-improve-always/triangle.png}}\hspace{2em}%
-	\subfloat[\label{}]{%
-	\includegraphics[scale=0.11]{figures/no-neighborhood-flow-improve-always/square.png}}\hspace{2em}%	
-	\subfloat[\label{}]{%
-	\includegraphics[scale=0.14]{figures/no-neighborhood-flow-improve-always/flower.png}}	
-	\caption{\textbf{Stop if elastica increases}. In red the initial contour and in blue the final contour given by the evolution process with no neighborhood of shapes $\vec{\Theta} = (h=1/8,r=2,\alpha=1/64,\beta=1)$. The optimum contour is highlighted in green (a disk of radius $8$). Intermediate contours are ploted every 10 iterations.}
-	\label{fig:no-neighborhood-shapes-evolution-improve-always}
-\end{figure}
+Indeed, we have some evidence that $S{(t)}$ approximates the curve-shortening flow. We start by giving an ingenious geometric reason for that, first enounced in~\cite{merriman1992diffusion}.
+
+Huygens principle.
+
+Threshold dynamics
+
+Taylor approximation.
+
+
+%\begin{figure}
+%	\center
+%	\subfloat[\label{}]{%
+%	\includegraphics[scale=0.12]{figures/no-neighborhood-flow-improve-always/triangle.png}}\hspace{2em}%
+%	\subfloat[\label{}]{%
+%	\includegraphics[scale=0.11]{figures/no-neighborhood-flow-improve-always/square.png}}\hspace{2em}%	
+%	\subfloat[\label{}]{%
+%	\includegraphics[scale=0.14]{figures/no-neighborhood-flow-improve-always/flower.png}}	
+%	\caption{\textbf{Stop if elastica increases}. In red the initial contour and in blue the final contour given by the evolution process with no neighborhood of shapes $\vec{\Theta} = (h=1/8,r=2,\alpha=1/64,\beta=1)$. The optimum contour is highlighted in green (a disk of radius $8$). Intermediate contours are ploted every 10 iterations.}
+%	\label{fig:no-neighborhood-shapes-evolution-improve-always}
+%\end{figure}
 
 \subsection{Neighborhood of shapes}
 
@@ -338,9 +329,10 @@ The GF model with neighborhood of shapes is faster. The lower density of plotted
 \hline
 & Pixels & It & Time & Time/It\\
 \hline
-Triangle & 33256 & 100 & 15s & 0.3s \\
-Square & 51259 & 50 & 31s & 0.3s \\
-Flower & 119789 & 150 & 78s & 0.5s \\
+Triangle & 33256 & 120 & 49.6s & 0.4s \\
+Square & 51259 & 60 & 24.6s & 0.4s \\
+Flower & 119789 & 150 & 132.8s & 0.9s \\
+Bean & 100504 & 300 & 148.4s & 0.5s \\
 \hline
 \end{tabular}
 \caption{\textbf{Running time of GF algorithm}. The GF algorithm achieves running times lower than one second per iteration when the shape neighbors are evaluated separately. The algorithm is completly parallelizable and these running times can be further improved.}
@@ -351,12 +343,12 @@ Finnaly, the GF algorithm is easily modifiable to accomodate image terms, which 
 
 \section{Applications in image processing}
 
-The GF model can be extended to include a data fidelity term. In this section we explore the potential of the GF model to be used in image processing tasks. We present the results of two experiments. The first is targeted to supervised segmentation and the second to unsupervised segmentation. Since we do not have an explicit expression for the input shapes (that is, the objects to segment), the grid resolution is set to $h=1$ in all experiments. The experiments were executed in [machine configuration].
+The GF model can be extended to include a data fidelity term. In this section, we explore the potential of the GF model to be used in image processing tasks. We present the results of two experiments. The first is targeted to supervised segmentation and the second to unsupervised segmentation. Since we do not have an explicit expression for the input shapes (that is, the objects to segment), the grid resolution is set to $h=1$ in all experiments. The experiments were executed in a Intel Corei7 $1.8GHz$ processor with $16gb$ of ram.
 
 
 \subsection{Supervised segmentation}
 
-The goal of this experiment is to illustrate the regularization properties of the GF model and to highlight the role of the data term in our approach. The data term employed in this experiment is the same used by Boykov-Jolly classical graph cut model~\cite{boykov01graphcut}. 
+The goal of this experiment is to illustrate the regularization properties of the GF model and to highlight the role of the data term in our approach. The data term employed in this experiment is the same used by Boykov-Jolly in their classical graph cut model~\cite{boykov01graphcut}. 
 
 \subsubsection{Data term}
 We are going to update the graph construction described in section~\ref{sec:graph-cut-model} to accomodate the data term. In particular, we define two new sets of vertices $\mathcal{V}_{fg}$ and $\mathcal{V}_{bg}$ as the set of foreground and background seeds, respectively. Those are given as input.
@@ -364,7 +356,7 @@ We are going to update the graph construction described in section~\ref{sec:grap
 Let $\vec{x} \in \{0,1\}^{|S|}$ represent the label of each pixel in the image ($0$ for background and $1$ for foreground). We define the data term as
 %
 \begin{align*}
-	data(S) &= \gamma_r \sum_{p \in S}{ \psi(x_p) } + \gamma_b \sum_{p \in S}\sum_{q \in \mathcal{N}_{4}(p)}{\psi_{(p,q)}},
+	data(S) &= \gamma_r \sum_{p \in S}{ \psi(x_p) } + \gamma_b \sum_{p \in S}\sum_{q \in \mathcal{N}_{4}(p)}{\phi_{(p,q)}},
 \end{align*}
 where $\gamma_r \geq 0$ and $\gamma_b \geq 0$ are parameters controlling the influence of the regional and boundary terms, respectively. Given the image $I:\Omega \rightarrow [0,1]^3$, the unary and pairwise terms are defined as
 \begin{align*}
@@ -372,7 +364,7 @@ where $\gamma_r \geq 0$ and $\gamma_b \geq 0$ are parameters controlling the inf
 	-\ln  H_{bg}\big( I(p) \big), & \text{if } x_p=0  \\[1em]	
 	-\ln  H_{fg}\big( I(p) \big), & \text{if } x_p=1,
 	\end{array}\right.\\[1em]
-	\psi_{(p,q)} &= \left\{ \begin{array}{ll}
+	\phi_{(p,q)} &= \left\{ \begin{array}{ll}
 	\displaystyle \exp{ \left(- \frac{1}{ |(p,q)| }\frac{(I(p) - I(q))^2}{2\sigma^2} \right) }, & q \in \mathcal{N}_4(p) \\[1em]
 	0, & \text{otherwise}.
 	\end{array}\right.
@@ -387,7 +379,7 @@ The terms $H_{bg}$ and $H_{fg}$ are mixed Gaussian distribution constructed from
 \hline
 \textbf{edge} $e$ & $\mathbf{c(e)}$ & \textbf{for}\\
 \hline
-$\{v_p, v_q\}$ & $\beta \cdot \big(u(S,h,r,p) + u(S,h,r,q)\big) + \gamma_b \cdot \psi_{(p,q)}$ & $\{v_p,v_q\} \in \mathcal{E}_{u}$\\
+$\{v_p, v_q\}$ & $\beta \cdot \big(u(S,h,r,p) + u(S,h,r,q)\big) + \gamma_b \cdot \phi_{(p,q)}$ & $\{v_p,v_q\} \in \mathcal{E}_{u}$\\
 \hline
 \multirow{3}{*}{$\{v_p, s\}$} & $\gamma_r \cdot \psi(0)$ & $p \in O_n(S), v_p \notin \mathcal{V}_{fg} \cup \mathcal{V}_{bg}$\\
 & $M$ & $v_p \in \mathcal{V}_{s} \cup \mathcal{V}_{fg}$ \\
@@ -401,26 +393,29 @@ where the constant $M$ is defined such that
 \begin{align*}
 M &= \max_{e \in \mathcal{E} }{ c(e) }.
 \end{align*}
-\caption{\textbf{Updated capacities.} The capacity function of table~\ref{tab:capacity-function} is updated to accommodate the data term.}
+\caption{\textbf{Updated capacity function.} The capacity function of table~\ref{tab:edge-capacity} is updated to accommodate the data term.}
 \label{tab:updated-capacity-function}
 \end{table}
 %
 %
-To handle bias due to magnitude difference between the terms, we normalize them in groups. Boundary and regional capacities are normalized to the interval $[0,1]$ with respect their values. The same is done, separately, for the curvature term.
 
-To minimize parameter dependence from the image input, we also execute parameter normalization. Given parameters $\alpha, \gamma_b, \gamma_r$ and an initial segmentation $I_0$, we apply the following normalization factors.
+To handle bias due to the magnitude difference between data and geometry the terms, we normalize them in groups. Regional and boundary terms are normalized to the interval $[0,1]$ with respect to their values. The same is done, separately, for the curvature term.
+
+To minimize parameter dependence from the image input, we also apply a parameter normalization. Given parameters $\alpha, \gamma_b, \gamma_r$ and an initial segmentation $I_0$, we apply the following normalization factors.
 %
 \begin{align*}
 	\alpha & = \alpha \times 4\pi^2/Per^2 \\
 	\gamma_r & = \gamma_r \times \hat{E}(I_0)/Data(I_0) \\	
 	\gamma_b & = \gamma_b \times \hat{E}(I_0)/Data(I_0)		
 \end{align*}
+
+That means that by setting $\alpha=\gamma_r=\gamma_b=1$, the shape of minimum elastica is the disk of perimeter $Per$ (assuming no data term); and that $data(I_0)=\hat{E}(I_0)$.
 %
 %
 \subsubsection{Experiment}
-We need an initial contour to start the GF model. The initial contour is given by the grabcut algorithm ~\cite{rother04grabcut}, a variant of classical graph cut segmentation~\cite{boykov01graphcut} which is implemented in the OpenCV library.
+We need an initial contour to start the GF model. The initial contour is given by the grabcut algorithm~\cite{rother04grabcut}, a variant of classical graph cut segmentation~\cite{boykov01graphcut} which is implemented in the OpenCV library.
 
-For this experiment we used a selection of $100$ images of the Validation 2017 subset of the Coco dataset~\cite{lin2014microsoft}. The Coco dataset comprises over $328$k images spreaded over $91$ categories and $11$ super-categories. Table~\ref{tab:image-categories-distribution} summarizes the selected images by super-category. 
+For this experiment, we used a selection of $212$ images of the Validation 2017 subset of the Coco dataset~\cite{lin2014microsoft}. The Coco dataset comprises over $328$k images spreaded over $91$ categories and $11$ super-categories. Table~\ref{tab:image-categories-distribution} summarizes the quantity of selected images per super-category. 
 %
 %
 \begin{table}
@@ -428,14 +423,14 @@ For this experiment we used a selection of $100$ images of the Validation 2017 s
 \hline
 \textbf{Person} & \textbf{Vehicle} & \textbf{Food} & \textbf{Animal} & \textbf{Outdoor Obj.} & \textbf{Sports} \\
 \hline
-24 & 22 & 9 & 34 & 2 & 1 \\
+24 & 22 & 22 & 34 & 16 & 19 \\
 \hline
 \textbf{Kitchenware} & \textbf{Furniture} & \textbf{Appliance} & \textbf{Electronics} & \textbf{Indoor Obj.} & \\
 \hline
-2 & 1 & 0 & 1 & 5 & \\
+19 & 17 & 9 & 10 & 19 & \\
 \hline
 \end{tabular}
-\caption{\textbf{Images distribution.} The amount of selected images per Coco super-category.}
+\caption{\textbf{Selected images distribution.} The quantity of selected images per Coco super-category. A total of $212$ images were selected.}
 \label{tab:image-categories-distribution}
 \end{table}
 %
@@ -460,47 +455,58 @@ $\boldsymbol{\alpha}$ & $\boldsymbol{\beta}$ & $\boldsymbol{\gamma_b}$ & $\bolds
 \end{table}
 %
 %
+\begin{table}
+\center
+\begin{tabular}{cccc}
+\textbf{Highest} & \textbf{Lowest} & \textbf{Average} & \textbf{Avg. per iteration} \\
+50.3s & 3.3 & 15.1s & 0.7s\\
+\end{tabular}
+\caption{\textbf{Supervised experiment running time}. The average iteration is of $0.7$s.}
+\label{tab:coco-experiment-running-time}
+\end{table}
 %
 %
 \begin{figure}
 \center
 \subfloat[Coco annotations for kite, moto and giraffe]{
-\includegraphics[scale=0.2]{figures/coco/kite/coco-annotation.png}\hspace{1em}
-\includegraphics[scale=0.2]{figures/coco/moto/coco-annotation.png}
+\includegraphics[scale=0.2]{figures/coco-experiment/sample-images/kite/coco-annotation.png}\hspace{1em}
+\includegraphics[scale=0.2]{figures/coco-experiment/sample-images/moto/coco-annotation.png}
 \hspace{1em}
-\includegraphics[scale=0.2]{figures/coco/giraffe/coco-annotation.png}
+\includegraphics[scale=0.2]{figures/coco-experiment/sample-images/giraffe/coco-annotation.png}
 }%
 
 \subfloat[Graph cut segmentation]{
-\includegraphics[scale=0.2]{figures/coco/kite/gc-seg.png}
-\includegraphics[scale=0.2]{figures/coco/moto/gc-seg.png}
-\includegraphics[scale=0.2]{figures/coco/giraffe/gc-seg.png}
+\includegraphics[scale=0.2]{figures/coco-experiment/sample-images/kite/gc-seg.png}
+\includegraphics[scale=0.2]{figures/coco-experiment/sample-images/moto/gc-seg.png}
+\includegraphics[scale=0.2]{figures/coco-experiment/sample-images/giraffe/gc-seg.png}
 }
 
 \subfloat[GF correction with data term]{
-\includegraphics[scale=0.2]{figures/coco/kite/corrected-seg-with-data.png}
-\includegraphics[scale=0.2]{figures/coco/moto/corrected-seg-with-data.png}
-\includegraphics[scale=0.2]{figures/coco/giraffe/corrected-seg-with-data.png}
+\includegraphics[scale=0.2]{figures/coco-experiment/sample-images/kite/corrected-seg-with-data.png}
+\includegraphics[scale=0.2]{figures/coco-experiment/sample-images/moto/corrected-seg-with-data.png}
+\includegraphics[scale=0.2]{figures/coco-experiment/sample-images/giraffe/corrected-seg-with-data.png}
 }
 
 \subfloat[GF correction without data term]{
-\includegraphics[scale=0.2]{figures/coco/kite/corrected-seg-without-data.png}
-\includegraphics[scale=0.2]{figures/coco/moto/corrected-seg-without-data.png}
-\includegraphics[scale=0.2]{figures/coco/giraffe/corrected-seg-without-data.png}
+\includegraphics[scale=0.2]{figures/coco-experiment/sample-images/kite/corrected-seg-without-data.png}
+\includegraphics[scale=0.2]{figures/coco-experiment/sample-images/moto/corrected-seg-without-data.png}
+\includegraphics[scale=0.2]{figures/coco-experiment/sample-images/giraffe/corrected-seg-without-data.png}
 }
-\caption{\textbf{Results sample of the supervised segmentation experiment}. Coco annotations are shown in the first line. In the next rows we present the same image segmented by grabcut and corrected by the GF model with and without data term.  }
+\caption{\textbf{Some results of the supervised segmentation experiment}. Coco annotations are shown in the first line. In the next rows we present the same image segmented by grabcut and corrected by the GF model with and without data term.  }
 \label{fig:coco-experiment-sample}
 \end{figure}
 %
 %
 %
-The first observation is that the GF model regularizes the initial grabcut segmentation contour with respect to the elastica energy. That is illustrated in figure~\ref{fig:coco-tangent-profile} in which we display the tangent profile of the grabcut segmentation and the one corrected by the GF model. The value of the elastica energy of the contour and its number of inflection points is also greatly reduced, as it is summarized in figure~\ref{fig:coco-summary-regularization}.
+The first observation is that the GF model regularizes the initial grabcut segmentation contour with respect to the elastica energy. In figure~\ref{fig:coco-tangent-profile} we display the tangent profile of both grabcut segmentation and the one corrected by the GF model. We clearly observe the regularization effect of the GF model with respect the grabcut profile. The value of the elastica energy of the contour and its number of inflection points is also greatly reduced, as it is summarized in figure~\ref{fig:coco-summary-regularization}.
 
-The second observation is that the data term has an important role in the quality of the segmentation with respect to precision and recall metrics, as shown in the box plot of figure~\ref{fig:coco-summary-precision-recall}. That means that by using a model with no data term, such as threshold dynamics, is not sufficient to recover segmentations of good quality. In fact, executing the GF model without data term will eventually transform the contour in one or more circles, and we can have an arbitrary bad value for the recall. We can see some of these undesirable effects in the fourth line of figure~\ref{fig:coco-experiment-sample}: the kite area is over reduced; the motorcycle is separated in two disconnected components; and the giraffe loses part of its ears.
+The second observation is that the data term has an important role in the quality of the segmentation with respect to precision and recall metrics, as shown in the box plot of figure~\ref{fig:coco-summary-precision-recall}. That means that by using a model with no data term, such as threshold dynamics, is insufficient to recover segmentations of good quality. In fact, executing the GF model without data term will eventually transform the contour in one or more circles, and we can have an arbitrary bad value for the recall. We can see some of these undesirable effects in the fourth line of figure~\ref{fig:coco-experiment-sample}: the kite area is over reduced; the motorcycle is separated in two disconnected components; and the giraffe loses part of its ears.
 
-The third observation is that the GF model presents the completion effect that is expected from regularization by elastica energy. That property is particularly useful for the segmentation of thin and elongated objects, but not only. It also helps to remove oversegmented components which are particularly common in graph cut based models. In figure~\ref{fig:coco-completion} we give some examples of contour completion.
+The third observation is that the GF model presents the completion effect that is expected from regularization by the elastica energy. This property is particularly useful for the segmentation of thin and elongated objects, but not only. It also helps to remove oversegmented components which are particularly common in graph cut based models. In figure~\ref{fig:coco-completion} we give some examples of contour completion.
 
-Finally, we remark that all images were executed using the same set of parameters. That is not ideal. Low resolution images should be segmented using a smaller estimation radius, for example. Therefore, all the results presented here could be eventually improved by tunning the parameters accordingly. An example of this is given in figure~\ref{fig:coco-parameter-tuning}.
+Finally, we remark that all images were executed using the same set of parameters. That is not ideal. Low resolution images should be segmented using a smaller estimation radius, for example. Therefore, all the results presented here could be eventually improved by tuning the parameters accordingly. An example of this is given in figure~\ref{fig:coco-parameter-tuning}.
+
+A summary of the running time is presented in table~\ref{tab:coco-experiment-running-time}. The average running time per iteration is of $0.7$s. We remark that in several cases we need fewer than $5$ iterations to greatly improve regularization metrics such as elastica and inflection points. However, to recover the completion effect we may need more iterations.
 
 %
 %
@@ -509,13 +515,13 @@ Finally, we remark that all images were executed using the same set of parameter
 \begin{figure}
 \center
 \subfloat[Grabcut segmentation (left) and corrected segmentation by GF (right).]{
-\includegraphics[scale=0.25]{figures/coco/baseball/gc-seg.png}\hspace{1em}
-\includegraphics[scale=0.25]{figures/coco/baseball/corrected-seg-with-data.png}
+\includegraphics[scale=0.25]{figures/coco-experiment/tangent-profile/baseball/gc-seg.png}\hspace{1em}
+\includegraphics[scale=0.25]{figures/coco-experiment/tangent-profile/baseball/corrected-seg-with-data.png}
 }
 
 \subfloat[Tangent profile for grabcut (left) and GF corrected (right) segmentations.]{
-\includegraphics[scale=0.42]{figures/coco/baseball/tangent-profile-gc.png}\hspace{1em}
-\includegraphics[scale=0.42]{figures/coco/baseball/tangent-profile-cc.png}
+\includegraphics[scale=0.42]{figures/coco-experiment/tangent-profile/baseball/tangent-profile-gc.png}\hspace{1em}
+\includegraphics[scale=0.42]{figures/coco-experiment/tangent-profile/baseball/tangent-profile-cc.png}
 }
 \caption{\textbf{Contour regularization.} The GF model normlalizes the contour with respect the elastica energy. This is illustrated by the tangent profile of the grabcut segmentation and the one corrected by GF.}
 \label{fig:coco-tangent-profile}
@@ -525,24 +531,24 @@ Finally, we remark that all images were executed using the same set of parameter
 \begin{figure}
 \center
 \subfloat[Recall and precision results with respect to Coco annotations.\label{fig:coco-summary-precision-recall} ]{
-\includegraphics[scale=0.25]{figures/coco/box-plot-mixed.png}
+\includegraphics[scale=0.25]{figures/coco-experiment/box-plot-mixed.png}
 }
 
 \subfloat[Contour regularization metrics for GF with respect grabcut.\label{fig:coco-summary-regularization}]{
-\includegraphics[scale=0.25]{figures/coco/box-plot-correction.png}
+\includegraphics[scale=0.25]{figures/coco-experiment/box-plot-correction.png}
 }
 
-\caption{\textbf{Summary statistics.} The GF model give results as good as grabcut with respect to precision and recall, but with a much simpler and easy to describe (and store) contour.}
+\caption{\textbf{Summary statistics.} The GF model give results as good as grabcut with respect to precision and recall, but with a much simpler and easy to describe (and to store) contour.}
 \end{figure}
 %
 %
 \begin{figure}
 \center
-\subfloat[Using $r=5$ (mm=$0.78$)]{
-\includegraphics[scale=0.25]{figures/coco/parameter-tuning/corrected-seg-with-data-r5.png}}\hspace{1em}
-\subfloat[Using $r=3$ (mm=$0.94$)]{
-\includegraphics[scale=0.25]{figures/coco/parameter-tuning/corrected-seg-with-data-r3.png}}
-\caption{\textbf{Parameter tuning.} The GF model was executed with the same set of parameters for all images, but we can recover better results by tuning the parameter for each image. In this example, the low scale of the image asks for a lower estimation radius. The mixed metric goes from $0.78$ to $0.94$. }
+\subfloat[Using $r=5$ ($(P+R)/2=0.78$)]{
+\includegraphics[scale=0.25]{figures/coco-experiment/parameter-tuning/sheep_r5/corrected-seg-with-data.png}}\hspace{1em}
+\subfloat[Using $r=3$ ($(P+R)/2=0.94$)]{
+\includegraphics[scale=0.25]{figures/coco-experiment/parameter-tuning/sheep_r3/corrected-seg-with-data.png}}
+\caption{\textbf{Parameter tuning.} The GF model was executed with the same set of parameters for all images, but we can recover better results by tuning the parameter for each image separately. In this example, the low scale of the image asks for a lower estimation radius. The precision plus recall average goes from $0.78$ to $0.94$ by using a radius of $3$ instead of $5$. }
 \label{fig:coco-parameter-tuning}
 \end{figure}
 %
@@ -550,24 +556,24 @@ Finally, we remark that all images were executed using the same set of parameter
 \subsection{Unsupervised binary segmentation}
 The goal of this experiment is to illustrate the flexibility of the GF model with respect to the data fidelity term. In this experiment, we employed a Chan-Vese allike data term~\cite{chan01}, i.e., we penalize the square mean error between pixel intensity and the average foreground color (similarly for the background). We define the initial solution as an uniform collection of disks covering the image domain.
 
-In this application, our strategy to avoid local minima is slightly different. We use a larger random neighborhood of shapes and we allow evolution if and only if the previous energy value is reduced. This strategy lead to higher running times, but since the digital components are treated independently, we believe that running times can be vastly reduced by implementing a more agressive parallelization, for example, using GPUs. 
+In this application, our strategy to avoid local minima is slightly different. We use a neighborhood of shapes composed by random perturbations of the initial contour and we allow evolution if and only if the previous energy value is reduced. This strategy lead to higher running times, but since the digital components are treated independently, we believe that running times can be greatly reduced by implementing a more agressive parallelization strategy, for example, using GPUs. 
 
-The algorithm can evolve the contours to favor its completion or its breaking according to the relative weights given for the elastica and data terms. We show the results of some experiments in figure~\ref{fig:GF-chan-vese-alike}.
+The algorithm can evolve the contours in favor of contour completion or breaking them according to the relative weights given for the elastica and data terms. We show the results of some experiments in figure~\ref{fig:GF-chan-vese-alike}.
 
 \begin{figure}
 \center
 \subfloat[Segmentation by grabcut]{
-\includegraphics[scale=0.185]{figures/coco/completion/cup/gc-seg.png}\hspace{0.5em}
-\includegraphics[scale=0.16]{figures/coco/completion/zebra/gc-seg.png}
+\includegraphics[scale=0.185]{figures/coco-experiment/completion/cup/gc-seg.png}\hspace{0.5em}
+\includegraphics[scale=0.16]{figures/coco-experiment/completion/zebra/gc-seg.png}
 \hspace{0.5em}
-\includegraphics[scale=0.16]{figures/coco/completion/train/gc-seg.png}
+\includegraphics[scale=0.16]{figures/coco-experiment/completion/train/gc-seg.png}
 }%
 
 \subfloat[Segmentation corrected by GF]{
-\includegraphics[scale=0.185]{figures/coco/completion/cup/corrected-seg-with-data.png}\hspace{0.5em}
-\includegraphics[scale=0.16]{figures/coco/completion/zebra/corrected-seg-with-data.png}
+\includegraphics[scale=0.185]{figures/coco-experiment/completion/cup/corrected-seg-with-data.png}\hspace{0.5em}
+\includegraphics[scale=0.16]{figures/coco-experiment/completion/zebra/corrected-seg-with-data.png}
 \hspace{0.5em}
-\includegraphics[scale=0.16]{figures/coco/completion/train/corrected-seg-with-data.png}
+\includegraphics[scale=0.16]{figures/coco-experiment/completion/train/corrected-seg-with-data.png}
 }%
 \caption{\textbf{Contour completion.} The GF model favors connected components due to the completion effect of the elastica energy. That is particularly useful to avoid oversegmentation.}
 \label{fig:coco-completion}
@@ -575,11 +581,11 @@ The algorithm can evolve the contours to favor its completion or its breaking ac
 
 \begin{figure}
 \center
-\subfloat[$34$ iterations ($63$s).]{
+\subfloat[$22$ iterations ($52$s).]{
 \includegraphics[scale=0.5]{figures/chan-vese-alike/branch/branch-noisy.png}
 \includegraphics[scale=0.5]{figures/chan-vese-alike/branch/contours.png}
 }\hspace{1em}%
-\subfloat[$35$ iterations ($53$s).]{
+\subfloat[$26$ iterations ($76$s).]{
 \includegraphics[scale=0.5]{figures/chan-vese-alike/simple-geometry/simple-geometry-noisy.png}
 \includegraphics[scale=0.5]{figures/chan-vese-alike/simple-geometry/contours.png}
 }%
@@ -593,11 +599,11 @@ The algorithm can evolve the contours to favor its completion or its breaking ac
 
 We presented a discrete shape evolution algorithm driven by the elastica energy. The GF model is built on recent results on the multigrid convergence of curvature and tangent estimators and its main step consists in to compute the minimum cut of candidate graphs. A candidate graph is constructed for each element in a neighborhood of shapes of the current digital set and its minimum cut gives a candidate shape. At each iteration, the GF model selects the candidate shape with lowest elastica energy. We have shown that our model can escape local minimum in the shape evolution problem by using a very simple neighborhood scheme of shapes. Indeed, our experiments converged to the shape of minimum elastica energy. 
 
-Next, we presented some applications in image processing tasks. The GF model delivery contour with lower inflection points, smooth tangent profile and lower elastica energy than those by grabcut. That is done while keeping high values of precision and recall with respect the Coco annotated images used in our experiments. Finally, we presented an unsupervised segmentation model based on the classical Chan-Vese data term, which demonstrate the flexibility of the model. 
+Next, we presented some applications in image processing tasks. The GF model delivery contours with lower inflection points, smoother tangent profiles and lower elastica energy than those produced from grabcut. That is done while keeping high values of precision and recall with respect the Coco annotated images used in our experiments. Finally, we presented an unsupervised segmentation model based on the classical Chan-Vese data term, which demonstrate the flexibility of the model. 
 
-One of the strengths of our model is that the curvature estimation is based on digital data only and it is not attached to a curve model, which may restrict the curve evolution and pose problems in its update. Secondly, the GF model is highly parallelizable. We believe that a GPU implementation will greatly reduce the running times of our algorithm for all the presented applications. The bottleneck is in the minimum cut computation, as it is difficult to come up with a parallel implementation, but since the latter is computed along a thin band of the shape contour, we believe that this is a minor problem.
+One of the strengths of our model is that the curvature estimation is based on digital data solely and it is not attached to a curve model, which may restrict the curve evolution and pose problems regarding its update. Secondly, the GF model is highly parallelizable. We believe that a GPU implementation will greatly reduce the running times of our algorithm for all presented applications. The bottleneck is in the minimum cut computation, as it is difficult to come up with a parallel implementation, but since the latter is computed along a thin band of the shape contour, we believe that this is a minor problem.
 
-There are some possible paths for future work. Firstly, the graph construction part of the algorithm can be optimized. In the current version, the graph is constructed at every iteration, but most of the time, the graph structure changes very slightly and this can be used to optimize its construction. Secondly, we use a very rough neighborhood of shapes that dilates or erodes the initial shape. The contour completion property of the model can be better exploited by employing different neighborhoods. For example, we could alongate the initial shapes in regions of high curvature to obtain a stretched neighborhood of shapes. This could be particularly useful in the segmentation of thin and elongated objects as blood vessels.
+There are some possible paths for future work. Firstly, the graph construction part of the algorithm can be optimized. In the current version, the graph is constructed at every iteration, but most of the time, the graph structure changes very slightly and this can be used to optimize its construction. Secondly, we use a very rough neighborhood of shapes in the supervised segmentation problem, i.e., based on dilations and erosions of the initial shape. The contour completion property of the model can be better exploited by employing different neighborhoods. For example, we could alongate the initial shapes in regions of high curvature to obtain a stretched neighborhood of shapes. This could be particularly useful in the segmentation of thin and elongated objects such as blood vessels.
 
 
 \bibliographystyle{alpha}
