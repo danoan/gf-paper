@@ -31,20 +31,21 @@
 
 \section{Introduction}
 
-A digital set is referred as any collection of points that can be positioned in a regular grid. In the bidimensional case, it is usually denoted as $S \subset \Omega \subset \mathbb{Z}^2$, where $\Omega$ is a compact set, i.e., we restict digital sets to a bounded subset of $\mathbb{Z}^2$. One of the most prevalent examples of digital sets and also an important source of applications are digital images.
+A digital set $S$ is referred as any collection of points that can be positioned in a regular grid. In the bidimensional case, it is a subset of the integer plane, i.e., $S \subset \Omega \subset \mathbb{Z}^2$, where $\Omega$ is a compact set. One of the most prevalent examples of digital sets and also an important source of applications are digital images.
 
-Common tasks in digital images are recognizing shapes or objects (segmentation), removing noise (denoising), interpolate information (inpainting) and compression. An important class of models consists in optimize a convenient energy adapted to the problem to be solved. In this class, the use of geometric priors as perimeter, area and curvature are commonly employed.
+Common tasks in digital images are recognizing shapes or objects (segmentation), removing noise (denoising), interpolate data (inpainting) and compression. An important class of models consists in optimize a crafted functional energy adapted to the problem to be solved. In this class, the use of geometric priors as perimeter, area and curvature are commonly employed.
 
 These models are built on classic mathematical theory, in which continuity is assumed. A common issue with most of models using geometric priors lies in their discretization step, where the digital nature of the images are often ignored. This results in poor estimations of geometric quantities, and that is particularly important for high-order measures as curvature.
 
-An important and challenging energy to optimize is the elastica. Previous works reported its benefits in inpainting and the segmentation. In particular, the squared curvature penalization favors connected segmentations, a property that is usually called the completion property and useful in the segmentation of thin and elongated objects as blood vessels. In continuous term, the elastica is defined for a contour $C$ as
+An important and challenging energy to optimize is the elastica. Previous works reported its benefits in inpainting~\cite{masnou98inpainting,ballester01filljoint,chan02elasticainpainting} and segmentation~\cite{goldluecke11totalcurvature,zhu2013image,nieuwenhuis14efficient, antunes20}. In particular, the squared curvature penalization favors the so called \emph{completion property}, which favors the segmentation of connected components. The completion property is particularly useful in the segmentation of thin and elongated objects as blood vessels. In continuous terms, the elastica is defined for a contour $C$ as
 %
 \begin{align*}
 	E(C) &= \int_{C}{\alpha + \beta \kappa^2 ds}.
 \end{align*}
 %
-In this paper, we propose a discrete model to minimize the elastica energy using multigrid convergent estimators. These estimators are conceived for digital sets and give us guarantees of convergence with respect the image grid resolution. We show that our model correctly evolve digital shapes to the shape of optimum elastica energy, escaping local minimum. Moreover, we show how to use our model in image processing tasks. Finally, the model is parallelizable and present competitive running times that we strongly believe can be improved in a GPU setting.
-
+In this paper, we propose a discrete model to minimize the elastica energy using \emph{multigrid convergent estimators}. These estimators are conceived for digital sets and give us guarantees of convergence with respect the image grid resolution. We show that our model evolve digital shapes to the shape of optimum elastica energy, escaping local minimum. Moreover, we show how to use our model in image processing tasks and give several illustrations. Finally, the model is parallelizable and present competitive running times that we strongly believe can be improved in a GPU setting.
+%
+%
 \section{Related work}
 \todo{
 \begin{itemize}
@@ -59,7 +60,8 @@ In this paper, we propose a discrete model to minimize the elastica energy using
 \cite{nieuwenhuis14efficient} \cite{antunes19} \cite{antunes20}}
 \end{itemize}}
 \end{itemize}}
-
+%
+%
 \section{Geometric properties estimation on digital data}
 
 Let $C:[0,t] \rightarrow \mathbb{R}^2$ a parameterized plane curve with continuous first and second derivatives. In this case, we can easily compute the curvature at some point $P(t) = \big( x(t),y(t) \big) \in C$ by using the formula
@@ -70,11 +72,19 @@ Let $C:[0,t] \rightarrow \mathbb{R}^2$ a parameterized plane curve with continuo
 
 What about if we do not know the curve equations, but instead, we have an \emph{exact sampling} of points in the curve? In this case, we can represent the curve by a sequence of lines and estimate the curvature by computing the angle defect between consecutive lines. The estimation is convergent (in the epi-convergent sense) as long as the sampling is sufficiently large~\cite{bruckstein01discrete,bruckstein01convergence}.
 
-The result above is not valid for digital domains. We do not have an exact sampling, instead, samples are constrained to lie in the digital grid. This is made clear in figure~\ref{} where the same digitization represents two quite distinct shapes. Of course, one may refine the grid to such a precision to have an almost exact sampling, but this is highly undesirable due to memory and running time complexity, in particular for image processing tasks. 
+The result above is not valid for digital domains. We do not have an exact sampling, instead, samples are constrained to lie in the digital grid. That condition creates ambiguity, which is clearly illustrated in figure~\ref{fig:digitization-ambiguity} where the same digitization represents two quite distinct shapes. Of course, one may refine the grid to such a precision to have an almost exact sampling, but this is highly undesirable due to memory and running time complexity, in particular for image processing tasks. 
 
 Ideally, we would have a criteria to evaluate the quality and speed of convergence according to the resolution of the digital grid. Such criteria is the \emph{multgrid convergence property}. Let $X$ be an Euclidean shape and $D(X,h)$ a possible digitization (for example, using Gauss digitization).
-
-
+%
+%
+\begin{figure}
+\center
+\includegraphics[scale=1]{figures/ambiguity.png}
+\caption{\textbf{Digitization ambiguity.} The middle image (in green) is a valid digitization for both the left and right continuous shapes (in blue).}
+\label{fig:digitization-ambiguity}
+\end{figure}
+%
+%
 \begin{definition}[Multigrid convergence for local geometric quantites]
   A local discrete geometric estimator $\hat{z}$ of some geometric
   quantity $z$ is (uniformly) multigrid convergent for some family $\mathbb{X}$ of Euclidean shapes if
@@ -93,22 +103,26 @@ Ideally, we would have a criteria to evaluate the quality and speed of convergen
 For a global geometric quantity (e.g. perimeter, area, volume), the definition remains the same, except that the mapping
 between $\partial X$ and $\partial_h X$ is no longer necessary.
 
-Recently, multigrid convergent for curvature and perimeter estimators have been proved. We propose to use such estimators to estimate the elastica energy of digital shapes
-
+Recently, estimator for curvature and perimeter estimators have been proved multigrid convergent. We propose to use such estimators to estimate the elastica energy of digital shapes
+%
+%
 \begin{align}
 	\hat{E}_r\big( D(X,h),h,\alpha,\beta) \big) = \sum_{\vec{e} \in \partial D(X,h)}{ \hat{s}(\vec{e})\left(\; \alpha + \beta \hat{\kappa}_{r}^2(D(X,h),\dot{\vec{e}},h) \; \right)}.
 	\label{eq:digital-energy}
 \end{align}
-
-The function $\hat{s}$ denotes the elementary length estimator, i.e., a measure of length is assigned to each edge $\vec{e}$ of curve $\partial D(X,h)$. The elementary length is computed using the \emph{$\lambda$-MST} estimator of tangent~\cite{lachaud07tangent,lachaud06hdr}, proven multigrid convergent for the family of convex shapes that are twice differentiable and have continuous curvature. The speed of convergence is $O(h^{1/3})$.
+%
+%
+The function $\hat{s}$ denotes the elementary length estimator, i.e., a measure of length is assigned to each edge $\vec{e}$ of digital curve $\partial D(X,h)$. The elementary length is computed using the \emph{$\lambda$-MST} estimator of tangent~\cite{lachaud07tangent,lachaud06hdr}, proven multigrid convergent for the family of convex shapes that are twice differentiable and have continuous curvature. The speed of convergence is $O(h^{1/3})$.
 
 The function $\hat{\kappa} _r$ denotes an estimator of curvature. We use the integral \emph{invariant estimator}~\cite{coeurjolly13integral}, proven multigrid convergent for the family of compact shapes in the plane with $3$-smooth contour. Its convergence speed is of the order of $O(h^{\frac{1}{3}})$ for radii chosen as $r=\Theta (h^{\frac{1}{3}})$~\cite{lachaud2017robust}. We present its definition since it is in the core of the proposed model in this paper.
-
+%
+%
 \begin{align}
   \tilde{\kappa}_r(D(X,h),P,h) \coloneqq \frac{3}{r^3}\left( \frac{\pi r^2}{2} - \widehat{\text{Area}}\big( D(B_r(P),h) \cap D(X,h),h\big) \right),
   \label{eq:curvature_approximation}
 \end{align}
-
+%
+%
 where the estimation of area for some digital set $S$ can be defined as $\widehat{\text{Area}}(S,h) \coloneqq h^2\text{Card}\left( S \right).$ 
 
 Equation~\ref{eq:curvature_approximation} estimates the curvature as a scaling factor of the difference between the intersection area of a disk of radius $r$ centered at point $P$ of the contour with half of the disk area. Therefore, we can say that the \emph{squared} curvature is lower at points in which the balance between intersected and non intersected points is closer to zero.
@@ -117,8 +131,17 @@ In the following, we simply write $S$ to specify a digital shape and we omit the
 
 
 \section{Balance coeficient and curve-shortening flow}
-
-We are going to extend equation~\ref{eq:curvature_approximation} to the whole digital domain. In fact, since we are more interested in the  balance of intersected and non-intersected points, we slightly modify equation~\ref{eq:curvature_approximation} and give it a distinct name. We define the \emph{balance coefficient} as
+%
+%
+\begin{figure}
+ \center
+ \includegraphics[scale=0.32]{figures/zero-level-set/balance-coefficient-zero-level-set.png}
+ \caption{\textbf{Balance coefficient zero-level set}. Evolving the initial contour (colored in white) to the zero-level set of the balance coefficient (colored in magenta) is closeley related with the curve-shortening flow.}
+ \label{fig:balance-coefficient-zero-level-set}
+ \end{figure}
+%
+%
+We are going to extend equation~\ref{eq:curvature_approximation} to the whole digital domain. In fact, since we are interested in the  balance of intersected and non-intersected points, we slightly modify equation~\ref{eq:curvature_approximation} and give it a distinct name. We define the \emph{balance coefficient} as
 %
 %
 \begin{align*}
@@ -126,15 +149,17 @@ We are going to extend equation~\ref{eq:curvature_approximation} to the whole di
 \end{align*}
 %
 %
- The balance coefficient at $P$ gives us as an \emph{approximation} of the new squared curvature value were the shape perturbed a little around $P$. Therefore, it is reasonable to evolve the shape towards the zero-level set of the balance coefficient function (see figure~\ref{fig:balance-coefficient-zero-level-set}). In fact, the zero-level set of the balance coefficient is closely related with the curve-shortening flow (CSF is the one-dimensional case of the mean curvature flow) by Proposition~\ref{prop:balance-coefficient-curve-shortening-flow}.
- %
- %
+ The balance coefficient at $P$ gives us as an \emph{approximation} of the new squared curvature value were the shape perturbed a little around $P$. Therefore, it is reasonable to evolve the shape towards the zero-level set of the balance coefficient function (see figure~\ref{fig:balance-coefficient-zero-level-set}). 
+ 
+ The zero-level set of the balance coefficient is closely related with the curve-shortening flow (CSF is the one-dimensional case of the mean curvature flow).
+%
+%
 \begin{figure}
- \center
- \includegraphics[scale=0.32]{figures/zero-level-set/balance-coefficient-zero-level-set.png}
- \caption{\textbf{Balance coefficient zero-level set}. We notice that evolving the initial contour (colored in white) to the zero-level set of the balance coefficient (colored in magenta) regularizes the shape with respect to the squared curvature.}
- \label{fig:balance-coefficient-zero-level-set}
- \end{figure}
+\center
+\includegraphics[scale=0.75]{figures/analysis-error/geometry-argument.png}
+\caption{\textbf{Balance coefficient and curve-shortening flow (CSF).} We approximate the contour $\partial X$ at $P$ by a parabola. Next, we compute the point $P'$ such that the balance coefficient equals to zero. Our approximation produces an error $\Delta$, highlighted in red, that is of order $O(r^4)$. }
+\label{fig:geometric-argument}
+\end{figure}
 %
 %
 \begin{proposition}
@@ -148,10 +173,10 @@ We are going to extend equation~\ref{eq:curvature_approximation} to the whole di
 	\label{prop:balance-coefficient-curve-shortening-flow}
 \end{proposition}
 \begin{proof}
-	Let $P$ a point in the contour of $X$ where we initially center the estimation disk. We approximate the contour around $P$ by the parabola $\frac{\kappa}{2}x^2$, where $\kappa$ is the curvature of $\partial X$ at $P$. We assume $r \ll 1/\kappa$. The goal is to find the balance displacement $\varepsilon$ of the center $P$ such that the intersection of the disk with $X$ equals half of the disk area. Let us say that
+	Let $P$ a point in the contour of $X$ where we initially center the estimation disk. We approximate the contour around $P$ by the parabola $\frac{\kappa}{2}x^2$, where $\kappa$ is the curvature of $\partial X$ at $P$. We assume $r \ll 1/\kappa$. The goal is to find the displacement $\varepsilon$ of center $P$ such that the intersection of the disk with $X$ equals half of the disk area. Let us say that
 %
 \begin{align*}
-	Area( B_{r}(P') \cap X ) &= \frac{\pi \rho ^2}{2} - A''A'B'B'' + A'FB'P. 
+	Area( B_{r}(P') \cap X ) &= \frac{\pi r ^2}{2} - A''A'B'B'' + A'FB'P. 
 \end{align*}
 %
 Then it suffices to find $\varepsilon$ such that $A'FB'P =  A''A'B'B''$. Expanding the latter,
@@ -179,24 +204,16 @@ We observe that $x_A = x_{A'} + O(r^2)$. Therefore,
 Finally, substituing~\eqref{eq:coordinate-y-A} in~\eqref{eq:error-approx} we obtain
 %
 \begin{align*}
-	\Delta &= \left( y_{A'} - \frac{\kappa}{2}\left( x_{A'} \pm \alpha r^2\right)^2\right) \\ 
+	\Delta &= \left( y_{A'} - \frac{\kappa}{2}\left( x_{A'} \pm \alpha r^2\right)^2\right) 2r \\ 
 	&= \left( \pm \kappa \alpha r^3 - \frac{\kappa}{2}\alpha^2r^4 \right)2r\\
 	&= O(r^4).
 \end{align*}
 \end{proof}
 %
 %
-\begin{figure}
-\center
-\includegraphics[scale=0.75]{figures/analysis-error/geometry-argument.png}
-\caption{\textbf{Balance coefficient and curve-shortening flow (CSF).} We approximate the contour $\partial X$ at $P$ by a parabola. Next, we compute the point $P'$ such that the balance coefficient equals to zero. Our approximation produces an error $\Delta$, highlighted in red, that is of order $O(r^4)$. }
-\label{fig:geometric-argument}
-\end{figure}
-%
-%
 The CSF has many interisting properties~\cite{huisken84flow,gage86heat,ecker2008heat}. Among those, the CSF is the continuous deformation that decreases the perimeter of a single closed curve at the fastest speed; and it also preserves convexity. In particular, the CSF eventually collaspses the initial curve to a single point.
 
-There are interesting links between the CSF and a variant of the heat equation defined for the indication function of a set~\cite{merriman1992diffusion}. In this same work, the authors informally give a geometric interpretation for the CSF that is equivalent to our zero-level set of the balance coefficient. A technique that emerged from the interpretation of CSF as a heat equation is the so called threshold dynamics~\cite{esedoglu2005threshold,esedoglu2008threshold}. However, the use of threshold dynamics for image processing tasks is not that easy due to the difficulty to inject a data fidelity term. That is not the case in our approach.
+There are interesting links between the CSF and a variant of the heat equation defined for the indication function of a set~\cite{merriman1992diffusion}. In this same work, the authors informally give a geometric interpretation for the CSF that is equivalent to our zero-level set of the balance coefficient. A technique that emerged from the interpretation of CSF as a heat equation is the so called threshold dynamics~\cite{esedoglu2005threshold,esedoglu2008threshold}. However, the use of threshold dynamics for image processing tasks is not immediate due to the difficulty to inject a data fidelity term. That is not the case in our approach.
 %
 %
 \section{Elastica minimization of digital shapes via graph cuts}
@@ -261,7 +278,7 @@ The set $\mathcal{E}_{st}$ comprises all the edges having the source as their st
 \hline
 \textbf{edge} $e$ & $\mathbf{c(e)}$ & \textbf{for}\\
 \hline
-$\{v_P, v_Q\}$ & $ u_r(S,P) + u_r(S,Q) $ & $\{v_P,v_Q\} \in \mathcal{E}_{u}$\\
+$\{v_P, v_Q\}$ & $ \frac{1}{2}\left( u_r(S,P) + u_r(S,Q) \right) $ & $\{v_P,v_Q\} \in \mathcal{E}_{u}$\\
 \hline
 $\{v_P, s\}$ & $M$ & $v_P \in \mathcal{V}_{s}$ \\
 \hline
@@ -389,7 +406,7 @@ The Graph Flow Algorithm (GFA)~\ref{alg:graphflow-algorithm} summarizes the proc
 
 \includegraphics[scale=0.22]{figures/shape-flow/plots/bars.png}
 \end{minipage}
-\caption{\textbf{GFA experiments}. In the left, the evolution of various shapes given by the GraphFlow model $(h=1/8,r=2)$. The red and blue contours highlight initial and final contour. The green contour is the optimum solution. The top right graph describes the reduction in elastica energy. The dotted line marks the optimum energy value (a disk of radius $8$). The bottom right graph points out the importance of a right choice of the balance coefficient radius (the optimum solution in this case is a disk of radius 32).}
+\caption{\textbf{GFA experiments}. In the left, the evolution of various shapes given by the GFA $(h=1/8,r=2)$. The red and blue contours highlight initial and final contours. The green contour is the optimum solution. The top right graph describes the reduction in elastica energy. The dotted line marks the optimum energy value (a disk of radius $8$). The bottom right graph points out the importance of a right choice of the balance coefficient radius (the optimum solution in this case is a disk of radius 32).}
 \label{fig:graph-flow-experiments}
 \end{figure}
 
@@ -426,7 +443,7 @@ Flower & 119789 & 150 & 132.8s & 0.9s \\
 Bean & 100504 & 300 & 148.4s & 0.5s \\
 \hline
 \end{tabular}
-\caption{\textbf{Running time of GFA}. The GFA achieves running times lower than one second per iteration when the shape neighbors are evaluated separately. There still room for other parallelization and these running times can be further improved.}
+\caption{\textbf{Running time of GFA}. The GFA achieves running times lower than one second per iteration when the shape neighbors are evaluated separately (executed in a Intel Corei7 $1.8GHz$ processor with $16gb$ of ram). There still room for other parallelization and these running times can be further improved.}
 \label{tab:summary-graph-flow-running-time} 
 \end{figure}
 %
@@ -493,14 +510,14 @@ M &= \max_{e \in \mathcal{E} }{ c(e) }.
 %
 %
 
-To handle bias due to the magnitude difference between data and geometry the terms, we normalize them in groups. Regional and boundary terms are normalized to the interval $[0,1]$ with respect to their values. The same is done, separately, for the curvature term.
+To handle bias due to the magnitude difference between data and geometry terms, we normalize them in groups. Regional and boundary terms $\psi,\phi$ are normalized to the interval $[0,1]$ with respect to their values. The same is done, separately, for the curvature term.
 
 To minimize parameter dependence from the image input, we also apply a parameter normalization. Given parameters $\alpha, \gamma_b, \gamma_r$ and an initial segmentation $I_0$, we apply the following normalization factors.
 %
 \begin{align*}
 	\alpha & = \alpha \times 4\pi^2/Per^2 \\
-	\gamma_r & = \gamma_r \times \hat{E}(I_0)/Data(I_0) \\	
-	\gamma_b & = \gamma_b \times \hat{E}(I_0)/Data(I_0)		
+	\gamma_r & = \gamma_r \times \hat{E}(I_0)/data(I_0) \\	
+	\gamma_b & = \gamma_b \times \hat{E}(I_0)/data(I_0)		
 \end{align*}
 
 That means that by setting $\alpha=\gamma_r=\gamma_b=1$, the shape of minimum elastica is the disk of perimeter $Per$ (assuming no data term); and that $data(I_0)=\hat{E}(I_0)$.
@@ -688,9 +705,9 @@ The algorithm can evolve the contours in favor of contour completion or breaking
 
 We presented a discrete shape evolution algorithm driven by the elastica energy. The GFA is built on recent results on the multigrid convergence of curvature and tangent estimators and its main step consists in to compute the minimum cut of candidate graphs. A candidate graph is constructed for each element in a neighborhood of shapes of the current digital set and its minimum cut gives a candidate shape. At each iteration, the GFA selects the candidate shape with lowest elastica energy. We have shown that our model can escape local minimum in the shape evolution problem by using a very simple neighborhood scheme of shapes. Indeed, our experiments converged to the shape of minimum elastica energy. 
 
-Next, we presented some applications in image processing tasks. The GFA delivery contours with lower inflection points, smoother tangent profiles and lower elastica energy than those produced from grabcut. That is done while keeping high values of precision and recall with respect the Coco annotated images used in our experiments. Finally, we presented an unsupervised segmentation model based on the classical Chan-Vese data term, which demonstrate the flexibility of the model. 
+Next, we presented some applications in image processing tasks. The GFA delivery contours with fewer inflection points, smoother tangent profiles and lower elastica energy than those produced from grabcut. That is done while keeping high values of precision and recall with respect to the Coco annotated images used in our experiments. Finally, we presented an unsupervised segmentation model based on the classical Chan-Vese data term, which demonstrate the flexibility of the model. 
 
-One of the strengths of our model is that the curvature estimation is based on digital data solely and it is not attached to a curve model, which may restrict the curve evolution and pose problems regarding its update. Secondly, the GFA is highly parallelizable. We believe that a GPU implementation will greatly reduce the running times of our algorithm for all presented applications. The bottleneck is in the minimum cut computation, as it is difficult to come up with a parallel implementation, but since the latter is computed along a thin band of the shape contour, we believe that this is a minor problem.
+One of the strengths of our model is that the curvature estimation is based on digital data solely and it is not attached to a curve model, which may restrict the curve evolution and pose technical difficults regarding its update. Secondly, the GFA is highly parallelizable. We believe that a GPU implementation will greatly reduce the running times of our algorithm for all presented applications. The bottleneck is in the minimum cut computation, as it is difficult to come up with a parallel implementation, but since the latter is computed along a thin band of the shape contour, we believe that this is a minor problem.
 
 There are some possible paths for future work. Firstly, the graph construction part of the algorithm can be optimized. In the current version, the graph is constructed at every iteration, but most of the time, the graph structure changes very slightly and this can be used to optimize its construction. Secondly, we use a very rough neighborhood of shapes in the supervised segmentation problem, i.e., based on dilations and erosions of the initial shape. The contour completion property of the model can be better exploited by employing different neighborhoods. For example, we could alongate the initial shapes in regions of high curvature to obtain a stretched neighborhood of shapes. This could be particularly useful in the segmentation of thin and elongated objects such as blood vessels.
 
