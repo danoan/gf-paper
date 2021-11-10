@@ -1,0 +1,50 @@
+\documentclass{paper}
+\usepackage{amsmath}
+\usepackage{tikz}
+
+\begin{document}
+
+We are looking for the shift $\epsilon$ of the ball such that
+$A_\epsilon := \mathcal{B}_\rho( (0,\epsilon) ) \cap X$ has an area of exactly
+half the area of $\mathcal{B}_\rho(\cdot)$. Since we are assuming that the
+boundary of $X$ at point $P$ has locally a curvature of $k$, then
+$\rho \ll 1/k$ implies that the boundary is well approximated by a
+parabola $f(x):=\frac{1}{2}kx^2$ in the frame centered on $P$ and oriented
+toward inside $X$ in the direction of the normal vector.
+
+It follows that the optimal value $\epsilon$ is non negative and
+obviously may not exceed $\frac{1}{2}k\rho^2$. Note that $\epsilon <
+\frac{1}{4}k\rho^2$ is also quite natural.
+
+Let $A''=(-\rho,\epsilon)$, $A'=(-\rho,f(-\rho)+\epsilon)$, and let
+$A$ be the intersection of the parabola $f$ with the disk
+$\mathcal{B}_\rho( (0,\epsilon) )$.
+
+Let us bound $|x_A -x_{A''}|$. Since $0 \le \epsilon \le
+\frac{1}{2}k\rho^2$, it is easily seen that $|x_A -x_{A''}|$ is
+maximal when $\epsilon=0$.
+Let $A^3$ be the intersection of the horizontal straight line coming from $A'$ with the disk $\mathcal{B}_\rho((0,0))$.
+
+Obviously, $|x_A -x_{A''}| \le |x_{A^3} -x_{A''}|$. 
+Let $d:=y_{A'}-y_{A''}$. Since $A^3$ belongs to the disk, we have
+$|x_{A^3} -x_{A''}| = \rho-\sqrt{\rho^2 - d^2} \approx \frac{1}{2\rho}{d^2}$.
+For $\epsilon=0$, $d=\frac{1}{2}k\rho^2$.
+Putting all together,
+\begin{align*}
+  |x_A -x_{A''}| \le |x_{A^3} -x_{A''}| 
+  \approx \frac{1}{2\rho}{\left(\frac{1}{2}k\rho^2\right)^2}
+  = \frac{1}{8}k^2 \rho^3.
+\end{align*}
+
+
+
+\def\Kappa{0.2}
+\def\Rho{4.5}
+\def\Eps{0.0}
+\def\xA{-4.15}
+\input{./proof.tikz}
+\def\Eps{0.25*\Kappa*\Rho*\Rho}
+\def\xA{-4.4}
+\raisebox{5mm}{\input{./proof.tikz}}
+
+\end{document}

@@ -1,0 +1,36 @@
+\tikzstyle{parabola}=[draw=black,very thick]
+\tikzstyle{rball}=[draw=blue,thick,fill=blue!20!white]
+\tikzstyle{inter}=[draw=red,thick,fill=red]
+\begin{tikzpicture}[scale=0.5]
+  \coordinate (P) at (0,0);
+  \coordinate (Pp) at (0,\Eps);
+  \coordinate (App) at (-\Rho,\Eps);
+  \coordinate (Ap) at (-\Rho,0.5*\Kappa*\Rho*\Rho);
+  \coordinate (A) at (\xA,0.5*\Kappa*\xA*\xA);
+  \coordinate (Bpp) at (\Rho,\Eps);
+  \coordinate (Bp) at (\Rho,0.5*\Kappa*\Rho*\Rho);
+  \coordinate (B) at (-\xA,0.5*\Kappa*\xA*\xA);
+  \draw[rball] (Pp) circle (\Rho);
+  \draw[rball] (Pp) circle (0.1);
+  \draw (Pp) node[anchor=south west] {$P'(0,\epsilon)$}; 
+  \draw[parabola] (P) circle (0.05);
+  \draw (P) node[anchor=north east] {$P(0,0)$}; 
+  \draw[domain=-5:5, smooth, variable=\x, parabola] plot ({\x}, {0.5*\Kappa*\x*\x});
+  \draw[->] (-5, 0) -- (5, 0) node[below] {$x$};
+  \draw[->] (0, -5+\Eps) -- (0, 5+\Eps) node[above] {$y$};
+  \draw[inter] (App) circle (0.05);
+  \draw (App) node[anchor=east] {$A''$}; 
+  \draw[inter] (Ap) circle (0.05);
+  \draw (Ap) node[anchor=east] {$A'$}; 
+  \draw[inter] (A) circle (0.05);
+  \draw (A) node[anchor=west] {$A$}; 
+  \draw[inter] (Bpp) circle (0.05);
+  \draw (Bpp) node[anchor=west] {$B''$}; 
+  \draw[inter] (Bp) circle (0.05);
+  \draw (Bp) node[anchor=west] {$B'$}; 
+  \draw[inter] (B) circle (0.05);
+  \draw (B) node[anchor=east] {$B$};
+  \draw[red,dashed,thick] (App) -- (Bpp);
+  \draw[red,dotted,thick] (App) -- (Ap);
+  \draw[red,dotted,thick] (Bpp) -- (Bp);
+\end{tikzpicture}
