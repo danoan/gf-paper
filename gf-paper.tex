@@ -72,9 +72,14 @@ Let $C:[0,t] \rightarrow \mathbb{R}^2$ a parameterized plane curve with continuo
 
 What about if we do not know the curve equations, but instead, we have finite set of points that is an \emph{exact sampling} $C$ ? That is, a finite sequence $P$ is an {\em exact sampling} of $C$ whenever each element of $P$ is an element of $C$ and the order of the sequence corresponds to the ordering of points $P$ when moving along $C$. In this case, we can approach the curve by a sequence of straight lines joining consecutive points of the sequence and estimate the curvature by computing the angle defect between consecutive lines. The estimation is convergent (in the epi-convergent sense) as long as the sampling points are sufficiently numerous~\cite{bruckstein01discrete,bruckstein01convergence}.
 
-The result above is not valid for digital domains. We do not have an exact sampling, instead, samples are constrained to lie in the digital grid. That condition creates ambiguity, which is clearly illustrated in figure~\ref{fig:digitization-ambiguity} where the same digitization represents two quite distinct shapes. Of course, one may refine the grid to such a precision to have an almost exact sampling, but this is highly undesirable due to memory and running time complexity, in particular for image processing tasks. 
+The result above is not valid for digital domains. We do not have an exact sampling, instead, samples are constrained to lie in the digital grid. That condition creates ambiguities, which are clearly illustrated in figure~\ref{fig:digitization-ambiguity} where the same digitization represents two quite distinct shapes. Of course, one may refine the grid to such a precision that is close to an exact sampling, but this is highly undesirable due to memory and running time complexity, in particular for image processing tasks. Furthermore, the polygonal contour is still locally very jagged, with only 4 possible directions.
 
-Ideally, we would have a criteria to evaluate the quality and speed of convergence according to the resolution of the digital grid. Such criteria is the \emph{multgrid convergence property}. Let $X$ be an Euclidean shape and $D(X,h)$ a possible digitization (for example, using Gauss digitization).
+Ideally, we should have a criteria to evaluate the quality and speed
+of convergence of geometric estimators according to the resolution of
+the digital grid. Such criteria is the \emph{multigrid convergence
+property} (e.g., see \cite{klette2004digital}). Let $X$ be an Euclidean
+shape and $D(X,h)$ a possible digitization (for example, using Gauss
+digitization, that is $D(X,h) = X \cap h\mathbb{Z}^2$).
 %
 %
 \begin{figure}
