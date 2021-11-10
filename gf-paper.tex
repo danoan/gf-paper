@@ -33,9 +33,9 @@
 
 A digital set $S$ is referred as any collection of points that can be positioned in a regular grid. In the bidimensional case, it is a subset of the integer plane, i.e., $S \subset \Omega \subset \mathbb{Z}^2$, where $\Omega$ is a compact set. One of the most prevalent examples of digital sets and also an important source of applications are digital images.
 
-Common tasks in digital images are recognizing shapes or objects (segmentation), removing noise (denoising), interpolate data (inpainting) and compression. An important class of models consists in optimize a crafted functional energy adapted to the problem to be solved. In this class, the use of geometric priors as perimeter, area and curvature are commonly employed.
+Common tasks in digital images are recognizing shapes or objects (segmentation), removing noise (denoising), interpolate data (inpainting) and compression. An important class of models consists in optimizing a crafted functional energy adapted to the problem to be solved. In this class, the use of geometric priors as perimeter, area and curvature are commonly employed.
 
-These models are built on classic mathematical theory, in which continuity is assumed. A common issue with most of models using geometric priors lies in their discretization step, where the digital nature of the images are often ignored. This results in poor estimations of geometric quantities, and that is particularly important for high-order measures as curvature.
+These models are built on classic mathematical theory, in which continuity is assumed. A common issue with most models using geometric priors lies in their discretization step, where the digital nature of the images are often ignored. This results in poor estimations of geometric quantities, and that is particularly important for high-order measures as curvature.
 
 An important and challenging energy to optimize is the elastica. Previous works reported its benefits in inpainting~\cite{masnou98inpainting,ballester01filljoint,chan02elasticainpainting} and segmentation~\cite{goldluecke11totalcurvature,zhu2013image,nieuwenhuis14efficient, antunes20}. In particular, the squared curvature penalization favors the so called \emph{completion property}, which favors the segmentation of connected components. The completion property is particularly useful in the segmentation of thin and elongated objects as blood vessels. In continuous terms, the elastica is defined for a contour $C$ as
 %
@@ -43,7 +43,7 @@ An important and challenging energy to optimize is the elastica. Previous works 
 	E(C) &= \int_{C}{\alpha + \beta \kappa^2 ds}.
 \end{align*}
 %
-In this paper, we propose a discrete model to minimize the elastica energy using \emph{multigrid convergent estimators}. These estimators are conceived for digital sets and give us guarantees of convergence with respect the image grid resolution. We show that our model evolve digital shapes to the shape of optimum elastica energy, escaping local minimum. Moreover, we show how to use our model in image processing tasks and give several illustrations. Finally, the model is parallelizable and present competitive running times that we strongly believe can be improved in a GPU setting.
+In this paper, we propose a discrete model to minimize the elastica energy using \emph{multigrid convergent estimators}. These estimators are conceived for digital sets and give us guarantees of convergence with respect to finer and finer image grid resolutions. We show that our model evolves digital shapes to the shape of optimum elastica energy, escaping local minimum. Moreover, we show how to use our model in image processing tasks and give several illustrations. Finally, the model is parallelizable and present competitive running times with respect to state of the art methods. We also strongly believe that these running times could be improved in a GPU setting.
 %
 %
 \section{Related work}
@@ -62,15 +62,15 @@ In this paper, we propose a discrete model to minimize the elastica energy using
 \end{itemize}}
 %
 %
-\section{Geometric properties estimation on digital data}
+\section{Estimation of geometric quantities on digital data}
 
 Let $C:[0,t] \rightarrow \mathbb{R}^2$ a parameterized plane curve with continuous first and second derivatives. In this case, we can easily compute the curvature at some point $P(t) = \big( x(t),y(t) \big) \in C$ by using the formula
 
 \begin{align*}
-\kappa (t) &= \frac{y'x'' -x'y''}{x'^2 + y'^2}^{3/2}.
+\kappa (t) &= \frac{y'x'' -x'y''}{(x'^2 + y'^2)^{3/2}}.
 \end{align*}
 
-What about if we do not know the curve equations, but instead, we have finite set of points that is an \emph{exact sampling} $C$? That is, if $P$ in the exact sampling set, then $P \in C$. In this case, we can represent the curve by a sequence of lines and estimate the curvature by computing the angle defect between consecutive lines. The estimation is convergent (in the epi-convergent sense) as long as the sampling points are sufficiently numerous~\cite{bruckstein01discrete,bruckstein01convergence}.
+What about if we do not know the curve equations, but instead, we have finite set of points that is an \emph{exact sampling} $C$ ? That is, a finite sequence $P$ is an {\em exact sampling} of $C$ whenever each element of $P$ is an element of $C$ and the order of the sequence corresponds to the ordering of points $P$ when moving along $C$. In this case, we can approach the curve by a sequence of straight lines joining consecutive points of the sequence and estimate the curvature by computing the angle defect between consecutive lines. The estimation is convergent (in the epi-convergent sense) as long as the sampling points are sufficiently numerous~\cite{bruckstein01discrete,bruckstein01convergence}.
 
 The result above is not valid for digital domains. We do not have an exact sampling, instead, samples are constrained to lie in the digital grid. That condition creates ambiguity, which is clearly illustrated in figure~\ref{fig:digitization-ambiguity} where the same digitization represents two quite distinct shapes. Of course, one may refine the grid to such a precision to have an almost exact sampling, but this is highly undesirable due to memory and running time complexity, in particular for image processing tasks. 
 
