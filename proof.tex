@@ -36,7 +36,30 @@ Putting all together,
   = \frac{1}{8}k^2 \rho^3.
 \end{align*}
 
+{\color{blue} (Finalement, pas très utile de borner $|x_A -x_{A''}|$. C'est plus utile d'utiliser $d=|y_{A'}-y_{A''}|$ et de voir facilement que $d\le\frac{1}{2}k\rho^2$, et de borner l'erreur $\Delta$ directement, cf ci-dessous.)}
 
+Let us compute an upper bound on the area error $\Delta$.  It is clear
+that the error $\Delta/2$ is smaller than the region $A''A'A^3$ and the
+arc going from $A^3$ to $A''$.
+\begin{align*}
+\mathrm{Area}(A''A'A^3) & = \int_0^d \rho-\sqrt{\rho^2-x^2} dx \\
+& = -\frac{\rho^2}{2}\sin^{-1}(\frac{d}{\rho}) + d\rho - \frac{d}{2}\sqrt{\rho^2-d^2}\\
+  & \approx \frac{d^3}{6\rho}
+\end{align*}
+In general, $d$ is bounded by $\frac{1}{2}k\rho^2$, hence it follows:
+\begin{align*}
+  \Delta \le 2\frac{d^3}{6\rho} \le \frac{1}{24} k^3 \rho^5
+\end{align*}
+Going back to finding the correct $\epsilon$, we have:
+\begin{align*}
+  A_\epsilon & = \frac{\pi}{2} \rho^2 \\
+  \Leftrightarrow  \quad
+  2 \rho \epsilon & = \int_{-\rho}^{\rho} \frac{1}{2}kx^2 dx \pm \Delta \\
+  \Leftrightarrow  \quad
+  \epsilon & =\frac{1}{6}k \rho^2 \pm \frac{1}{48} k^3 \rho^4 
+\end{align*}
+The second term is negligible wrt the first term for finer and finer
+digitizations ($k\rho$ and $\rho$ tends to zero).
 
 \def\Kappa{0.2}
 \def\Rho{4.5}
