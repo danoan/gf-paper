@@ -146,90 +146,121 @@ In the following, we simply write $S$ to specify a digital shape and we omit the
  \end{figure}
 %
 %
-We are going to extend equation~\ref{eq:curvature_approximation} to the whole digital domain. In fact, since we are interested in the  balance of intersected and non-intersected points, we slightly modify equation~\ref{eq:curvature_approximation} and give it a distinct name. We define the \emph{balance coefficient} as
+We are going to extend equation~\ref{eq:curvature_approximation} to the continuous domain. We call this continuous extended version of equation~\ref{eq:curvature_approximation} of \emph{balance coefficient}
 %
 %
 \begin{align*}
-	u_r(S,P) &= \left( \frac{\pi r^2}{2} - \widehat{\text{Area}}(D(B_r(P)) \cap S) \right).
+	u_r(X,P) &= \left( \frac{\pi r^2}{2} - \text{Area}(B_r(P) \cap X) \right).
 \end{align*}
 %
 %
- For points closer to the contour of $S$, the balance coefficient at $P$ gives us as an \emph{approximation} of the new curvature value were the shape perturbed a little around $P$. Therefore, it is reasonable to evolve the shape towards the zero-level set of the balance coefficient function (see figure~\ref{fig:balance-coefficient-zero-level-set}). 
+ We interpret the continuous domain as a digitization with a infinitely small grid step. Therefore, for points closer to the contour of $S$, the balance coefficient at $P$ gives us as an \emph{approximation} of the new curvature value were the shape perturbed a little around $P$. Our strategy to decrease the elastica energy is to evolve the shape towards the zero-level set of the balance coefficient function (see figure~\ref{fig:balance-coefficient-zero-level-set}). 
 
 \begin{definition}[Balance coefficient flow]
-	Let $X \subset \Omega$ an Euclidean shape and $r$ the radius of the estimation disk used to compute the balance coefficient. We define the \emph{balance coefficient flow} on the artificial time parameter $t$ as
+	Let $X \subset \Omega$ an Euclidean shape and $r$ the radius of the estimation disk used to compute the balance coefficient. We define the \emph{balance coefficient flow} on the discrete time parameter $\tau$ as
+%
 %
 \begin{align*}
 	X^{(0)} &= X, \\
-	X^{(t+1)} &= \left\{ P \in \Omega \: | \: u_r(X^{(t)},P) \leq 0 \right\}.
+	X^{(\tau+1)} &= \left\{ P \in \Omega \: | \: u_r(X^{(\tau)},P) \leq 0 \right\}.
 \end{align*}
-
+%
+%
 \end{definition}
 %
- The balance coefficient flow is closely related with the curve-shortening flow (CSF is the one-dimensional case of the mean curvature flow).
+%
+ One iteration of the balance coefficient flow applied on shape $X$ is equivalent to find the shape $X'$ such that for any disk of radius $r$ centered at any point of the contour of $X'$, the intersection of the disk with the shape $X$ equals $\pi r^2/2$. This interpretation is illustrated in figure~\ref{fig:geometric-interpretation}.
+%
+% 
+\begin{figure}
+\center
+\includegraphics[scale=0.25]{figures/zero-level-set/geometric-interpretation.png}
+\caption{\textbf{Geometric interpretation of the balance coefficient flow.} A single iteration of the balance coefficient flow evolves the shape $X$ to the shape $X'$ such that any disk of radius $r$ centered at any point of the contour of $X'$ intersects  an area of $\pi r^2/2$ of initial shape $X$.}
+\label{fig:geometric-interpretation}
+\end{figure}
+% 
+%
+ Additionally, the balance coefficient flow is closely related with the curve-shortening flow (CSF is the one-dimensional case of the mean curvature flow).
 %
 %
 \begin{figure}
 \center
 \includegraphics[scale=0.75]{figures/analysis-error/geometry-argument.png}
-\caption{\textbf{Balance coefficient and curve-shortening flow (CSF).} We approximate the contour $\partial X$ at $P$ by a parabola. Next, we compute the point $P'$ such that the balance coefficient equals to zero. Our approximation produces an error $\Delta$, highlighted in red, that is of order $O(r^2)$. }
+\caption{\textbf{Balance coefficient and curve-shortening flow (CSF).} We approximate the contour $\partial X$ at $P$ by a parabola. Next, we compute the point $P'$ such that the balance coefficient equals to zero. Our approximation produces an error $\Delta$, highlighted in red, that is of order $O(r^5)$. }
 \label{fig:geometric-argument}
 \end{figure}
 %
 %
 \begin{proposition}
-	Let $X$ an Euclidean shape that we evolve according to the balance coefficient flow using $r$ as the radius of the estimation disk. The countour of $X$ evolves according to
+	Let $X$ an Euclidean shape such that the contour of $X$, denoted $\partial X$, is twice differentiable and parameterizable by arc length. If we evolve $X$ according to the balance coefficient flow using $r$ as the radius of the estimation disk, the contour of $X$ evolves according to
 	%
 	\begin{align*}
-		C(s,t) &= \partial X^{(t)} \\
-		&= \frac{1}{6} \frac{\partial ^2 C}{\partial s^2} r^2 + O(r^2) .
+		C(s,0) &= \partial X^{(0)} \\	
+		C(s,\tau + 1) &= \partial X^{(\tau + 1)} \\
+		&= \frac{1}{6} \frac{\partial ^2 C(\tau)}{\partial s^2} r^2 + O(r^5) .
 	\end{align*}
 	%
 	\label{prop:balance-coefficient-curve-shortening-flow}
 \end{proposition}
 \begin{proof}
-	Let $P$ a point in the contour of $X$ where we initially center the estimation disk. We approximate the contour around $P$ by the parabola $\frac{\kappa}{2}x^2$, where $\kappa$ is the curvature of $\partial X$ at $P$. We assume $r \ll 1/\kappa$. The goal is to find the displacement $\varepsilon$ of center $P$ such that the intersection of the disk with $X$ equals half of the disk area. Let us say that the point of zero balance coefficient is $P'$. Then,
+	Let $P$ a point in the contour of $X$ where we initially center the estimation disk of radius $r$. We assume that the contour of $X$ at point $P$ has locally a curvature of $\kappa$ and that $r \ll 1/\kappa$. Therefore, the contour is well approximated by the parabola $f(x) := \frac{\kappa}{2}x^2$ in the frame centered on $P$ and oriented toward inside $X$ in the direction of the normal vector. 
+	
+	 The goal is to find the displacement $\varepsilon$ of center $P$ in the normal direction such that the intersection of the disk with $X$ equals half of the disk area. Let us say that the point of zero balance coefficient is $P'$ and that $A_{\varepsilon}$ is the intersection area of the displaced disk. Then,
+%
+%
+\[
+\begin{array}{>{\displaystyle}r>{\displaystyle}r>{\displaystyle}l}
+	& A_{\varepsilon} &= \frac{\pi r ^2}{2} \\[1em] 
+	\Leftrightarrow & 2r\varepsilon &= \int_{-r}^{r}{\frac{1}{2}\kappa x^2dx} \pm \Delta \\[1em]
+	\Leftrightarrow & \varepsilon &= \frac{1}{6}\kappa r^2 \pm \frac{\Delta}{2}.
+\end{array}
+\]
+%
+%
+We proceed by computing an upper bound of the error $\Delta$. Let $A^3$ be the leftmost intersection point between the line $A'B'$ and the estimation disk. It is clear that $\Delta/2$ is smaller than the region between $A''A'A^3$ and the arc going from $A^3$ to $A''$. Let $d$ be the length of the segment $A'A''$. 
+%
 %
 \begin{align*}
-	Area( B_{r}(P') \cap X ) \approx \frac{\pi r ^2}{2} - A'A''B''B' + A'PB'F. 
+	Area(A''A'A^3) &= \int_0^d{r - \sqrt{r^2 - x^2} dx} \\
+				   &= \frac{r^2}{2}sin^{-1}\left(\frac{d}{r}\right) + dr - \frac{d}{2}\sqrt{r^2-d^2} \\
+				   &\approx \frac{d^3}{6r}.
 \end{align*}
 %
-Then it suffices to find $\varepsilon$ such that $A'PB'F =  A'A''B''B'$. Expanding the latter,
+%
+In general, $d$ is bounded by $\frac{1}{2}\kappa r^2$, hence it follows:
+%
 %
 \begin{align*}
-	\kappa r^3 - \int_{-r}^{r}{\frac{\kappa}{2}x^2 dx} &= 2r\left( \frac{\kappa}{2}r^2-\varepsilon \right) \\
-	\frac{2}{3}\kappa r ^3 &= \kappa r^3 - 2r \varepsilon \\
-	\varepsilon &= \frac{1}{6}\kappa r^2.
+	\frac{\Delta}{2} \leq \frac{d^3}{6r} \leq \frac{1}{48}\kappa^3r^5.
 \end{align*}
 %
-We proceed by computing the order of the error. Let $x_A,y_A$ the coordinates of point $A$. We estimate the error $\Delta$ as,
 %
-\begin{align}
-	\Delta &= \left( y_{A'} - y_{A} \right) \times 2r.
-	\label{eq:error-approx}
-\end{align}
+Therefore,
 %
-We observe that $x_{A} = x_{A'} + O(r)$. Therefore,
-%
-\begin{align}
-	y_{A} &= \frac{\kappa}{2}\left( x_{A'} \pm \alpha r\right)^2.
-	\label{eq:coordinate-y-A}
-\end{align}
-%
-Finally, substituing~\eqref{eq:coordinate-y-A} in~\eqref{eq:error-approx} we obtain
 %
 \begin{align*}
-	\Delta &= \left( y_{A'} - \frac{\kappa}{2}\left( x_{A'} \pm \alpha r\right)^2\right) 2r \\ 
-	&= \left( \frac{\kappa}{2}r^2 - \frac{\kappa}{2}\left( r^2 \pm 2\alpha r + \alpha^2r^2 \right) \right)2r \\
-	&= \left( \pm \kappa \alpha r - \frac{\kappa}{2}\alpha^2r^2 \right)2r\\
-	&= O(r^2).
+	\varepsilon &= \frac{1}{6}\kappa r^2 \pm \frac{1}{48}\kappa^3r^5.
 \end{align*}
+%
+%
 \end{proof}
 %
 %
+Proposition~\ref{prop:balance-coefficient-curve-shortening-flow} states that, if the radius of the estimation disk is sufficiently small, then the balance coefficient flow behaves similar to the curve-shortening flow.
+
 The CSF has many interisting properties~\cite{huisken84flow,gage86heat,ecker2008heat}. Among those, the CSF is the continuous deformation that decreases the perimeter of a single closed curve at the fastest speed; and it also preserves convexity. In particular, the CSF eventually collaspses the initial curve to a single point.
 
 There are interesting links between the CSF and a variant of the heat equation defined for the indication function of a set~\cite{merriman1992diffusion}. In this same work, the authors informally give a geometric interpretation for the CSF that is equivalent to our zero-level set of the balance coefficient. A technique that emerged from the interpretation of CSF as a heat equation is the so called threshold dynamics~\cite{esedoglu2005threshold,esedoglu2008threshold}. However, the use of threshold dynamics for image processing tasks is not immediate due to the difficulty to inject a data fidelity term. That is not the case in our approach.
+
+We are going to apply the balance coefficient flow in a discrete setting. In theory, that means that we have some limitations regarding the choice of the estimation radius $r$, the grid resolution $h$ and the real curvature value at the estimation point. In general, we need to respect
+%
+%
+\begin{align*}
+	h \ll r \ll \frac{1}{\kappa}.
+\end{align*}
+%
+%
+In practice, we are going to show that we can achieve good results without being too strict regardind the restriction above.
 %
 %
 \section{Elastica minimization of digital shapes via graph cuts}
