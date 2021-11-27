@@ -146,7 +146,7 @@ In the following, we simply write $S$ to specify a digital shape and we omit the
  \end{figure}
 %
 %
-We are going to extend equation~\ref{eq:curvature_approximation} to the continuous domain. We call this continuous extended version of equation~\ref{eq:curvature_approximation} of \emph{balance coefficient}
+Let $X$ an Euclidean shape and $r>0$. We define the \emph{balance coefficient} as
 %
 %
 \begin{align*}
@@ -154,15 +154,17 @@ We are going to extend equation~\ref{eq:curvature_approximation} to the continuo
 \end{align*}
 %
 %
- We interpret the continuous domain as a digitization with a infinitely small grid step. Therefore, for points closer to the contour of $S$, the balance coefficient at $P$ gives us as an \emph{approximation} of the new curvature value were the shape perturbed a little around $P$. Our strategy to decrease the elastica energy is to evolve the shape towards the zero-level set of the balance coefficient function (see figure~\ref{fig:balance-coefficient-zero-level-set}). 
+ We observe that the balance coefficient definition is quite similar to the integral invariant estimator of curvature in equation~\eqref{eq:curvature_approximation} (we can model the continuous domain as a digital domain with an infinitelly small grid step). However, we do not use it to estimate the curvature , but simply as an indicator of the degree of convexity of the shape.
+
+In the following, we are going to define the balance coeficient flow and we are going to show how it relates witht the curve-shortening flow (CSF), the one-dimensional version of the mean curvature flow.
 
 \begin{definition}[Balance coefficient flow]
-	Let $X \subset \Omega$ an Euclidean shape and $r$ the radius of the estimation disk used to compute the balance coefficient. We define the \emph{balance coefficient flow} on the discrete time parameter $\tau$ as
+	Let $X \subset \Omega$ an Euclidean shape and $r$ the radius of the disk used to compute the balance coefficient. We define the \emph{balance coefficient flow} on the discrete time step $t$ as
 %
 %
 \begin{align*}
 	X^{(0)} &= X, \\
-	X^{(\tau+1)} &= \left\{ P \in \Omega \: | \: u_r(X^{(\tau)},P) \leq 0 \right\}.
+	X^{(t+1)} &= \left\{ P \in \Omega \: | \: u_r(X^{(t)},P) \leq 0 \right\}.
 \end{align*}
 %
 %
@@ -175,33 +177,35 @@ We are going to extend equation~\ref{eq:curvature_approximation} to the continuo
 \begin{figure}
 \center
 \includegraphics[scale=0.25]{figures/zero-level-set/geometric-interpretation.png}
-\caption{\textbf{Geometric interpretation of the balance coefficient flow.} A single iteration of the balance coefficient flow evolves the shape $X$ to the shape $X'$ such that any disk of radius $r$ centered at any point of the contour of $X'$ intersects  an area of $\pi r^2/2$ of initial shape $X$.}
+\caption{\textbf{Geometric interpretation of the balance coefficient flow.} A single iteration of the balance coefficient flow evolves the shape $X$ to the shape $X'$ such that any disk of radius $r$ centered at any point of the contour of $X'$ intersects  an area of $\pi r^2/2$ of the initial shape $X$.}
 \label{fig:geometric-interpretation}
 \end{figure}
 % 
 %
- Additionally, the balance coefficient flow is closely related with the curve-shortening flow (CSF is the one-dimensional case of the mean curvature flow).
 %
 %
 \begin{figure}
 \center
 \includegraphics[scale=0.75]{figures/analysis-error/geometry-argument.png}
-\caption{\textbf{Balance coefficient and curve-shortening flow (CSF).} We approximate the contour $\partial X$ at $P$ by a parabola. Next, we compute the point $P'$ such that the balance coefficient equals to zero. Our approximation produces an error $\Delta$, highlighted in red, that is of order $O(r^5)$. }
+\caption{\textbf{Balance coefficient and curve-shortening flow (CSF).} We approximate the contour $\partial X$ at $P$ by a parabola. Next, we compute the point $P'$ such that the balance coefficient equals to zero. Our approximation produces an error $\Delta$, highlighted in red, that is of order $O(r^4)$. }
 \label{fig:geometric-argument}
 \end{figure}
 %
 %
-\begin{proposition}
-	Let $X$ an Euclidean shape such that the contour of $X$, denoted $\partial X$, is twice differentiable and parameterizable by arc length. If we evolve $X$ according to the balance coefficient flow using $r$ as the radius of the estimation disk, the contour of $X$ evolves according to
-	%
-	\begin{align*}
-		C(s,0) &= \partial X^{(0)} \\	
-		C(s,\tau + 1) &= \partial X^{(\tau + 1)} \\
-		&= \frac{1}{6} \frac{\partial ^2 C(\tau)}{\partial s^2} r^2 + O(r^5) .
-	\end{align*}
-	%
-	\label{prop:balance-coefficient-curve-shortening-flow}
+\begin{proposition}\label{prop:balance-coefficient-curve-shortening-flow}
+Let $X$ an Euclidean shape such that the contour of $X$, denoted $\partial X$, is twice differentiable. Then, there is an injective map between the contours of two consecutive shapes in the balance coefficient flow
+%
+%
+\begin{align*}
+	\sigma^{(t)} &: \partial X^{(t)} \rightarrow \partial X^{(t+1)} \\	
+    \sigma^{(t)}(P) &= P + \varepsilon(p)N^{(t)}(P),
+\end{align*}
+%
+%
+where $\varepsilon(P)=\frac{1}{6}\kappa(P)r^2 + O(r^4)$ and $N^{(t)}(P)$ the normal vector at $\partial X^{(t)}(P)$.
 \end{proposition}
+%
+%
 \begin{proof}
 	Let $P$ a point in the contour of $X$ where we initially center the estimation disk of radius $r$. We assume that the contour of $X$ at point $P$ has locally a curvature of $\kappa$ and that $r \ll 1/\kappa$. Therefore, the contour is well approximated by the parabola $f(x) := \frac{\kappa}{2}x^2$ in the frame centered on $P$ and oriented toward inside $X$ in the direction of the normal vector. 
 	
@@ -212,7 +216,7 @@ We are going to extend equation~\ref{eq:curvature_approximation} to the continuo
 \begin{array}{>{\displaystyle}r>{\displaystyle}r>{\displaystyle}l}
 	& A_{\varepsilon} &= \frac{\pi r ^2}{2} \\[1em] 
 	\Leftrightarrow & 2r\varepsilon &= \int_{-r}^{r}{\frac{1}{2}\kappa x^2dx} \pm \Delta \\[1em]
-	\Leftrightarrow & \varepsilon &= \frac{1}{6}\kappa r^2 \pm \frac{\Delta}{2}.
+	\Leftrightarrow & \varepsilon &= \frac{1}{6}\kappa r^2 \pm \frac{\Delta}{2r}.
 \end{array}
 \]
 %
@@ -239,7 +243,7 @@ Therefore,
 %
 %
 \begin{align*}
-	\varepsilon &= \frac{1}{6}\kappa r^2 \pm \frac{1}{48}\kappa^3r^5.
+	\varepsilon &= \frac{1}{6}\kappa r^2 \pm \frac{1}{48}\kappa^3r^4.
 \end{align*}
 %
 %
@@ -247,8 +251,55 @@ Therefore,
 \end{proof}
 %
 %
-Proposition~\ref{prop:balance-coefficient-curve-shortening-flow} states that, if the radius of the estimation disk is sufficiently small, then the balance coefficient flow behaves similar to the curve-shortening flow.
-
+Proposition~\ref{prop:balance-coefficient-curve-shortening-flow} states that, if the radius of the estimation disk is sufficiently small, then the balance coefficient flow behaves similar to the curve-shortening flow. In other words,
+%
+%
+\begin{corollary}
+Given the conditions of proposition~\ref{prop:balance-coefficient-curve-shortening-flow}, and for a sufficiently small value of $r$, the balance coefficient flow can be written as
+%
+%
+\begin{align*}
+	\frac{ d}{dt} \partial X &= \kappa N.
+\end{align*}
+%
+%
+\end{corollary}
+%
+%
+\begin{proof}
+We set
+\begin{align*}
+	\Delta t(r,\kappa) &= \frac{1}{6}r^2 \pm \frac{1}{48}\kappa^2r^4.
+\end{align*}
+We choose $r$ such that $r \ll \kappa(P)$ for all $P$ in $\partial X$. Then,
+%
+%
+\begin{align*}
+	\partial X^{(t+1)} - \partial X^{(t)} &= \varepsilon(P)N^{(t)}(P) \\
+	&= \kappa(P)N^{(t)}\Delta t(r,\kappa). 
+\end{align*}
+%
+%
+Rearranging the terms we obtain
+%
+%
+\begin{align*}
+	\frac{\partial X^{(t+1)} - \partial X^{(t)}}{\Delta t(r,\kappa)} &= \kappa(P)N^{(t)}
+\end{align*}
+%
+%
+Finally, taking the limit as $r \rightarrow 0$
+%
+%
+\begin{align*}
+	\frac{d}{dt}\partial X &= \kappa N. 
+\end{align*}
+%
+%
+\qed
+\end{proof}
+%
+%
 The CSF has many interisting properties~\cite{huisken84flow,gage86heat,ecker2008heat}. Among those, the CSF is the continuous deformation that decreases the perimeter of a single closed curve at the fastest speed; and it also preserves convexity. In particular, the CSF eventually collaspses the initial curve to a single point.
 
 There are interesting links between the CSF and a variant of the heat equation defined for the indication function of a set~\cite{merriman1992diffusion}. In this same work, the authors informally give a geometric interpretation for the CSF that is equivalent to our zero-level set of the balance coefficient. A technique that emerged from the interpretation of CSF as a heat equation is the so called threshold dynamics~\cite{esedoglu2005threshold,esedoglu2008threshold}. However, the use of threshold dynamics for image processing tasks is not immediate due to the difficulty to inject a data fidelity term. That is not the case in our approach.
@@ -261,7 +312,7 @@ We are going to apply the balance coefficient flow in a discrete setting. In the
 \end{align*}
 %
 %
-In practice, we are going to show that we can achieve good results without being too strict regardind the restriction above.
+In practice, we are going to show that we can achieve good results without being too strict regarding the restriction above.
 %
 %
 \section{Elastica minimization of digital shapes via graph cuts}
