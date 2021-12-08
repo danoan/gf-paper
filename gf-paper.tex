@@ -9,6 +9,8 @@
 \usepackage{array,multirow}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{cite}
+\usepackage{amsmath}
+\usepackage{amssymb}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclarePairedDelimiter\norm{\lVert}{\rVert}%
@@ -18,6 +20,9 @@
 \newcommand{\jaco}[1]{{\textcolor{green!50!black}{#1}}}
 \newcommand{\HT}[1]{{\textcolor{violet}{#1}}}
 \newcommand{\daniel}[1]{\textcolor{NavyBlue}{#1}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Equ}[1]{(\ref{#1})}
 
 \begin{document}
 %
@@ -54,10 +59,11 @@ In this paper, we propose a discrete model to minimize the elastica energy using
 \item{Continuous contour evolution: \cite{kass1988snakes}
 \cite{chan01}.}
 \item{Morphological contour evolution: \cite{marquezneila14} }
-\item{Gaussian filter + thresholding: \cite{merriman1992diffusion} }
+\item{Gaussian filter + thresholding: \cite{merriman1992diffusion,merriman1994motion} }
 \item{Other discrete approaches: \cite{schoenemann09linear} 
 \cite{zehiry10fast}
 \cite{nieuwenhuis14efficient} \cite{antunes19} \cite{antunes20}}
+\item high order threshold dynamics \cite{esedoglu2005threshold,esedoglu2008threshold}
 \end{itemize}}
 \end{itemize}}
 %
@@ -146,32 +152,39 @@ In the following, we simply write $S$ to specify a digital shape and we omit the
  \end{figure}
 %
 %
-Let $X$ an Euclidean shape and $r>0$. We define the \emph{balance coefficient} as
+Let $X \subset \R^2$ be an Euclidean shape, $r$ a positive real number and $P$ an arbitrary point of $\R^2$. We define the \emph{balance coefficient $u_r$} of $X$ at $P$ as
 %
 %
 \begin{align*}
-	u_r(X,P) &= \left( \frac{\pi r^2}{2} - \text{Area}(B_r(P) \cap X) \right).
+  u_r(X,P) &= \left( \frac{\pi r^2}{2} - \text{Area}(B_r(P) \cap X) \right).
 \end{align*}
 %
 %
- We observe that the balance coefficient definition is quite similar to the integral invariant estimator of curvature in equation~\eqref{eq:curvature_approximation} (we can model the continuous domain as a digital domain with an infinitelly small grid step). However, we do not use it to estimate the curvature , but simply as an indicator of the degree of convexity of the shape.
+We observe that the balance coefficient definition is similar to the
+integral invariant estimator of curvature in
+equation~\eqref{eq:curvature_approximation} (we can model the
+continuous domain as a digital domain with an infinitely small grid
+step). However, we do not use it to estimate the curvature, but rather
+as an indicator of the degree of convexity of the shape.
 
-In the following, we are going to define the balance coeficient flow and we are going to show how it relates witht the curve-shortening flow (CSF), the one-dimensional version of the mean curvature flow.
+In the following, we use the balance coefficient to define the balance
+coeficient flow and we show how it relates with the curve-shortening
+flow (CSF), the one-dimensional version of the mean curvature flow.
 
 \begin{definition}[Balance coefficient flow]
-	Let $X \subset \Omega$ an Euclidean shape and $r$ the radius of the disk used to compute the balance coefficient. We define the \emph{balance coefficient flow} on the discrete time step $t$ as
+  Let $X \subset \Omega$ be a Euclidean shape and $r>0$ the radius of the disk used to compute the balance coefficient. We define the \emph{balance coefficient flow} for discrete time steps as the sequence of Euclidean shapes
 %
 %
-\begin{align*}
-	X^{(0)} &= X, \\
-	X^{(t+1)} &= \left\{ P \in \Omega \: | \: u_r(X^{(t)},P) \leq 0 \right\}.
-\end{align*}
+\begin{align}
+  X^{(0)} & := X, \nonumber \\
+  \forall k \in \Z, k > 0, \quad X^{(k+1)} & := \left\{ x \in \Omega \: | \: u_r(X^{(k)}, x) \leq 0 \right\}. \label{eq-balance-coefficient-flow}
+\end{align}
 %
 %
 \end{definition}
 %
 %
- One iteration of the balance coefficient flow applied on shape $X$ is equivalent to find the shape $X'$ such that for any disk of radius $r$ centered at any point of the contour of $X'$, the intersection of the disk with the shape $X$ equals $\pi r^2/2$. This interpretation is illustrated in figure~\ref{fig:geometric-interpretation}.
+ One iteration of the balance coefficient flow applied on shape $X$ is equivalent to find the shape $X'$ such that for any disk of radius $r$ centered at any point of the contour of $X'$, the intersection of the disk with the shape $X$ equals $\pi r^2/2$. This interpretation is illustrated in Figure~\ref{fig:geometric-interpretation}.
 %
 % 
 \begin{figure}
@@ -182,46 +195,157 @@ In the following, we are going to define the balance coeficient flow and we are 
 \end{figure}
 % 
 %
-%
+
+Let us show the link between the balance coefficient flow and the
+curve-shortening flow. First we rewrite the balance coefficient flow
+as a contour evolution. Let us denote $C^{(0)} := \partial
+X^{(0)}$ the boundary of $X^{(0)}$. Then, for $x \in C^{(0)}$,
+let $\epsilon^{(0)}(x)$ be a solution to the equation
+\begin{align} \label{eq-null-balance-coefficient}
+  u_r(X^{(0)}, x +\epsilon^{(0)}(x)
+  \mathbf{n}^{(0)}(x)) & = 0, \\
+  |\epsilon^{(0)}(x)| & < r, \nonumber
+\end{align}
+with $\mathbf{n}^{(0)}(x)$ the outward normal vector at $x$ to
+the boundary of the shape $X^{(0)}$. Specifying
+$|\epsilon^{(0)}(x)| < r$ clearly imposes a unique solution to
+\Equ{eq-null-balance-coefficient}, provided $r < 1/\kappa$. Then the
+contour evolution of $C^{(0)}$ is defined as:
+\begin{align} \label{eq-balance-coefficient-contour-flow}
+  C^{(1)} := \left\{ \sigma^{(0)}(x), x \in C^{(0)} \right\},
+\end{align}
+where $\sigma^{(0)}$ is the mapping from $C^{(0)}$ to $C^{(1)}$, such that $x$ maps to $x+\epsilon^{(0)}(x) \mathbf{n}^{(0)}(x)$.
+
+The following proposition indicates that $C^{(1)}$ coincides with
+the boundary of $X^{(1)}$ under some hypotheses.
+
+\begin{proposition} \label{prop-C-equ-X}
+  If $r$ is small enough, the boundaries of shapes $X^{(0)}$ and
+  $X^{(1)}$ are Jordan curves, and the boundary of shape $X^{(0)}$ is
+  twice differentiable, then $C^{(1)}$ is the boundary of $X^{(1)}$,
+  and the mapping $\sigma^{(0)}$ between $C^{(0)}$ and $C^{(1)}$ is
+  bijective.
+\end{proposition}
+\begin{proof}
+  By definition, the curve $C^{(0)}$ is the boundary of shape
+  $X^{(0)}$. 
+  Being twice differentiable the curve $C^{(0)}$ has a reach that is
+  greater than some $\rho > 0$. Hence, any point at distance lower
+  than $\rho$ from $C^{(0)}$ has a unique closest point on this
+  curve, in the direction normal to the curve.
+
+  Let $x$ be a point on $C^{(1)}$ and let
+  $y=\sigma^{(0)}(x)=x+\epsilon^{(0)}(x) \mathbf{n}^{(0)}(x)$.
+  Obviously, the smaller is $r$, the closer is $C^{(1)}$ from
+  $C^{(0)}$.  From the definition of balance coefficient, one can see
+  that the displacement that is solution to
+  \Equ{eq-null-balance-coefficient} cannot exceed $\frac{1}{2}\kappa
+  r^2$. So if $r < \sqrt{2\rho / \kappa_{\max}}$, where
+  $\kappa_{\max}$ is the maximum absolute curvature of the curve, then
+  the point $y$ is within the reach of the curve $C^{(0)}$. It follows
+  that the mapping $\sigma^{(0)}$ is bijective. It is also continuous
+  since all functions are continuous (the area of the shape
+  intersected by a ball is continuous with respect to a displacement
+  of the ball center).  Hence $C^{(1)}$ is a Jordan curve within the
+  reach of $C^{(0)}$. It has therefore an interior component $I$.
+
+  It is clear also that $y \in X^{(1)}$ since $u_r(X^{(0)},y)=0$.
+  Let us denote $z(\lambda)=(1-\lambda)x+\lambda y$.
+
+  If $u_r(X^{(0)},x)<0$ then $u_r(X^{(0)},z(\lambda))$ is by
+  construction strictly increasing for increasing values of $0 \le
+  \lambda \le 1+\nu$, $\nu \ll 1$, and so becomes positive for
+  $1<\lambda < 1 + \nu$. In this case $C^{(0)}$ was concave at $x$,
+  so the straight segment $\lbrack x,y \rbrack$ is included in
+  $X^{(1)}$ and $y$ lies on its boundary. We have also $X^{(1)}
+  \cap \lbrack x,y \rbrack \subset I$, and $x$ lies in the interior of
+  $X^{(1)}$.
+  
+  If $u_r(X^{(0)},x)>0$ then $u_r(X^{(0)},z(\lambda))$ is by
+  construction strictly decreasing for increasing values of $0 \le
+  \lambda \le 1+\nu$, $\nu \ll 1$, and so becomes negative for
+  $1<\lambda < 1 + \nu$.  In this case $C^{(0)}$ was convex at $x$,
+  so the straight segment $\lbrack x,y \lbrack$ is excluded from
+  $X^{(1)}$ and $y$ lies on its boundary. We have also $X^{(1)}
+  \cap \lbrack x(1),x(1+\nu) \rbrack \subset I$ and $x(1+\nu)$ lies in
+  the interior of $X^{(1)}$.
+
+  In both case we can see that $y$ lies on the boundary of
+  $X^{(1)}$. So $C^{(1)} \subset \partial X^{(1)}$. Since both
+  are Jordan curves they must coincide and $C^{(1)} = \partial
+  X^{(1)}$.  Finally, the interior of $X^{(1)}$ must coincide with
+  $I$ since both are finite, they share the same boundary, and they
+  share points (whether the boundary is convexe or concave).
+  \qed
+\end{proof}
+
+The proof tells us that the radius $r$ must be smaller that
+$\min(\sqrt{2\rho / \kappa_{\max}},2 / \kappa_{\max})$, for $\rho>0$
+smaller than the reach of the shape and $\kappa_{\max}$ the maximal
+absolute curvature of the shape.
+
+Let us recall that the curve-shortening flow for a small time step
+$t>0$, may be defined as:
+\begin{align}
+  \Gamma^{(0)} & := \partial X \nonumber \\
+  \Gamma^{(t)} & := \left\{ x + t\kappa(x)\mathbf{n}(x), x \in \Gamma^{(0)} \right\}, \label{eq-csf}
+\end{align}
+denoting by $\kappa(x)$ the curvature of the curve at point $x$
+and by $\mathbf{n}(x)$ the outward normal vector at $x$.
+
+Of course, there are implicitly defined variants of this formulation
+that allows topology changes, but we will restrict ourselves here to
+proving the similarity between the balance coefficient flow and the
+curve-shortening flow when there is no topology change.
+
+
 %
 \begin{figure}
 \center
 \includegraphics[scale=0.75]{figures/analysis-error/geometry-argument.png}
-\caption{\textbf{Balance coefficient and curve-shortening flow (CSF).} We approximate the contour $\partial X$ at $P$ by a parabola. Next, we compute the point $P'$ such that the balance coefficient equals to zero. Our approximation produces an error $\Delta$, highlighted in red, that is of order $O(r^4)$. }
-\label{fig:geometric-argument}
+\caption{\textbf{Balance coefficient and curve-shortening flow (CSF).} We approximate the contour $\partial X$ at $P$ by a parabola. Next, we compute the point $P'$ such that the balance coefficient equals to zero. Our approximation produces an error $\Delta$, highlighted in red, that is of order $O(r^4)$. \label{fig:geometric-argument}}
 \end{figure}
 %
-%
-\begin{proposition}\label{prop:balance-coefficient-curve-shortening-flow}
-Let $X$ an Euclidean shape such that the contour of $X$, denoted $\partial X$, is twice differentiable. Then, there is an injective map between the contours of two consecutive shapes in the balance coefficient flow
+
+\begin{proposition}\label{prop:bcf-close-to-csf}
+  For small enough $r$, setting $t = \frac{1}{6}r^2$, assuming $C^{(0)}=\Gamma^{(0)}$ is a twice differentiable Jordan curve, then the Hausdorff distance between
+  $C^{(1)}$ and $\Gamma^{(t)}$ is some $O(t^2)$, more precisely we get:
+  \begin{align*}
+    d_H( C^{(1)}, \Gamma^{(t)} ) \le \frac{3}{4} \kappa_{\max}^3 t^2.
+  \end{align*}
+\end{proposition}
+\begin{proof}
+  Let $y \in C^{(1)}$. According to Proposition~\ref{prop-C-equ-X},
+  there is a point $P \in C^{(0)}$ such that
+  $y=\sigma^{(0)}(x)$. Finally, let $y'=P+t\kappa(P)\mathbf{n}(P)$. We
+  will show that $\| y-y' \| \le \frac{3}{4} \kappa_{\max}^3 t^2$,
+  which induces the result (we could have chosen $y'$ first, and
+  obtain the same $y$).
+
+  We center the reference frame on $P$ with $y$-axis aligned with the
+  normal vector $\mathbf{n}(P)$.  Since $r$ is small enough, the
+  contour is well approximated by the parabola $f(x) :=
+  \frac{\kappa(P)}{2}x^2$ in this frame.
+
+  We know that $y = P + \epsilon^{(0)}(P)\mathbf{n}(P)$ according
+  to \Equ{eq-null-balance-coefficient}, where $\epsilon^{(0)}(P)$ is
+  the local displacement of $P$ which induce a zero balance
+  coefficient. Let us determine this displacement $\varepsilon :=
+  \epsilon^{(0)}(P)$ in the normal direction, such that the
+  intersection of the disk with $X$ equals half of the disk area. Let
+  us say that the point of zero balance coefficient is $P'$ and that
+  $A_{\varepsilon}$ is the intersection area of the displaced
+  disk (see Figure~\ref{fig:geometric-argument}, right, for notations). Then,
 %
 %
 \begin{align*}
-	\sigma^{(t)} &: \partial X^{(t)} \rightarrow \partial X^{(t+1)} \\	
-    \sigma^{(t)}(P) &= P + \varepsilon(p)N^{(t)}(P),
+	 & A_{\varepsilon} = \frac{\pi r ^2}{2} 
+	 && \Leftrightarrow & 2r\varepsilon = \int_{-r}^{r}{\frac{1}{2}\kappa x^2dx} \pm \Delta 
+	&& \Leftrightarrow & & \varepsilon = \frac{1}{6}\kappa r^2 \pm \frac{\Delta}{2r}.
 \end{align*}
 %
 %
-where $\varepsilon(P)=\frac{1}{6}\kappa(P)r^2 + O(r^4)$ and $N^{(t)}(P)$ the normal vector at $\partial X^{(t)}(P)$.
-\end{proposition}
-%
-%
-\begin{proof}
-	Let $P$ a point in the contour of $X$ where we initially center the estimation disk of radius $r$. We assume that the contour of $X$ at point $P$ has locally a curvature of $\kappa$ and that $r \ll 1/\kappa$. Therefore, the contour is well approximated by the parabola $f(x) := \frac{\kappa}{2}x^2$ in the frame centered on $P$ and oriented toward inside $X$ in the direction of the normal vector. 
-	
-	 The goal is to find the displacement $\varepsilon$ of center $P$ in the normal direction such that the intersection of the disk with $X$ equals half of the disk area. Let us say that the point of zero balance coefficient is $P'$ and that $A_{\varepsilon}$ is the intersection area of the displaced disk. Then,
-%
-%
-\[
-\begin{array}{>{\displaystyle}r>{\displaystyle}r>{\displaystyle}l}
-	& A_{\varepsilon} &= \frac{\pi r ^2}{2} \\[1em] 
-	\Leftrightarrow & 2r\varepsilon &= \int_{-r}^{r}{\frac{1}{2}\kappa x^2dx} \pm \Delta \\[1em]
-	\Leftrightarrow & \varepsilon &= \frac{1}{6}\kappa r^2 \pm \frac{\Delta}{2r}.
-\end{array}
-\]
-%
-%
-We proceed by computing an upper bound of the error $\Delta$. Let $A^3$ be the leftmost intersection point between the line $A'B'$ and the estimation disk. It is clear that $\Delta/2$ is smaller than the region between $A''A'A^3$ and the arc going from $A^3$ to $A''$. Let $d$ be the length of the segment $A'A''$. 
+It remains to compute an upper bound for the error $\Delta$. Let $A^3$ be the leftmost intersection point between the line $A'B'$ and the estimation disk. It is clear that $\Delta/2$ is smaller than the region between $A''A'A^3$ and the arc going from $A^3$ to $A''$. Let $d$ be the length of the segment $A'A''$. 
 %
 %
 \begin{align*}
@@ -247,62 +371,141 @@ Therefore,
 \end{align*}
 %
 %
-\qed
+To conclude the argument, we have:
+\begin{align*}
+  \| y - y' \| & = \| P + \epsilon^{(0)}(P)\mathbf{n}(P) - (P+t\kappa(P)\mathbf{n}(P)) \| \\
+  & = | \varepsilon - t \kappa(P) | \\
+  & \le \left| \frac{1}{6}\kappa(P) r^2 - t\kappa(P) \right| + \frac{1}{48}|\kappa|^3r^4\\
+  & \le \frac{1}{48}|\kappa(P)|^3r^4 && \text{(since $t=\frac{1}{6}r^2$)} \\
+  & \le \frac{3}{4}\kappa_{\max}^3 t^2 && \text{(since $|\kappa(P)| \le \kappa_{\max}$)}
+\end{align*}
+\mbox{~}\hfill\qed
 \end{proof}
-%
-%
-Proposition~\ref{prop:balance-coefficient-curve-shortening-flow} states that, if the radius of the estimation disk is sufficiently small, then the balance coefficient flow behaves similar to the curve-shortening flow. In other words,
-%
-%
-\begin{corollary}
-Given the conditions of proposition~\ref{prop:balance-coefficient-curve-shortening-flow}, and for a sufficiently small value of $r$, the balance coefficient flow can be written as
-%
-%
-\begin{align*}
-	\frac{ d}{dt} \partial X &= \kappa N.
-\end{align*}
-%
-%
-\end{corollary}
-%
-%
-\begin{proof}
-We set
-\begin{align*}
-	\Delta t(r,\kappa) &= \frac{1}{6}r^2 \pm \frac{1}{48}\kappa^2r^4.
-\end{align*}
-We choose $r$ such that $r \ll \kappa(P)$ for all $P$ in $\partial X$. Then,
-%
-%
-\begin{align*}
-	\partial X^{(t+1)} - \partial X^{(t)} &= \varepsilon(P)N^{(t)}(P) \\
-	&= \kappa(P)N^{(t)}\Delta t(r,\kappa). 
-\end{align*}
-%
-%
-Rearranging the terms we obtain
-%
-%
-\begin{align*}
-	\frac{\partial X^{(t+1)} - \partial X^{(t)}}{\Delta t(r,\kappa)} &= \kappa(P)N^{(t)}
-\end{align*}
-%
-%
-Finally, taking the limit as $r \rightarrow 0$
-%
-%
-\begin{align*}
-	\frac{d}{dt}\partial X &= \kappa N. 
-\end{align*}
-%
-%
-\qed
-\end{proof}
-%
-%
-The CSF has many interisting properties~\cite{huisken84flow,gage86heat,ecker2008heat}. Among those, the CSF is the continuous deformation that decreases the perimeter of a single closed curve at the fastest speed; and it also preserves convexity. In particular, the CSF eventually collaspses the initial curve to a single point.
 
-There are interesting links between the CSF and a variant of the heat equation defined for the indication function of a set~\cite{merriman1992diffusion}. In this same work, the authors informally give a geometric interpretation for the CSF that is equivalent to our zero-level set of the balance coefficient. A technique that emerged from the interpretation of CSF as a heat equation is the so called threshold dynamics~\cite{esedoglu2005threshold,esedoglu2008threshold}. However, the use of threshold dynamics for image processing tasks is not immediate due to the difficulty to inject a data fidelity term. That is not the case in our approach.
+Applying Proposition~\ref{prop-C-equ-X} at each time step $k$ (writing
+$(k)$ instead of $(0)$ and $(k+1)$ instead of $(1)$) allows us to
+redefine the balance coefficient flow as the sequence $C^{(k)}$,
+provided that the boundaries of $X^{(k)}$ are twice differentiable
+Jordan curves. But Proposition~\ref{prop:bcf-close-to-csf} applied on
+these consecutive curves tells us that the curves $C^{(k)}=\partial
+X^{(k)}$ are very close to the curve shortening flow, which induces
+twice differentiable curves except at critical points. Proving that
+the flow $X^{(k)}$ also mimicks the curve-shortening flow across
+critical points would require much more mathematical work and is
+outside the scope of this paper.
+
+%% %
+%% \begin{proposition}\label{prop:balance-coefficient-curve-shortening-flow}
+%% Let $X$ an Euclidean shape such that the contour of $X$, denoted $\partial X$, is twice differentiable. Then, there is an injective map between the contours of two consecutive shapes in the balance coefficient flow
+%% %
+%% %
+%% \begin{align*}
+%% 	\sigma^{(t)} &: \partial X^{(t)} \rightarrow \partial X^{(t+1)} \\	
+%%     \sigma^{(t)}(P) &= P + \varepsilon(p)N^{(t)}(P),
+%% \end{align*}
+%% %
+%% %
+%% where $\varepsilon(P)=\frac{1}{6}\kappa(P)r^2 + O(r^4)$ and $N^{(t)}(P)$ the normal vector at $\partial X^{(t)}(P)$.
+%% \end{proposition}
+%% %
+%% %
+%% \begin{proof}
+%% 	Let $P$ a point in the contour of $X$ where we initially center the estimation disk of radius $r$. We assume that the contour of $X$ at point $P$ has locally a curvature of $\kappa$ and that $r \ll 1/\kappa$. Therefore, the contour is well approximated by the parabola $f(x) := \frac{\kappa}{2}x^2$ in the frame centered on $P$ and oriented toward inside $X$ in the direction of the normal vector. 
+	
+%% 	 The goal is to find the displacement $\varepsilon$ of center $P$ in the normal direction such that the intersection of the disk with $X$ equals half of the disk area. Let us say that the point of zero balance coefficient is $P'$ and that $A_{\varepsilon}$ is the intersection area of the displaced disk. Then,
+%% %
+%% %
+%% \[
+%% \begin{array}{>{\displaystyle}r>{\displaystyle}r>{\displaystyle}l}
+%% 	& A_{\varepsilon} &= \frac{\pi r ^2}{2} \\[1em] 
+%% 	\Leftrightarrow & 2r\varepsilon &= \int_{-r}^{r}{\frac{1}{2}\kappa x^2dx} \pm \Delta \\[1em]
+%% 	\Leftrightarrow & \varepsilon &= \frac{1}{6}\kappa r^2 \pm \frac{\Delta}{2r}.
+%% \end{array}
+%% \]
+%% %
+%% %
+%% We proceed by computing an upper bound of the error $\Delta$. Let $A^3$ be the leftmost intersection point between the line $A'B'$ and the estimation disk. It is clear that $\Delta/2$ is smaller than the region between $A''A'A^3$ and the arc going from $A^3$ to $A''$. Let $d$ be the length of the segment $A'A''$. 
+%% %
+%% %
+%% \begin{align*}
+%% 	Area(A''A'A^3) &= \int_0^d{r - \sqrt{r^2 - x^2} dx} \\
+%% 				   &= -\frac{r^2}{2}sin^{-1}\left(\frac{d}{r}\right) + dr - \frac{d}{2}\sqrt{r^2-d^2} \\
+%% 				   &\approx \frac{d^3}{6r}.
+%% \end{align*}
+%% %
+%% %
+%% In general, $d$ is bounded by $\frac{1}{2}\kappa r^2$, hence it follows:
+%% %
+%% %
+%% \begin{align*}
+%% 	\frac{\Delta}{2} \leq \frac{d^3}{6r} \leq \frac{1}{48}\kappa^3r^5.
+%% \end{align*}
+%% %
+%% %
+%% Therefore,
+%% %
+%% %
+%% \begin{align*}
+%% 	\varepsilon &= \frac{1}{6}\kappa r^2 \pm \frac{1}{48}\kappa^3r^4.
+%% \end{align*}
+%% %
+%% %
+%% \qed
+%% \end{proof}
+%% %
+%% %
+%% Proposition~\ref{prop:balance-coefficient-curve-shortening-flow} states that, if the radius of the estimation disk is sufficiently small, then the balance coefficient flow behaves similar to the curve-shortening flow. In other words,
+%% %
+%% %
+%% \begin{corollary}
+%% Given the conditions of proposition~\ref{prop:balance-coefficient-curve-shortening-flow}, and for a sufficiently small value of $r$, the balance coefficient flow can be written as
+%% %
+%% %
+%% \begin{align*}
+%% 	\frac{ d}{dt} \partial X &= \kappa N.
+%% \end{align*}
+%% %
+%% %
+%% \end{corollary}
+%% %
+%% %
+%% \begin{proof}
+%% We set
+%% \begin{align*}
+%% 	\Delta t(r,\kappa) &= \frac{1}{6}r^2 \pm \frac{1}{48}\kappa^2r^4.
+%% \end{align*}
+%% We choose $r$ such that $r \ll \kappa(P)$ for all $P$ in $\partial X$. Then,
+%% %
+%% %
+%% \begin{align*}
+%% 	\partial X^{(t+1)} - \partial X^{(t)} &= \varepsilon(P)N^{(t)}(P) \\
+%% 	&= \kappa(P)N^{(t)}\Delta t(r,\kappa). 
+%% \end{align*}
+%% %
+%% %
+%% Rearranging the terms we obtain
+%% %
+%% %
+%% \begin{align*}
+%% 	\frac{\partial X^{(t+1)} - \partial X^{(t)}}{\Delta t(r,\kappa)} &= \kappa(P)N^{(t)}
+%% \end{align*}
+%% %
+%% %
+%% Finally, taking the limit as $r \rightarrow 0$
+%% %
+%% %
+%% \begin{align*}
+%% 	\frac{d}{dt}\partial X &= \kappa N. 
+%% \end{align*}
+%% %
+%% %
+%% \qed
+%% \end{proof}
+%
+%
+The CSF has many interesting properties~\cite{huisken84flow,gage86heat,ecker2008heat}. Among those, the CSF is the continuous deformation that decreases the perimeter of a single closed curve at the fastest speed; and it also preserves convexity. In particular, the CSF eventually collapses the initial curve to a single point.
+
+There are interesting links between the CSF and a variant of the heat equation defined for the indicatrix function of a set~\cite{merriman1992diffusion}. In this same work, the authors informally give a geometric interpretation for the CSF that is equivalent to our zero-level set of the balance coefficient. A technique that emerged from the interpretation of CSF as a heat equation is the so called threshold dynamics~\cite{esedoglu2005threshold,esedoglu2008threshold}. However, the use of threshold dynamics for image processing tasks is not immediate due to the difficulty to inject a data fidelity term. That is not the case in our approach.
 
 We are going to apply the balance coefficient flow in a discrete setting. In theory, that means that we have some limitations regarding the choice of the estimation radius $r$, the grid resolution $h$ and the real curvature value at the estimation point. In general, we need to respect
 %
