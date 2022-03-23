@@ -8,9 +8,11 @@
 \usepackage[export]{adjustbox}
 \usepackage{array,multirow}
 \usepackage[dvipsnames]{xcolor}
-\usepackage{cite}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage[
+backend=biber,
+style=alphabetic]{biblatex}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclarePairedDelimiter\norm{\lVert}{\rVert}%
@@ -23,6 +25,8 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\Equ}[1]{(\ref{#1})}
+
+\addbibresource{gf-paper.bib}
 
 \begin{document}
 %
@@ -51,21 +55,129 @@ An important and challenging energy to optimize is the elastica. Previous works 
 In this paper, we propose a discrete model to minimize the elastica energy using \emph{multigrid convergent estimators}. These estimators are conceived for digital sets and give us guarantees of convergence with respect to finer and finer image grid resolutions. We show that our model evolves digital shapes to the shape of optimum elastica energy, escaping local minimum. Moreover, we show how to use our model in image processing tasks and give several illustrations. Finally, the model is parallelizable and present competitive running times with respect to state of the art methods. We also strongly believe that these running times could be improved in a GPU setting.
 %
 %
-\section{Related work}
-\todo{
-\begin{itemize}
-\item{Curvature regularization:
-\begin{itemize}
-\item{Continuous contour evolution: \cite{kass1988snakes}
-\cite{chan01}.}
-\item{Morphological contour evolution: \cite{marquezneila14} }
-\item{Gaussian filter + thresholding: \cite{merriman1992diffusion,merriman1994motion} }
-\item{Other discrete approaches: \cite{schoenemann09linear} 
-\cite{zehiry10fast}
-\cite{nieuwenhuis14efficient} \cite{antunes19} \cite{antunes20}}
-\item high order threshold dynamics \cite{esedoglu2005threshold,esedoglu2008threshold}
-\end{itemize}}
-\end{itemize}}
+Label with
+	Continuous formulation
+	Discrete formulation
+	Digital formulation
+	
+Elastica in Image Processing:
+
+Curvature regularization:
+	Elastica
+	Total Curvature
+	Mean curvature flow
+
+\section{Related work: Curvature regularization}
+\subsection{Mean curvature flow}
+\subsubsection{\citetitle{kass1988snakes}\cite{kass1988snakes}}
+\textbf{[Continuous formulation]}
+
+Classical contour evolution model in image segmentation. The energy is composed by three components: Perimeter, Smoothness and Image Data. Image term computed along the contour. No region term.
+
+The curve shortening flow can also be interpreted as the contour evolution that minimizes the contour perimeter.
+
+\subsubsection{\citetitle{caseles97geodesic}\cite{caseles97geodesic}}
+\textbf{[Continuous formulation]}
+
+Contour evolution (curve-shortening flow) of the image level sets. Image term computed along the contour. No region term.
+
+\subsubsection{\citetitle{chan01}\cite{chan01}} 
+\textbf{[Continuous formulation]}
+
+Contour evolution of the zero level set of an artificial function that encodes image segmentation. It accepts a region term.
+
+It also has a perimeter component in the minimization energy, which induces a curve-shortening flow
+
+\subsubsection{\citetitle{marquezneila14}\cite{marquezneila14}}
+\textbf{[Discrete formulation]}
+
+\subsubsection{\citetitle{merriman1992diffusion}\cite{merriman1992diffusion}}
+\textbf{[Continuous formulation]}
+
+In this paper the authors gives an interpretation of the curve-shortening flow as a heat flow and describe a process to execute the curve-shortening flow which is composed of a step of diffusion and it is followed by a step of thresholding.
+
+\subsubsection{\citetitle{esedoglu2005threshold}\cite{esedoglu2005threshold}}
+\textbf{[Continuous formulation]}
+
+Threshold dynamics.
+
+\subsubsection{\citetitle{esedoglu2008threshold}\cite{esedoglu2008threshold}}
+\textbf{[Continuous formulation]}
+
+Threshold dynamics.
+
+\subsubsection{\citetitle{antunes19}\cite{antunes19}}
+\textbf{[Discrete formulation]}
+
+Curve-shortening flow via non-submodular energy.
+
+\subsection{Elastica}
+\subsubsection{\citetitle{schoenemann09linear}\cite{schoenemann09linear}}
+\textbf{[Discrete formulation]}
+
+The authors use a 2D cellular complex (with variables defined for cells and linels) to represent a digital image. A set of constraints is imposed to guarantee that the solution encodes a consistent digital surface. Image data is associated to cell variables and elastica data (lengh + squared curvature) are associated to linels.
+
+For an image with $n$ pixels, roughly $5n$ variables for a simple grid complex (which is limited to square angles). 
+
+It uses the Bruckstein's discretizatio for the curvature and it is not suited for digital objects.
+
+\subsubsection{\citetitle{zehiry10fast}\cite{zehiry10fast}}
+\textbf{[Discrete formulation]}
+
+Quadratic non-submodular pseudo-boolean function. It also uses the Bruckstein's discretization of curvature.
+
+It is not clear how to extend the model to detect other than right angles.
+
+Much faster than the equivalent Schoeneman's model.
+
+\subsubsection{\citetitle{nieuwenhuis14efficient}\cite{nieuwenhuis14efficient}}
+\textbf{[Discrete formulation]}
+
+
+\subsubsection{\citetitle{antunes20}\cite{antunes20}}
+\textbf{[Discrete formulation]}
+
+Elastica minimization via graph-cuts.
+
+\subsubsection{\citetitle{deng2019new}\cite{deng2019new}}
+\textbf{[Continuous formulation]}
+
+The goal of the authors was to have a denoising model without the staircase effect
+of ROF. Numerical method is described but quite complex.
+
+\subsubsection{\citetitle{duan2014two}\cite{duan2014two}}
+\textbf{[Continuous formulation]}
+
+The model replaces the perimeter term in Mumford Shah by the Elastica. Then it describes an Augmented Lagrangian method to solve the energy and then it applies a thresholding algorithm (k-means variation) to come up zith the image segmentation.
+
+\subsection{Total Curvature}
+
+\subsubsection{\citetitle{zhong2020minimizing}\cite{zhong2020minimizing}}
+\textbf{[Continuous formulation]}
+
+The image is modeled as a surface and the authors compute the "total curvature" at some surface points as being the sum of the normal curvature at $8$ different tangent planes.
+
+The numerical method used to solve is ADMM-based. Nice results but very high running times.
+
+\subsubsection{\citetitle{bae2010graph}\cite{bae2010graph}}
+\textbf{[Discrete formulation]}
+
+The energy is minimized via a sequence of graph-cuts (flow evolution). Applications for denoising are shown.
+
+\subsubsection{\citetitle{olsson2013partial}\cite{olsson2013partial}}
+\textbf{[Discrete formulation]}
+
+The curvature is estimated by evaluating patches in a grid. The patches could have different sizes and their size determine the angle coverage of the curvature estimator. For example, a 2x2 patch covers only curvature values of 0 and pi/2, resulting in a segmentation that favors horizontal and vertical lines; a 3x3 patch can reproduce pi/4 angles, and so on.
+
+The nodes of the optimization graph are the patches. The graph has only unary and pairwise components. The unary components hold the curvature value for some patch configuration (in a 2x2 patch we have a total of 16 configurations. For each configuration, we have a label). The pairwise component play the role of constraints. Since the patches overlap themselves, we need constraints such that we find consistent solutions at the end.
+
+It is very similar with discrete approaches that I referenced in the thesis.
+
+Their model is solved using TRW-s.
+
+It has enormous running time (8829s for 256x256 pixels and 5x5 patches)
+
+
 %
 %
 \section{Estimation of geometric quantities on digital data}
@@ -1014,8 +1126,7 @@ One of the strengths of our model is that the curvature estimation is based on d
 There are some possible paths for future work. Firstly, the graph construction part of the algorithm can be optimized. In the current version, the graph is constructed at every iteration, but most of the time, the graph structure changes very slightly and this can be used to optimize its construction. Secondly, we use a very rough neighborhood of shapes in the supervised segmentation problem, i.e., based on dilations and erosions of the initial shape. The contour completion property of the model can be better exploited by employing different neighborhoods. For example, we could alongate the initial shapes in regions of high curvature to obtain a stretched neighborhood of shapes. This could be particularly useful in the segmentation of thin and elongated objects such as blood vessels.
 
 
-\bibliographystyle{alpha}
-\bibliography{gf-paper}
+\printbibliography
 
 \end{document}
 
