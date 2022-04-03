@@ -55,131 +55,390 @@ An important and challenging energy to optimize is the elastica. Previous works 
 In this paper, we propose a discrete model to minimize the elastica energy using \emph{multigrid convergent estimators}. These estimators are conceived for digital sets and give us guarantees of convergence with respect to finer and finer image grid resolutions. We show that our model evolves digital shapes to the shape of optimum elastica energy, escaping local minimum. Moreover, we show how to use our model in image processing tasks and give several illustrations. Finally, the model is parallelizable and present competitive running times with respect to state of the art methods. We also strongly believe that these running times could be improved in a GPU setting.
 %
 %
-Label with
-	Continuous formulation
-	Discrete formulation
-	Digital formulation
-	
-Elastica in Image Processing:
 
-Curvature regularization:
-	Elastica
-	Total Curvature
-	Mean curvature flow
+\section{Related work}
 
-\section{Related work: Curvature regularization}
-\subsection{Mean curvature flow}
-\subsubsection{\citetitle{kass1988snakes}\cite{kass1988snakes}}
-\textbf{[Continuous formulation]}
-
-Classical contour evolution model in image segmentation. The energy is composed by three components: Perimeter, Smoothness and Image Data. Image term computed along the contour. No region term.
-
-The curve shortening flow can also be interpreted as the contour evolution that minimizes the contour perimeter.
-
-\subsubsection{\citetitle{caseles97geodesic}\cite{caseles97geodesic}}
-\textbf{[Continuous formulation]}
-
-Contour evolution (curve-shortening flow) of the image level sets. Image term computed along the contour. No region term.
-
-\subsubsection{\citetitle{chan01}\cite{chan01}} 
-\textbf{[Continuous formulation]}
-
-Contour evolution of the zero level set of an artificial function that encodes image segmentation. It accepts a region term.
-
-It also has a perimeter component in the minimization energy, which induces a curve-shortening flow
-
-\subsubsection{\citetitle{marquezneila14}\cite{marquezneila14}}
-\textbf{[Discrete formulation]}
-
-\subsubsection{\citetitle{merriman1992diffusion}\cite{merriman1992diffusion}}
-\textbf{[Continuous formulation]}
-
-In this paper the authors gives an interpretation of the curve-shortening flow as a heat flow and describe a process to execute the curve-shortening flow which is composed of a step of diffusion and it is followed by a step of thresholding.
-
-\subsubsection{\citetitle{esedoglu2005threshold}\cite{esedoglu2005threshold}}
-\textbf{[Continuous formulation]}
-
-Threshold dynamics.
-
-\subsubsection{\citetitle{esedoglu2008threshold}\cite{esedoglu2008threshold}}
-\textbf{[Continuous formulation]}
-
-Threshold dynamics.
-
-\subsubsection{\citetitle{antunes19}\cite{antunes19}}
-\textbf{[Discrete formulation]}
-
-Curve-shortening flow via non-submodular energy.
-
-\subsection{Elastica}
-\subsubsection{\citetitle{schoenemann09linear}\cite{schoenemann09linear}}
-\textbf{[Discrete formulation]}
-
-The authors use a 2D cellular complex (with variables defined for cells and linels) to represent a digital image. A set of constraints is imposed to guarantee that the solution encodes a consistent digital surface. Image data is associated to cell variables and elastica data (lengh + squared curvature) are associated to linels.
-
-For an image with $n$ pixels, roughly $5n$ variables for a simple grid complex (which is limited to square angles). 
-
-It uses the Bruckstein's discretizatio for the curvature and it is not suited for digital objects.
-
-\subsubsection{\citetitle{zehiry10fast}\cite{zehiry10fast}}
-\textbf{[Discrete formulation]}
-
-Quadratic non-submodular pseudo-boolean function. It also uses the Bruckstein's discretization of curvature.
-
-It is not clear how to extend the model to detect other than right angles.
-
-Much faster than the equivalent Schoeneman's model.
-
-\subsubsection{\citetitle{nieuwenhuis14efficient}\cite{nieuwenhuis14efficient}}
-\textbf{[Discrete formulation]}
+The elastica has been introduced in image processing by Mumford~\cite{mumford1994elastica} 
+where the completion property (i.e., its preference for connected curves) is 
+particularly emphasized. The application of the completion property is explored 
+in the literature under different aspects (e.g., to complete contours of 
+segmentation contours or to complete the image level sets) to solve classical 
+problems in imaging such as inpainting and segmentation. 
 
 
-\subsubsection{\citetitle{antunes20}\cite{antunes20}}
-\textbf{[Discrete formulation]}
-
-Elastica minimization via graph-cuts.
-
-\subsubsection{\citetitle{deng2019new}\cite{deng2019new}}
-\textbf{[Continuous formulation]}
-
-The goal of the authors was to have a denoising model without the staircase effect
-of ROF. Numerical method is described but quite complex.
-
-\subsubsection{\citetitle{duan2014two}\cite{duan2014two}}
-\textbf{[Continuous formulation]}
-
-The model replaces the perimeter term in Mumford Shah by the Elastica. Then it describes an Augmented Lagrangian method to solve the energy and then it applies a thresholding algorithm (k-means variation) to come up zith the image segmentation.
-
-\subsection{Total Curvature}
-
-\subsubsection{\citetitle{zhong2020minimizing}\cite{zhong2020minimizing}}
-\textbf{[Continuous formulation]}
-
-The image is modeled as a surface and the authors compute the "total curvature" at some surface points as being the sum of the normal curvature at $8$ different tangent planes.
-
-The numerical method used to solve is ADMM-based. Nice results but very high running times.
-
-\subsubsection{\citetitle{bae2010graph}\cite{bae2010graph}}
-\textbf{[Discrete formulation]}
-
-The energy is minimized via a sequence of graph-cuts (flow evolution). Applications for denoising are shown.
-
-\subsubsection{\citetitle{olsson2013partial}\cite{olsson2013partial}}
-\textbf{[Discrete formulation]}
-
-The curvature is estimated by evaluating patches in a grid. The patches could have different sizes and their size determine the angle coverage of the curvature estimator. For example, a 2x2 patch covers only curvature values of 0 and pi/2, resulting in a segmentation that favors horizontal and vertical lines; a 3x3 patch can reproduce pi/4 angles, and so on.
-
-The nodes of the optimization graph are the patches. The graph has only unary and pairwise components. The unary components hold the curvature value for some patch configuration (in a 2x2 patch we have a total of 16 configurations. For each configuration, we have a label). The pairwise component play the role of constraints. Since the patches overlap themselves, we need constraints such that we find consistent solutions at the end.
-
-It is very similar with discrete approaches that I referenced in the thesis.
-
-Their model is solved using TRW-s.
-
-It has enormous running time (8829s for 256x256 pixels and 5x5 patches)
+In~\cite{chan02elasticainpainting}, the authors derive the 4th
+order Euler-Lagrange equation of their elastica regularized model to solve the 
+inpainting problem. A gradient descent alike method is employed to find its root, 
+but the model suffers from numerical instability and high running times. That is 
+one of the main difficulties in minimizing the elastica under a continuous 
+formulation. Some optimization properties of the elastica were studied 
+in~\cite{ambrosio2003direct} and some techniques can be applied to mitigate 
+the numerical instability as was done in~\cite{ballester01filljoint}. In this
+work, the curvature is implicitly represented by a vector field acting under 
+some constraints that are incorporated into the optimization energy. This alternative 
+representation allows an order reduction in the equation that is handled by the 
+optimization method. This strategy has been refined and explored 
+more recently by~\cite{tai11elastica} (inpainting) and~\cite{zhu2013image,duan2014two}
+(segmentation) where augmented lagrangian methods and variations such as ADMM
+are utilized. Nonetheless, these models are vulnerable to bad local optima and
+high running times. 
 
 
+Due to the challenges posed by the global optimization of the elastica, some
+authors propose to use alternative energies that preserve, in some sense, 
+the elastica properties and are more tractable from the optimization point of
+view. In~\cite{bredies15convex} a convex relaxation of the elastica is proposed 
+and in~\cite{goldluecke11totalcurvature,zhong2020minimizing} the total curvature is
+used as an alternative to the elastica. The advantage of these models is, as 
+being convex, there are methods to globally optimize it. Nonetheless, the running 
+time issue persists.
+
+
+Finally, combinatorial methods were also proposed for elastica minimization. The
+premise behind such methods is that a precision reduction in the energy
+computation would lead to a global optimization with smaller running times and
+without damping too much the results. In~\cite{zehiry10fast}, a quadratic binary
+energy is proposed to solve segmentation with elastica regularization, but only 
+squared angles are considered. A more general binary representation is given 
+in~\cite{nieuwenhuis14efficient} using concepts of integral geometry to obtain
+nice results for segmentation and inpainting. We also found elastica 
+regularization in~\cite{schoenemann09linear,strandmark11globalframework} models 
+for segmentation. In these works, the Bruckstein's 
+formula~\cite{bruckstein01convergence} is utilized to estimate the curvature 
+in a linear programming formulation for segmentation. Finally, 
+graph-cuts~\cite{bae2010graph}, negative cycle 
+detection~\cite{schoenemann2011elastic}, and partial 
+enumeration~\cite{olsson2013partial,antunes20} strategies were also explored 
+for the tasks of denoising and segmentation.
+
+In practice, the compromise between precision and running time do not play as 
+well as expected. To obtain results of good quality, these combinatorial methods must
+run for a long time. As an alternative, one may consider optimization over a
+subdomain of the image such as in contour-evolution models. The classical 
+active contour model (snakes)~\cite{kass1988snakes} and its 
+variants~\cite{caseles97geodesic,chan01} have an embedded curvature component 
+that is reflected on the curve-shortening flow of level sets in the case of 
+geodesic active contours, or the CSF of the segmentation curve in the case of 
+snakes. The CSF is the unidimensional case of the mean curvature flow and can 
+be reproduced in a discrete setting~\cite{merriman1992diffusion}. This has been 
+explored in processes such as 
+threshold dynamics~\cite{esedoglu2005threshold,esedoglu2008threshold}, or 
+morphological operations sequence~\cite{marquezneila14}. 
+
+
+Digital estimator
+
+
+In this paper, we devise a discrete process for the CSF that plays a fundamental
+role in a graph-cut segmentation model regularized by the elastica. We compute the
+elastica using proven multigrid convergent digital estimators and we point out
+the relation of the curvature estimator with our CSF process.
+
+
+%Mean-curvature evolution:~\cite{marquezneila14}
+%
+%Mean Curvature Flow
+%Mean Curvature Flow in Image Processing
+%Elastica
+%Wilmore Flow
+%Elastica Regularization in Image Processing: Continuous formulation
+%Elastica Regularization in Image Processing: Discrete formulation
+%Elastica-like regularization (absolute curvature, total curvature): continuous and discrete
+%Graph-cut methods in image processing
+%Non-submodular energies
+%
+%Augmented Lagrangian
+%ADMM (Alternatice Direction ...)
+%QPBO
+%Graph-Cut
+%
+%Segmentation
+%Inpainting
+%Denoising
+%
+%Texture images (edge-based models face difficulties; region based behave better)
 %
 %
+%Continuous formulations are high-order and non-convex therefore difficult to
+%globally optimize. Methods are vulnerable to bad local minima.
+%
+%Modelling tricks can be used to reduce the energy order, but the locality of the
+%solution is not changed.
+%
+%Convex relaxation allow globally optimization, but there are not many convex
+%relaxation proposals for the Elastica.
+%
+%Combinatorial methods give away precision to obtain globally optimal soltuions.
+%However, the high running times persist.
+%
+%Digital estimators may reach a better compromise between precision and running
+%time for combinatorial methods.
+%
+%
+%
+%
+%
+%Nonetheless, these inpainting models are limited to the completion of very small regions. 
+%
+%More recently, augmented lagrangian 
+%methods and variations such as ADMM have been used to minimize the Elastica. 
+%That is done in~\cite{deng2019new} for denoising and in~\cite{duan2014two} for 
+%segmentation.
+%
+%
+%A discret formulation of Elastica optimization is motivated by the difficulties
+%found in the continuous setting. Perhaps one does not need to have a full angle
+%coverage in order to obtain the completion property. In this scenario, a
+%combinatorial approach may be more successful.
+%
+%The continuous formulation of an Elastica minimization problem pose numerical
+%instability issues due to its non-convexity and high-order of its Euler-Lagrange
+%equation. 
+%Perhaps one does not need to have a perfect representation of the Elastica.
+%Perhapts it is good enough to work with 
+%
+%
+%
+%
+%
+%
+%The Elastica has been introduced in image processing by Mumford~\cite{mumford1994elastica} and
+%it has since then being proposed as model to solve several problems in imaging.
+%The Elastica gives us a flexible curve model that can be used to favor the 
+%completion of curves, e.g., contours or level sets. This property can be 
+%explored to model the principal problems of imaging: inpainting, denoising and segmentation.
+%
+%In~\cite{masnou98inpainting} the authors complete the level sets of the image using an
+%Elastica-like energy that employs the absolute value of the curvature instead of
+%its squared value. The model is limited to connect T-joints via straight lines,
+%but it works quite well in some settings. In~\cite{chan02elasticainpainting}, the original 
+%Elastica is used to solve the inpainting problem. The authors derive its 4th
+%order Euler-Lagrange equation and describe a numerical method to find its root.
+%The model suffers from numerical instability and high running times. That's one
+%of the main difficulties in continuous formulation for the optimization fo
+%Elastica. Some techniques can be applied to mitigate the numerical instability 
+%as was done in~\cite{ballester01filljoint}, but like the previous work, the 
+%completion is limited to very small regions. Some theoretical properties regarding the
+%Elastica optimization in the context of image processing can be found
+%in~\cite{ambrosio2003direct}.
+%
+%<Discrete and Continuous formulations.
+%
+%We encounter the curvature and the Elastica in some contour evolution models.
+%That is the case of the classical active contour model~\cite{kass1988} for image
+%segmentation. In this work, the minimization of the perimeter term induces the 
+%curve-shortening flow (the unidimensional case of the mean curvature flow) of 
+%the parameterized curve in the model. In~\cite{caseles97geodesic}, the 
+%curve-shortening flow is execute for every level set of the image and its
+%applied to segmentation and inpainting problems. In~\cite{chan01}, the same flow
+%is applied to an artifical function that encodes the image segmentation.
+%
+%
+%
+%
+%
+%
+%This work was further extended to use the squared
+%curvature in~\cite{} but with a much more complex numerical scheme and with high
+%running times, which illustrates the difficult to optimize the Elastica.
+%
+%to the model for the squared curvature
+%illustrated development of the model in~\cite{}
+%illustrates the difficult in to 
+%
+%In~\cite{} the authors
+%recover the completion property to solve the inpainting problem in a discrete
+%setting. The 
+%
+%The model completes the level sets of an image based on an Elastica-like 
+%energy that uses the absolute value of the curvature instead of its squared. The
+%model is constrained to complete One of the first successfull
+%models using a relaxation of the elastica was the discrete formulation
+%of~\cite{} to the the inpainting problem. There, the T-jonctions of the image level
+%sets were optimized with respect the absolute value of the curvature, meaning
+%that the solution consisted to connect the T-jonctions with straight lines.
+%
+%One of the first appearances of contour evolution in segmentation is the
+%active contour model~\cite{kass1988}. Instead of optimizing the energy over all
+%the image domain, the energy is evaluated in a parameterized curve that can be
+%optimized with a simple gradient descent, which creates a curve evolution. In
+%the active contour energy we found a perimeter term which is known to be the
+%optimization energy driving the curve-shortening flow~\cite{}, that is, the
+%uni-dimensional mean curvature flow~\cite{}. In~\cite{caseles97}, the
+%curve-shortening flow is applied to all the image level sets and in~\cite{chan01} 
+%to an artificial function that encodes the image segmentation. 
+%
+%More recently, the
+%curve-shortening flow 
+%
+%Variational models is a classical choice in image processing litterature. In 
+%this framework, the image is interpreted as a function and the imaging problem 
+%is casted in to a functional optmization problem which the minimization encodes 
+%the problem solution. One of the reasons to have been so much studied is that
+%variational models are versatile in the sense that several imaging problems can
+%be modeled in this framework by adding or tunning its optimization terms. On the 
+%other hand, variational models can be quite challenging to solve due to
+%non-linearity and non-convexity that characterizes several classical variational
+%models in imaging. For instance, the prominent representative of this class, the 
+%Mumford-Shah model~\cite{}, is known to have a unique solution, but no analitic 
+%or numeric method capable to find it.
+%
+%In the search of a compromise, researchers have been proposing alternatives that
+%could involve the relaxation of the energy (e.g. energy convexification), the
+%relaxation of model constraints (e.g. image function derivable everywhere) or a
+%perspective change in how to solve the problem. Regarding the latter, we
+%highlight the contour evolution of parameterized curve (active contours) and the
+%evolution of level sets. 
+%
+%
+%\section{Related work: Elastica in Image Processing}
+%
+%
+%\section{Related work: Curvature regularization}
+%\subsection{Mean curvature flow}
+%\subsubsection{\citetitle{kass1988snakes}\cite{kass1988snakes}}
+%\textbf{[Continuous formulation]}
+%
+%Classical contour evolution model in image segmentation. The energy is composed
+%by three components: Perimeter, Smoothness and Image Data. Image term computed
+%along the contour. No region term.
+%
+%The curve shortening flow can also be interpreted as the contour evolution that
+%minimizes the contour perimeter.
+%
+%\subsubsection{\citetitle{caseles97geodesic}\cite{caseles97geodesic}}
+%\textbf{[Continuous formulation]}
+%
+%Contour evolution (curve-shortening flow) of the image level sets. Image term
+%computed along the contour. No region term.
+%
+%\subsubsection{\citetitle{chan01}\cite{chan01}} 
+%\textbf{[Continuous formulation]}
+%
+%Contour evolution of the zero level set of an artificial function that encodes
+%image segmentation. It accepts a region term.
+%
+%It also has a perimeter component in the minimization energy, which induces a
+%curve-shortening flow
+%
+%\subsubsection{\citetitle{marquezneila14}\cite{marquezneila14}}
+%\textbf{[Discrete formulation]}
+%
+%\subsubsection{\citetitle{merriman1992diffusion}\cite{merriman1992diffusion}}
+%\textbf{[Continuous formulation]}
+%
+%In this paper the authors gives an interpretation of the curve-shortening flow
+%as a heat flow and describe a process to execute the curve-shortening flow
+%which is composed of a step of diffusion and it is followed by a step of
+%thresholding.
+%
+%\subsubsection{\citetitle{esedoglu2005threshold}\cite{esedoglu2005threshold}}
+%\textbf{[Continuous formulation]}
+%
+%Threshold dynamics.
+%
+%\subsubsection{\citetitle{esedoglu2008threshold}\cite{esedoglu2008threshold}}
+%\textbf{[Continuous formulation]}
+%
+%Threshold dynamics.
+%
+%\subsubsection{\citetitle{antunes19}\cite{antunes19}}
+%\textbf{[Discrete formulation]}
+%
+%Curve-shortening flow via non-submodular energy.
+%
+%\subsection{Elastica}
+%\subsubsection{\citetitle{schoenemann09linear}\cite{schoenemann09linear}}
+%\textbf{[Discrete formulation]}
+%
+%The authors use a 2D cellular complex (with variables defined for cells and
+%linels) to represent a digital image. A set of constraints is imposed to
+%guarantee that the solution encodes a consistent digital surface. Image data is
+%associated to cell variables and elastica data (lengh + squared curvature) are
+%associated to linels.
+%
+%For an image with $n$ pixels, roughly $5n$ variables for a simple grid complex
+%(which is limited to square angles). 
+%
+%It uses the Bruckstein's discretizatio for the curvature and it is not suited
+%for digital objects.
+%
+%\subsubsection{\citetitle{zehiry10fast}\cite{zehiry10fast}}
+%\textbf{[Discrete formulation]}
+%
+%Quadratic non-submodular pseudo-boolean function. It also uses the Bruckstein's
+%discretization of curvature.
+%
+%It is not clear how to extend the model to detect other than right angles.
+%
+%Much faster than the equivalent Schoeneman's model.
+%
+%\subsubsection{\citetitle{nieuwenhuis14efficient}\cite{nieuwenhuis14efficient}}
+%\textbf{[Discrete formulation]}
+%
+%
+%\subsubsection{\citetitle{antunes20}\cite{antunes20}}
+%\textbf{[Discrete formulation]}
+%
+%Elastica minimization via graph-cuts.
+%
+%\subsubsection{\citetitle{deng2019new}\cite{deng2019new}}
+%\textbf{[Continuous formulation]}
+%
+%The goal of the authors was to have a denoising model without the staircase
+%effect of ROF. Numerical method is described but quite complex.
+%
+%\subsubsection{\citetitle{duan2014two}\cite{duan2014two}}
+%\textbf{[Continuous formulation]}
+%
+%The model replaces the perimeter term in Mumford Shah by the Elastica. Then it
+%describes an Augmented Lagrangian method to solve the energy and then it
+%applies a thresholding algorithm (k-means variation) to come up zith the image
+%segmentation.
+%
+%\subsection{Total Curvature}
+%
+%\subsubsection{\citetitle{zhong2020minimizing}\cite{zhong2020minimizing}}
+%\textbf{[Continuous formulation]}
+%
+%The image is modeled as a surface and the authors compute the "total curvature"
+%at some surface points as being the sum of the normal curvature at $8$
+%different tangent planes.
+%
+%The numerical method used to solve is ADMM-based. Nice results but very high
+%running times.
+%
+%\subsubsection{\citetitle{bae2010graph}\cite{bae2010graph}}
+%\textbf{[Discrete formulation]}
+%
+%The energy is minimized via a sequence of graph-cuts (flow evolution).
+%Applications for denoising are shown.
+%
+%\subsubsection{\citetitle{olsson2013partial}\cite{olsson2013partial}}
+%\textbf{[Discrete formulation]}
+%
+%The curvature is estimated by evaluating patches in a grid. The patches could
+%have different sizes and their size determine the angle coverage of the
+%curvature estimator. For example, a 2x2 patch covers only curvature values of 0
+%and pi/2, resulting in a segmentation that favors horizontal and vertical
+%lines; a 3x3 patch can reproduce pi/4 angles, and so on.
+%
+%The nodes of the optimization graph are the patches. The graph has only unary
+%and pairwise components. The unary components hold the curvature value for some
+%patch configuration (in a 2x2 patch we have a total of 16 configurations. For
+%each configuration, we have a label). The pairwise component play the role of
+%constraints. Since the patches overlap themselves, we need constraints such
+%that we find consistent solutions at the end.
+%
+%It is very similar with discrete approaches that I referenced in the thesis.
+%
+%Their model is solved using TRW-s.
+%
+%It has enormous running time (8829s for 256x256 pixels and 5x5 patches)
+%
+%
+%%
+%%
 \section{Estimation of geometric quantities on digital data}
 
 Let $C:[0,t] \rightarrow \mathbb{R}^2$ a parameterized plane curve with continuous first and second derivatives. In this case, we can easily compute the curvature at some point $P(t) = \big( x(t),y(t) \big) \in C$ by using the formula
