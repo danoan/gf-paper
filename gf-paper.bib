@@ -1,4 +1,4 @@
-%%%%%%%%%%%% DIGITAL GEOMETRY 
+%%%%%%%%%%%% DIGITAL GEOMETRY %%%%%%%%%%%% 
 @book{klette2004digital,
   title={Digital geometry: Geometric methods for digital picture analysis},
   author={Klette, Reinhard and Rosenfeld, Azriel},
@@ -150,7 +150,7 @@ keywords = "Geometry processing, Curvature, Integral invariant, Stability, 3D sh
 }
 
 
-%%%%%%%%%%%% DISCRETE METHODS IN IMAGING AND BOOLEAN OPTIMIZATION
+%%%%%%%%%%%% DISCRETE OPTIMIZATION %%%%%%%%%%%%
 
 @article{boros02pseudo,
 title = "Pseudo-Boolean optimization",
@@ -161,26 +161,6 @@ pages = "155 - 225",
 year = "2002",
 author = "Endre Boros and Peter L. Hammer"
 }
-
-@INPROCEEDINGS{boykov03geodesics,
-author={Y. Boykov and V. Kolmogorov},
-booktitle={Proceedings Ninth IEEE International Conference on Computer Vision},
-title={Computing geodesics and minimal surfaces via graph cuts},
-year={2003},
-volume={},
-number={},
-pages={26-33 vol.1},
-month={Oct},}
-
-@INPROCEEDINGS{boykov01graphcut,
-author={Y. Y. Boykov and M. P. Jolly},
-booktitle={Proceedings Eighth IEEE International Conference on Computer Vision. ICCV 2001},
-title={Interactive graph cuts for optimal boundary and region segmentation of objects in N-D images},
-year={2001},
-volume={1},
-number={},
-pages={105-112},
-month={},}
 
 @ARTICLE{kolmogorov04whatenergies,
 author={V. Kolmogorov and R. Zabin},
@@ -202,6 +182,38 @@ journal = {PAMI},
 volume = {29},
 }
 
+@article{rother07qpbo,
+  title={Optimizing Binary {MRF}s via Extended Roof Duality},
+  author={Carsten Rother and Vladimir Kolmogorov and Victor S. Lempitsky and Martin Szummer},
+  journal={2007 IEEE Conference on Computer Vision and Pattern Recognition},
+  year={2007},
+  pages={1-8}
+}
+
+%%%%%%%%%%%% GRAPH-CUT IN IMAGING %%%%%%%%%%%%
+
+
+@INPROCEEDINGS{boykov03geodesics,
+author={Y. Boykov and V. Kolmogorov},
+booktitle={Proceedings Ninth IEEE International Conference on Computer Vision},
+title={Computing geodesics and minimal surfaces via graph cuts},
+year={2003},
+volume={},
+number={},
+pages={26-33 vol.1},
+month={Oct},}
+
+@INPROCEEDINGS{boykov01graphcut,
+author={Y. Y. Boykov and M. P. Jolly},
+booktitle={Proceedings Eighth IEEE International Conference on Computer Vision. ICCV 2001},
+title={Interactive graph cuts for optimal boundary and region segmentation of objects in N-D images},
+year={2001},
+volume={1},
+number={},
+pages={105-112},
+month={},}
+
+
 @article{rother04grabcut,
  author = {Rother, Carsten and Kolmogorov, Vladimir and Blake, Andrew},
  title = {``{G}rab{C}ut": Interactive Foreground Extraction Using Iterated Graph Cuts},
@@ -217,39 +229,8 @@ volume = {29},
  publisher = {ACM}
 } 
 
-@article{rother07qpbo,
-  title={Optimizing Binary {MRF}s via Extended Roof Duality},
-  author={Carsten Rother and Vladimir Kolmogorov and Victor S. Lempitsky and Martin Szummer},
-  journal={2007 IEEE Conference on Computer Vision and Pattern Recognition},
-  year={2007},
-  pages={1-8}
-}
 
-%%%%%%%%%%%%%% New references HT %%%%%%%%%%%%%%%%%%%
-
-@article{tai11elastica,
- author = {Tai, Xue-Cheng and Hahn, Jooyoung and Chung, Ginmo Jason},
- title = {A Fast Algorithm for {E}uler’s Elastica Model Using Augmented Lagrangian Method},
- journal = {SIAM J. Img. Sci.},
- issue_date = {February 2011},
- volume = {4},
- number = {1},
- month = mar,
- year = {2011},
- pages = {313--344},
- numpages = {32}
-} 
-
-@article{el2016contrast,
-  title={Contrast driven {E}lastica for image segmentation},
-  author={El-Zehiry, Noha Youssry and Grady, Leo},
-  journal={IEEE Transactions on Image Processing},
-  volume={25},
-  number={6},
-  pages={2508--2518},
-  year={2016},
-  publisher={IEEE}
-}
+%%%%%%%%%%%%%% TO CLASSIFY  %%%%%%%%%%%%%%%%%%%
 
 @article{lim2012introducing,
   title={Introducing Willmore flow into level set segmentation of spinal vertebrae},
@@ -262,104 +243,17 @@ volume = {29},
   publisher={IEEE}
 }
 
-
-@InProceedings{martinFTM01berkeley,
-  author = {D. Martin and C. Fowlkes and D. Tal and J. Malik},
-  title = {A Database of Human Segmented Natural Images and its
-           Application to Evaluating Segmentation Algorithms and
-           Measuring Ecological Statistics},
-  booktitle = {Proc. 8th Int'l Conf. Computer Vision},
-  year = {2001},
-  month = {July},
-  volume = {2},
-  pages = {416--423}
+@article{kiefer2020Palms,
+    title   = {{PALMS Image Partitioning - A New Parallel Algorithm for the Piecewise Affine-Linear Mumford-Shah Model}},
+    author  = {Kiefer, Lukas and Storath, Martin and Weinmann, Andreas},
+    journal = {{Image Processing On Line}},
+    volume  = {10},
+    pages   = {124--149},
+    year    = {2020},
+    doi     = {10.5201/ipol.2020.295},
 }
 
-
-
-@article{esedoglu2008threshold,
-  title={Threshold dynamics for high order geometric motions},
-  author={Esedoglu, Selim and Ruuth, Steven J and Tsai, Richard},
-  journal={Interfaces and Free Boundaries},
-  volume={10},
-  number={3},
-  pages={263--282},
-  year={2008}
-}
-
-@inproceedings{esedoglu2005threshold,
-  title={Threshold dynamics for shape reconstruction and disocclusion},
-  author={Esedoglu, Selim and Ruuth, Steven and Tsai, Richard},
-  booktitle={IEEE International Conference on Image Processing 2005},
-  volume={2},
-  pages={II--502},
-  year={2005},
-  organization={IEEE}
-}
-
-		
-%%%%%%%%%%%%% ELASTICA AND CLASSICAL APPLICATIONS %%%%%%%%%%
-@incollection{mumford1994elastica,
-  title={Elastica and computer vision},
-  author={Mumford, David},
-  booktitle={Algebraic geometry and its applications},
-  pages={491--506},
-  year={1994},
-  publisher={Springer}
-}
-
-@ARTICLE{ballester01filljoint,
-author={C. {Ballester} and M. {Bertalmio} and V. {Caselles} and G. {Sapiro} and J. {Verdera}},
-journal={IEEE Transactions on Image Processing},
-title={Filling-in by joint interpolation of vector fields and gray levels},
-year={2001},
-volume={10},
-number={8},
-pages={1200-1211},
-doi={10.1109/83.935036},
-ISSN={1057-7149},
-month={Aug}}
-
-@ARTICLE{chan02elasticainpainting,
-    author = {Tony F. Chan and Sung Ha Kang and Kang and Jianhong Shen},
-    title = {{E}uler’s Elastica And Curvature Based Inpaintings},
-    journal = {SIAM J. Appl. Math},
-    year = {2002},
-    volume = {63},
-    pages = {564--592}
-}
-
-@article{bruckstein01convergence,
-author={Bruckstein, A.M. and A.N. Netravali and T.J. Richardson},
-title={Epi-convergence of discrete elastica},
-journal={Applicable Analysis},
-volume={79},
-number={1-2},
-pages={137--171},
-doi={10.1080/00036810108840955},
-year={2001}
-}
-
-@article{bruckstein01discrete,
-  title={Discrete elastica},
-  author={Bruckstein, Alfred M and Holt, Robert J and Netravali, Arun N},
-  journal={Applicable Analysis},
-  volume={78},
-  number={3-4},
-  pages={453--485},
-  year={2001},
-  publisher={Taylor \& Francis}
-}
-
-@article{bobenko2005discrete,
-  title={Discrete Willmore flow},
-  author={Bobenko, Alexander I and Schr{\"o}der, Peter},
-  year={2005},
-  publisher={Eurographics Association}
-}
-
-
-%%%%%%%%%%%%%% CURVE SHORTENING FLOW %%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%% MEAN CURVATURE FLOW %%%%%%%%%%%%%%%%%%
 
 @article{huisken84flow,
   title={Flow by mean curvature of convex surfaces into spheres},
@@ -404,18 +298,17 @@ year={2001}
   year={2008}
 }
 
-
-@article{kiefer2020Palms,
-    title   = {{PALMS Image Partitioning - A New Parallel Algorithm for the Piecewise Affine-Linear Mumford-Shah Model}},
-    author  = {Kiefer, Lukas and Storath, Martin and Weinmann, Andreas},
-    journal = {{Image Processing On Line}},
-    volume  = {10},
-    pages   = {124--149},
-    year    = {2020},
-    doi     = {10.5201/ipol.2020.295},
+@article{esedoglu2008threshold,
+  title={Threshold dynamics for high order geometric motions},
+  author={Esedoglu, Selim and Ruuth, Steven J and Tsai, Richard},
+  journal={Interfaces and Free Boundaries},
+  volume={10},
+  number={3},
+  pages={263--282},
+  year={2008}
 }
 
-%%%%%%%%%%%%%% CURVATURE REGULARIZATION
+%%%%%%%%%%%%%% MEAN CURVATURE FLOW IN IMAGE PROCESSING: CONTINUOUS FORMULATION %%%%%%%%%%%%%%
 
 @article{kass1988snakes,
   title={Snakes: Active contour models},
@@ -427,61 +320,6 @@ year={2001}
   year={1988},
   publisher={Springer}
 }
-
-
-@ARTICLE{chan01,
-author={T. F. {Chan} and L. A. {Vese}},
-journal={IEEE Transactions on Image Processing}, 
-title={Active contours without edges}, 
-year={2001},
-volume={10},
-number={2},
-pages={266-277}
-}
-
-@Article{caseles97geodesic,
-author="Caselles, Vicent
-and Kimmel, Ron
-and Sapiro, Guillermo",
-title="Geodesic Active Contours",
-journal="International Journal of Computer Vision",
-year="1997",
-month="Feb",
-day="01",
-volume="22",
-number="1",
-pages="61--79",
-}
-
-
-
-
-@InProceedings{masnou98inpainting,
-author={S. Masnou and J. M. Morel},
-booktitle={Proceedings 1998 International Conference on Image Processing. ICIP98 (Cat. No.98CB36269)},
-title={Level lines based disocclusion},
-year={1998},
-volume={},
-number={},
-pages={259-263 vol.3},
-month={Oct},}
-
-
-
-@Article{appleton05geodesic,
-author="Appleton, Ben
-and Talbot, Hugues",
-title="Globally Optimal Geodesic Active Contours",
-journal="Journal of Mathematical Imaging and Vision",
-year="2005",
-month="Jul",
-day="01",
-volume="23",
-number="1",
-pages="67--86",
-}
-
-%%%%%%%%%% ELASTICA REGULARIZATION
 
 @article{malladi1995image,
   title={Image processing via level set curvature flow},
@@ -504,6 +342,50 @@ pages="67--86",
   publisher={Citeseer}
 }
 
+@Article{caseles97geodesic,
+author="Caselles, Vicent
+and Kimmel, Ron
+and Sapiro, Guillermo",
+title="Geodesic Active Contours",
+journal="International Journal of Computer Vision",
+year="1997",
+month="Feb",
+day="01",
+volume="22",
+number="1",
+pages="61--79",
+}
+
+@ARTICLE{chan01,
+author={T. F. {Chan} and L. A. {Vese}},
+journal={IEEE Transactions on Image Processing}, 
+title={Active contours without edges}, 
+year={2001},
+volume={10},
+number={2},
+pages={266-277}
+}
+
+
+@inproceedings{esedoglu2005threshold,
+  title={Threshold dynamics for shape reconstruction and disocclusion},
+  author={Esedoglu, Selim and Ruuth, Steven and Tsai, Richard},
+  booktitle={IEEE International Conference on Image Processing 2005},
+  volume={2},
+  pages={II--502},
+  year={2005},
+  organization={IEEE}
+}
+
+%%%%%%%%%%%%%% WILMORE FLOW %%%%%%%%%%%%%%
+
+@article{bobenko2005discrete,
+  title={Discrete Willmore flow},
+  author={Bobenko, Alexander I and Schr{\"o}der, Peter},
+  year={2005},
+  publisher={Eurographics Association}
+}
+
 @article{droske2004level,
   title={A level set formulation for Willmore flow},
   author={Droske, Marc and Rumpf, Martin},
@@ -512,66 +394,6 @@ pages="67--86",
   number={3},
   pages={361--378},
   year={2004}
-}
-
-%%%%%%%%%%%%%%% CONTINUOUS FORMULATIONS TO ELASTICA MINIMIZATION
-@article{schoenemann2011elastic,
-  title={The elastic ratio: Introducing curvature into ratio-based image segmentation},
-  author={Schoenemann, Thomas and Masnou, Simon and Cremers, Daniel},
-  journal={IEEE Transactions on Image Processing},
-  volume={20},
-  number={9},
-  pages={2565--2581},
-  year={2011},
-  publisher={IEEE}
-}
-
-@article{zhu2013image,
-  title={Image segmentation using {E}uler’s elastica as the regularization},
-  author={Zhu, Wei and Tai, Xue-Cheng and Chan, Tony},
-  journal={Journal of Scientific Computing},
-  volume={57},
-  number={2},
-  pages={414--438},
-  year={2013},
-  publisher={Springer}
-}
-
-@article{deng2019new,
-  title={A New Operator Splitting Method for the {E}uler Elastica Model for Image Smoothing},
-  author={Deng, Liang-Jian and Glowinski, Roland and Tai, Xue-Cheng},
-  journal={SIAM Journal on Imaging Sciences},
-  volume={12},
-  number={2},
-  pages={1190--1230},
-  year={2019},
-  publisher={SIAM}
-}
-
-%%%%%%%%%%%%%%%% CONVEXIFICATION APPROACHES TO ELASTICA MINIMIZATION
-
-@INPROCEEDINGS{goldluecke11totalcurvature,
-author={B. {Goldluecke} and D. {Cremers}},
-booktitle={2011 International Conference on Computer Vision},
-title={Introducing total curvature for image processing},
-year={2011},
-volume={},
-number={},
-pages={1267-1274},
-keywords={computational geometry;image processing;minimisation;Radon transforms;total curvature;image processing;Menger-Melnikov curvature;Radon measure;convex relaxation;convex set;minimization algorithm;TV;Minimization;Approximation methods;Integral equations;Noise reduction;Image segmentation},
-doi={10.1109/ICCV.2011.6126378},
-ISSN={2380-7504},
-month={Nov},}
-
-@article{bredies15convex,
-author = {Bredies, Kristian and Pock, Thomas and Wirth, Benedikt},
-year = {2015},
-month = {01},
-pages = {566-613},
-title = {A Convex, Lower Semicontinuous Approximation of {E}uler’s Elastica Energy},
-volume = {47},
-journal = {SIAM Journal on Mathematical Analysis},
-doi = {10.1137/130939493}
 }
 
 @article{bretin2015phase,
@@ -585,7 +407,184 @@ doi = {10.1137/130939493}
   publisher={Springer}
 }
 
-%%%%%%%%%%%%%%%%%%% DIGITAL APPROACHES TO ELASTICA MINIMIZATION
+
+%%%%%%%%%%%%% ELASTICA %%%%%%%%%%
+
+@incollection{mumford1994elastica,
+  title={Elastica and computer vision},
+  author={Mumford, David},
+  booktitle={Algebraic geometry and its applications},
+  pages={491--506},
+  year={1994},
+  publisher={Springer}
+}
+
+@article{ambrosio2003direct,
+  title={A direct variational approach to a problem arising in image reconstruction},
+  author={Ambrosio, Luigi and Masnou, Simon},
+  journal={Interfaces and Free Boundaries},
+  volume={5},
+  number={1},
+  pages={63--81},
+  year={2003}
+}
+
+
+%%%%%%%%%%%% ELASTICA DISCRETIZATION %%%%%%%%%%%%
+
+@article{bruckstein01convergence,
+author={Bruckstein, A.M. and A.N. Netravali and T.J. Richardson},
+title={Epi-convergence of discrete elastica},
+journal={Applicable Analysis},
+volume={79},
+number={1-2},
+pages={137--171},
+doi={10.1080/00036810108840955},
+year={2001}
+}
+
+@article{bruckstein01discrete,
+  title={Discrete elastica},
+  author={Bruckstein, Alfred M and Holt, Robert J and Netravali, Arun N},
+  journal={Applicable Analysis},
+  volume={78},
+  number={3-4},
+  pages={453--485},
+  year={2001},
+  publisher={Taylor \& Francis}
+}
+
+
+%%%%%%%%%%%%%% ELASTICA REGULARIZATION: CONTINUOUS FORMULATION %%%%%%%%%%%%%%%
+
+@ARTICLE{ballester01filljoint,
+author={C. {Ballester} and M. {Bertalmio} and V. {Caselles} and G. {Sapiro} and J. {Verdera}},
+journal={IEEE Transactions on Image Processing},
+title={Filling-in by joint interpolation of vector fields and gray levels},
+year={2001},
+volume={10},
+number={8},
+pages={1200-1211},
+doi={10.1109/83.935036},
+ISSN={1057-7149},
+month={Aug}}
+
+@ARTICLE{chan02elasticainpainting,
+    author = {Tony F. Chan and Sung Ha Kang and Kang and Jianhong Shen},
+    title = {{E}uler’s Elastica And Curvature Based Inpaintings},
+    journal = {SIAM J. Appl. Math},
+    year = {2002},
+    volume = {63},
+    pages = {564--592}
+}
+
+@article{tai11elastica,
+ author = {Tai, Xue-Cheng and Hahn, Jooyoung and Chung, Ginmo Jason},
+ title = {A Fast Algorithm for {E}uler’s Elastica Model Using Augmented Lagrangian Method},
+ journal = {SIAM J. Img. Sci.},
+ issue_date = {February 2011},
+ volume = {4},
+ number = {1},
+ month = mar,
+ year = {2011},
+ pages = {313--344},
+ numpages = {32}
+} 
+
+@article{zhu2013image,
+  title={Image segmentation using {E}uler’s elastica as the regularization},
+  author={Zhu, Wei and Tai, Xue-Cheng and Chan, Tony},
+  journal={Journal of Scientific Computing},
+  volume={57},
+  number={2},
+  pages={414--438},
+  year={2013},
+  publisher={Springer}
+}
+
+@inproceedings{duan2014two,
+  title={A two-stage image segmentation method using Euler's elastica regularized Mumford-Shah model},
+  author={Duan, Yuping and Huang, Weimin and Zhou, Jiayin and Chang, Huibin and Zeng, Tieyong},
+  booktitle={2014 22nd International Conference on Pattern Recognition},
+  pages={118--123},
+  year={2014},
+  organization={IEEE}
+}
+
+@article{deng2019new,
+  title={A New Operator Splitting Method for the {E}uler Elastica Model for Image Smoothing},
+  author={Deng, Liang-Jian and Glowinski, Roland and Tai, Xue-Cheng},
+  journal={SIAM Journal on Imaging Sciences},
+  volume={12},
+  number={2},
+  pages={1190--1230},
+  year={2019},
+  publisher={SIAM}
+}
+
+
+%CONVEXIFICATION%
+@article{bredies15convex,
+author = {Bredies, Kristian and Pock, Thomas and Wirth, Benedikt},
+year = {2015},
+month = {01},
+pages = {566-613},
+title = {A Convex, Lower Semicontinuous Approximation of {E}uler’s Elastica Energy},
+volume = {47},
+journal = {SIAM Journal on Mathematical Analysis},
+doi = {10.1137/130939493}
+}
+
+
+%%%%%%%%%%%%%% ELASTICA REGULARIZATION: DISCRETE FORMULATION %%%%%%%%%%%%%% 
+
+@INPROCEEDINGS{schoenemann09linear,
+author={T. Schoenemann and F. Kahl and D. Cremers},
+booktitle={2009 IEEE 12th International Conference on Computer Vision},
+title={Curvature regularity for region-based image segmentation and inpainting: A linear programming relaxation},
+year={2009},
+volume={},
+number={},
+pages={17-23},
+month={Sept},}
+
+
+@INPROCEEDINGS{zehiry10fast,
+author={N. Y. El-Zehiry and L. Grady},
+booktitle={2010 IEEE Computer Society Conference on Computer Vision and Pattern Recognition},
+title={Fast global optimization of curvature},
+year={2010},
+volume={},
+number={},
+pages={3257-3264},
+month={June},}
+
+
+@InProceedings{strandmark11globalframework,
+author="Strandmark, Petter
+and Kahl, Fredrik",
+editor="Boykov, Yuri
+and Kahl, Fredrik
+and Lempitsky, Victor
+and Schmidt, Frank R.",
+title="Curvature Regularization for Curves and Surfaces in a Global Optimization Framework",
+booktitle="Energy Minimization Methods in Computer Vision and Pattern Recognition",
+year="2011",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="205--218",
+isbn="978-3-642-23094-3"
+}
+
+@INPROCEEDINGS{nieuwenhuis14efficient,
+author={C. Nieuwenhuis and E. Toeppe and L. Gorelick and O. Veksler and Y. Boykov},
+booktitle={2014 IEEE Conference on Computer Vision and Pattern Recognition},
+title={Efficient Squared Curvature},
+year={2014},
+volume={},
+number={},
+pages={4098-4105},
+month={June},}
 
 @ARTICLE{marquezneila14,
 author={P. {Márquez-Neila} and L. {Baumela} and L. {Alvarez}},
@@ -595,6 +594,17 @@ year={2014},
 volume={36},
 number={1},
 pages={2-17}}
+
+@article{el2016contrast,
+  title={Contrast driven {E}lastica for image segmentation},
+  author={El-Zehiry, Noha Youssry and Grady, Leo},
+  journal={IEEE Transactions on Image Processing},
+  volume={25},
+  number={6},
+  pages={2508--2518},
+  year={2016},
+  publisher={IEEE}
+}
 
 @InProceedings{antunes19,
 author="Antunes, Daniel
@@ -620,70 +630,33 @@ title={An Elastica-Driven Digital Curve Evolution Model for Image Segmentation},
 year={2020}
 }
 
+%%%%%%%%%%%%%% CURVATURE REGULARIZATION (NOT ELASTICA): CONTINUOUS FORMULATION %%%%%%%%%%%%%% 
 
-%%%%%%%%%%%%%% DISCRETE APPROACHES TO ELASTICA MINIMIZATION
-@INPROCEEDINGS{schoenemann09linear,
-author={T. Schoenemann and F. Kahl and D. Cremers},
-booktitle={2009 IEEE 12th International Conference on Computer Vision},
-title={Curvature regularity for region-based image segmentation and inpainting: A linear programming relaxation},
-year={2009},
-volume={},
-number={},
-pages={17-23},
-month={Sept},}
-
-
-@INPROCEEDINGS{zehiry10fast,
-author={N. Y. El-Zehiry and L. Grady},
-booktitle={2010 IEEE Computer Society Conference on Computer Vision and Pattern Recognition},
-title={Fast global optimization of curvature},
-year={2010},
-volume={},
-number={},
-pages={3257-3264},
-month={June},}
-
-@InProceedings{strandmark11globalframework,
-author="Strandmark, Petter
-and Kahl, Fredrik",
-editor="Boykov, Yuri
-and Kahl, Fredrik
-and Lempitsky, Victor
-and Schmidt, Frank R.",
-title="Curvature Regularization for Curves and Surfaces in a Global Optimization Framework",
-booktitle="Energy Minimization Methods in Computer Vision and Pattern Recognition",
-year="2011",
-publisher="Springer Berlin Heidelberg",
-address="Berlin, Heidelberg",
-pages="205--218",
-isbn="978-3-642-23094-3"
+@article{schoenemann2011elastic,
+  title={The elastic ratio: Introducing curvature into ratio-based image segmentation},
+  author={Schoenemann, Thomas and Masnou, Simon and Cremers, Daniel},
+  journal={IEEE Transactions on Image Processing},
+  volume={20},
+  number={9},
+  pages={2565--2581},
+  year={2011},
+  publisher={IEEE}
 }
 
-
-
-@INPROCEEDINGS{nieuwenhuis14efficient,
-author={C. Nieuwenhuis and E. Toeppe and L. Gorelick and O. Veksler and Y. Boykov},
-booktitle={2014 IEEE Conference on Computer Vision and Pattern Recognition},
-title={Efficient Squared Curvature},
-year={2014},
+%CONVEXIFICATION%
+@INPROCEEDINGS{goldluecke11totalcurvature,
+author={B. {Goldluecke} and D. {Cremers}},
+booktitle={2011 International Conference on Computer Vision},
+title={Introducing total curvature for image processing},
+year={2011},
 volume={},
 number={},
-pages={4098-4105},
-month={June},}
+pages={1267-1274},
+keywords={computational geometry;image processing;minimisation;Radon transforms;total curvature;image processing;Menger-Melnikov curvature;Radon measure;convex relaxation;convex set;minimization algorithm;TV;Minimization;Approximation methods;Integral equations;Noise reduction;Image segmentation},
+doi={10.1109/ICCV.2011.6126378},
+ISSN={2380-7504},
+month={Nov},}
 
-
-%%%%%%%%%%% Coco Data set %%%%%%%%%%%
-@inproceedings{lin2014microsoft,
-  title={Microsoft coco: Common objects in context},
-  author={Lin, Tsung-Yi and Maire, Michael and Belongie, Serge and Hays, James and Perona, Pietro and Ramanan, Deva and Doll{\'a}r, Piotr and Zitnick, C Lawrence},
-  booktitle={European conference on computer vision},
-  pages={740--755},
-  year={2014},
-  organization={Springer}
-}
-
-
-%%%%%%%%%%% New references %%%%%%%%%%%
 @inproceedings{zhong2020minimizing,
   title={Minimizing discrete total curvature for image processing},
   author={Zhong, Qiuxiang and Li, Yutong and Yang, Yijie and Duan, Yuping},
@@ -691,6 +664,18 @@ month={June},}
   pages={9474--9482},
   year={2020}
 }
+
+%%%%%%%%%%%%%% CURVATURE REGULARIZATION (NOT ELASTICA): DISCRETE FORMULATION %%%%%%%%%%%%%% 
+
+@InProceedings{masnou98inpainting,
+author={S. Masnou and J. M. Morel},
+booktitle={Proceedings 1998 International Conference on Image Processing. ICIP98 (Cat. No.98CB36269)},
+title={Level lines based disocclusion},
+year={1998},
+volume={},
+number={},
+pages={259-263 vol.3},
+month={Oct},}
 
 @article{bae2010graph,
   title={Graph cuts for curvature based image denoising},
@@ -703,15 +688,6 @@ month={June},}
   publisher={IEEE}
 }
 
-@inproceedings{duan2014two,
-  title={A two-stage image segmentation method using Euler's elastica regularized Mumford-Shah model},
-  author={Duan, Yuping and Huang, Weimin and Zhou, Jiayin and Chang, Huibin and Zeng, Tieyong},
-  booktitle={2014 22nd International Conference on Pattern Recognition},
-  pages={118--123},
-  year={2014},
-  organization={IEEE}
-}
-
 @inproceedings{olsson2013partial,
   title={Partial enumeration and curvature regularization},
   author={Olsson, Carl and Ul{\'e}n, Johannes and Boykov, Yuri and Kolmogorov, Vladimir},
@@ -719,3 +695,44 @@ month={June},}
   pages={2936--2943},
   year={2013}
 }
+
+
+%%%%%%%%%%%%%% OTHER IMAGING METHODS %%%%%%%%%%%%%%
+
+@Article{appleton05geodesic,
+author="Appleton, Ben
+and Talbot, Hugues",
+title="Globally Optimal Geodesic Active Contours",
+journal="Journal of Mathematical Imaging and Vision",
+year="2005",
+month="Jul",
+day="01",
+volume="23",
+number="1",
+pages="67--86",
+}
+
+%%%%%%%%%%%%%% COCO DATA SET %%%%%%%%%%%%%% 
+@inproceedings{lin2014microsoft,
+  title={Microsoft coco: Common objects in context},
+  author={Lin, Tsung-Yi and Maire, Michael and Belongie, Serge and Hays, James and Perona, Pietro and Ramanan, Deva and Doll{\'a}r, Piotr and Zitnick, C Lawrence},
+  booktitle={European conference on computer vision},
+  pages={740--755},
+  year={2014},
+  organization={Springer}
+}
+
+
+%%%%%%%%%%%%%% BERKELEY DATA SET %%%%%%%%%%%%%% 
+@InProceedings{martinFTM01berkeley,
+  author = {D. Martin and C. Fowlkes and D. Tal and J. Malik},
+  title = {A Database of Human Segmented Natural Images and its
+           Application to Evaluating Segmentation Algorithms and
+           Measuring Ecological Statistics},
+  booktitle = {Proc. 8th Int'l Conf. Computer Vision},
+  year = {2001},
+  month = {July},
+  volume = {2},
+  pages = {416--423}
+}
+
