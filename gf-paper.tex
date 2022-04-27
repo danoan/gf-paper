@@ -19,7 +19,6 @@
 % Custom Commands
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Z}{\mathbb{Z}}
-\newcommand{\Equ}[1]{(\ref{#1})}
 
 % Internal Review
 \definechangesauthor[name=Jaco,color=magenta]{jaco}
@@ -174,7 +173,7 @@ Let $C:[0,t] \rightarrow \mathbb{R}^2$ a parameterized plane curve with continuo
 
 What about if we do not know the curve equations, but instead, we have finite set of points that is an \emph{exact sampling} $C$ ? That is, a finite sequence $P$ is an {\em exact sampling} of $C$ whenever each element of $P$ is an element of $C$ and the order of the sequence corresponds to the ordering of points $P$ when moving along $C$. In this case, we can approach the curve by a sequence of straight lines joining consecutive points of the sequence and estimate the curvature by computing the angle defect between consecutive lines. The estimation is convergent (in the epi-convergent sense) as long as the sampling points are sufficiently numerous~\cite{bruckstein01discrete,bruckstein01convergence}.
 
-The result above is not valid for digital domains. We do not have an exact sampling, instead, samples are constrained to lie in the digital grid. That condition creates ambiguities, which are clearly illustrated in figure~\ref{fig:digitization-ambiguity} where the same digitization represents two quite distinct shapes. Of course, one may refine the grid to such a precision that is close to an exact sampling, but this is highly undesirable due to memory and running time complexity, in particular for image processing tasks. Furthermore, the polygonal contour is still locally very jagged, with only 4 possible directions.
+The result above is not valid for digital domains. We do not have an exact sampling, instead, samples are constrained to lie in the digital grid. That condition creates ambiguities, which are clearly illustrated in~\cref{fig:digitization-ambiguity} where the same digitization represents two quite distinct shapes. Of course, one may refine the grid to such a precision that is close to an exact sampling, but this is highly undesirable due to memory and running time complexity, in particular for image processing tasks. Furthermore, the polygonal contour is still locally very jagged, with only 4 possible directions.
 
 Ideally, we should have a criteria to evaluate the quality and speed
 of convergence of geometric estimators according to the resolution of
@@ -232,7 +231,7 @@ The function $\hat{\kappa} _r$ denotes an estimator of curvature. We use the int
 %
 where the estimation of area for some digital set $S$ can be defined as $\widehat{\text{Area}}(S,h) \coloneqq h^2\text{Card}\left( S \right).$ 
 
-Equation~\ref{eq:curvature_approximation} estimates the curvature as a scaling factor of the difference between the intersection area of a disk of radius $r$ centered at point $P$ of the contour with half of the disk area. Therefore, we can say that the curvature is lower at points in which the balance between intersected and non intersected points is closer to zero.
+\Cref{eq:curvature_approximation} estimates the curvature as a scaling factor of the difference between the intersection area of a disk of radius $r$ centered at point $P$ of the contour with half of the disk area. Therefore, we can say that the curvature is lower at points in which the balance between intersected and non intersected points is closer to zero.
 
 In the following, we simply write $S$ to specify a digital shape and we omit the grid step $h$ to simplify expressions (or, putting it differently, we assume that the shape of interest is rescaled by $1/h$ and we set $h = 1$).
 %
@@ -283,7 +282,7 @@ flow (CSF), the one-dimensional version of the mean curvature flow.
 \end{definition}
 %
 %
- One iteration of the balance coefficient flow applied on shape $X$ is equivalent to find the shape $X'$ such that for any disk of radius $r$ centered at any point of the contour of $X'$, the intersection of the disk with the shape $X$ equals $\pi r^2/2$. This interpretation is illustrated in Figure~\ref{fig:geometric-interpretation}.
+ One iteration of the balance coefficient flow applied on shape $X$ is equivalent to find the shape $X'$ such that for any disk of radius $r$ centered at any point of the contour of $X'$, the intersection of the disk with the shape $X$ equals $\pi r^2/2$. This interpretation is illustrated in~\cref{fig:geometric-interpretation}.
 %
 % 
 \begin{figure}
@@ -308,7 +307,7 @@ let $\epsilon^{(0)}(x)$ be a solution to the equation
 with $\mathbf{n}^{(0)}(x)$ the outward normal vector at $x$ to
 the boundary of the shape $X^{(0)}$. Specifying
 $|\epsilon^{(0)}(x)| < r$ clearly imposes a unique solution to
-\Equ{eq-null-balance-coefficient}, provided $r < 1/\kappa$. Then the
+~\cref{eq-null-balance-coefficient}, provided $r < 1/\kappa$. Then the
 contour evolution of $C^{(0)}$ is defined as:
 \begin{align} \label{eq-balance-coefficient-contour-flow}
   C^{(1)} := \left\{ \sigma^{(0)}(x), x \in C^{(0)} \right\},
@@ -337,8 +336,7 @@ the boundary of $X^{(1)}$ under some hypotheses.
   $y=\sigma^{(0)}(x)=x+\epsilon^{(0)}(x) \mathbf{n}^{(0)}(x)$.
   Obviously, the smaller is $r$, the closer is $C^{(1)}$ from
   $C^{(0)}$.  From the definition of balance coefficient, one can see
-  that the displacement that is solution to
-  \Equ{eq-null-balance-coefficient} cannot exceed $\frac{1}{2}\kappa
+  that the displacement that is solution to~\cref{eq-null-balance-coefficient} cannot exceed $\frac{1}{2}\kappa
   r^2$. So if $r < \sqrt{2\rho / \kappa_{\max}}$, where
   $\kappa_{\max}$ is the maximum absolute curvature of the curve, then
   the point $y$ is within the reach of the curve $C^{(0)}$. It follows
@@ -414,7 +412,7 @@ curve-shortening flow when there is no topology change.
   \end{align*}
 \end{proposition}
 \begin{proof}
-  Let $y \in C^{(1)}$. According to Proposition~\ref{prop-C-equ-X},
+  Let $y \in C^{(1)}$. According to~\cref{prop-C-equ-X},
   there is a point $P \in C^{(0)}$ such that
   $y=\sigma^{(0)}(x)$. Finally, let $y'=P+t\kappa(P)\mathbf{n}(P)$. We
   will show that $\| y-y' \| \le \frac{3}{4} \kappa_{\max}^3 t^2$,
@@ -427,14 +425,14 @@ curve-shortening flow when there is no topology change.
   \frac{\kappa(P)}{2}x^2$ in this frame.
 
   We know that $y = P + \epsilon^{(0)}(P)\mathbf{n}(P)$ according
-  to \Equ{eq-null-balance-coefficient}, where $\epsilon^{(0)}(P)$ is
+  to~\cref{eq-null-balance-coefficient}, where $\epsilon^{(0)}(P)$ is
   the local displacement of $P$ which induce a zero balance
   coefficient. Let us determine this displacement $\varepsilon :=
   \epsilon^{(0)}(P)$ in the normal direction, such that the
   intersection of the disk with $X$ equals half of the disk area. Let
   us say that the point of zero balance coefficient is $P'$ and that
   $A_{\varepsilon}$ is the intersection area of the displaced
-  disk (see Figure~\ref{fig:geometric-argument}, right, for notations). Then,
+  disk (see~\cref{fig:geometric-argument}, right, for notations). Then,
 %
 %
 \begin{align*}
@@ -481,11 +479,11 @@ To conclude the argument, we have:
 \mbox{~}\hfill\qed
 \end{proof}
 
-Applying Proposition~\ref{prop-C-equ-X} at each time step $k$ (writing
+Applying~\cref{prop-C-equ-X} at each time step $k$ (writing
 $(k)$ instead of $(0)$ and $(k+1)$ instead of $(1)$) allows us to
 redefine the balance coefficient flow as the sequence $C^{(k)}$,
 provided that the boundaries of $X^{(k)}$ are twice differentiable
-Jordan curves. But Proposition~\ref{prop:bcf-close-to-csf} applied on
+Jordan curves. But~\cref{prop:bcf-close-to-csf} applied on
 these consecutive curves tells us that the curves $C^{(k)}=\partial
 X^{(k)}$ are very close to the curve shortening flow, which induces
 twice differentiable curves except at critical points. Proving that
@@ -563,7 +561,7 @@ The vertices $s,t$ are virtual vertices representing the source and target verti
 \end{align*}
 %
 %
-The set $\mathcal{E}_{st}$ comprises all the edges having the source as their starting point or the target as their endpoint. In table~\ref{tab:edge-capacity} we describe the edge capacity function.
+The set $\mathcal{E}_{st}$ comprises all the edges having the source as their starting point or the target as their endpoint. In~\cref{tab:edge-capacity} we describe the edge capacity function.
 %
 %
 \begin{table}
@@ -604,7 +602,7 @@ A cut in a graph separates the vertices in source and target components. Our mod
 %
 where $S^{(0)}$ is the initial shape. Here and in the following, we omit some parameters of the candidate graph to simplify notation. They are going to be explicitly defined if necessary.
 
-In figure~\ref{fig:no-neighborhood-shapes-evolution}, we show some examples of this process. As expected, the flow is very similar to the CSF. Next, we describe how to optimize the shape with respect the elastica energy by using a neighborhood of shapes.
+In~\cref{fig:no-neighborhood-shapes-evolution}, we show some examples of this process. As expected, the flow is very similar to the CSF. Next, we describe how to optimize the shape with respect the elastica energy by using a neighborhood of shapes.
 %
 %
 %
@@ -626,7 +624,7 @@ In figure~\ref{fig:no-neighborhood-shapes-evolution}, we show some examples of t
 \subsection{Neighborhood of shapes}
 %
 %
-We are going to show how the process~\ref{eq:no-neighborhood-process} can be modified to optimize the elastica energy. We start by defining a very simple neighborhood of shapes.
+We are going to show how the process induced by~\cref{eq:no-neighborhood-process} can be modified to optimize the elastica energy. We start by defining a very simple neighborhood of shapes.
 %
 %
 \begin{definition}[Neighborhood of shapes]
@@ -638,7 +636,7 @@ We are going to show how the process~\ref{eq:no-neighborhood-process} can be mod
 \end{definition}
 %
 %
-The Graph Flow Algorithm (GFA)~\ref{alg:graphflow-algorithm} summarizes the process and figure~\ref{fig:graph-flow-experiments} show some experiments.
+The Graph Flow Algorithm (GFA)~\ref{alg:graphflow-algorithm} summarizes the process and~\cref{fig:graph-flow-experiments} show some experiments.
 %
 %
 \begin{algorithm}
@@ -687,7 +685,7 @@ The Graph Flow Algorithm (GFA)~\ref{alg:graphflow-algorithm} summarizes the proc
 \label{fig:graph-flow-experiments}
 \end{figure}
 
-Remarkably, the GFA escapes premature local minimum and even achieves the global optimum of the elastica energy for some cases. In figure~\ref{fig:graph-flow-expand} we show the results of elastica minimization for $\vec{\Theta} = ( r=2,h=1/8,\alpha=1/1024,\beta=1 )$. The GFA correctly expands the shapes to the optimum disk of radius $32$. However, we may have a premature interruption of the evolution if a small estimation disk radius is chosen, as illustrated in the bottom right graph of figure~\ref{fig:graph-flow-experiments}.
+Remarkably, the GFA escapes premature local minimum and even achieves the global optimum of the elastica energy for some cases. In~\cref{fig:graph-flow-expand} we show the results of elastica minimization for $\vec{\Theta} = ( r=2,h=1/8,\alpha=1/1024,\beta=1 )$. The GFA correctly expands the shapes to the optimum disk of radius $32$. However, we may have a premature interruption of the evolution if a small estimation disk radius is chosen, as illustrated in the bottom right graph of~\cref{fig:graph-flow-experiments}.
 %
 %
 \begin{figure}
@@ -703,7 +701,7 @@ Remarkably, the GFA escapes premature local minimum and even achieves the global
 \end{figure}
 %
 %
-The computations can be done in parallel for each member of the neighborhood. Table~\ref{tab:summary-graph-flow-running-time} shows the running times where the candidate graphs are evaluated in parallel. These times can be further improved by parallelizing the computation of the balance coefficient as well the elastica estimator evaluation.
+The computations can be done in parallel for each member of the neighborhood.\Cref{tab:summary-graph-flow-running-time} shows the running times where the candidate graphs are evaluated in parallel. These times can be further improved by parallelizing the computation of the balance coefficient as well the elastica estimator evaluation.
 %
 %
 \begin{figure}[h!]
@@ -738,7 +736,7 @@ The GFA can be extended to include a data fidelity term. In this section, we exp
 The goal of this experiment is to illustrate the regularization properties of the GFA and to highlight the role of the data term in our approach. The data term employed in this experiment is the same used by Boykov-Jolly in their classical graph cut model~\cite{boykov01graphcut}. 
 
 \subsubsection{Data term}
-We are going to update the graph construction described in section~\ref{sec:graph-cut-model} to accomodate the data term. In particular, we define two new sets of vertices $\mathcal{V}_{fg}$ and $\mathcal{V}_{bg}$ as the set of foreground and background seeds, respectively. Those are given as input.
+We are going to update the graph construction described in~\cref{sec:graph-cut-model} to accomodate the data term. In particular, we define two new sets of vertices $\mathcal{V}_{fg}$ and $\mathcal{V}_{bg}$ as the set of foreground and background seeds, respectively. Those are given as input.
 
 Let $\vec{x} \in \{0,1\}^{|S|}$ represent the label of each pixel in the image ($0$ for background and $1$ for foreground). We define the data term as
 %
@@ -759,7 +757,7 @@ where $\gamma_r \geq 0$ and $\gamma_b \geq 0$ are parameters controlling the inf
 \end{align*}
 %
 %
-The terms $H_{bg}$ and $H_{fg}$ are mixed Gaussian distribution constructed from the foreground and background seeds. The updated capacity function is described in table~\ref{tab:updated-capacity-function}.
+The terms $H_{bg}$ and $H_{fg}$ are mixed Gaussian distribution constructed from the foreground and background seeds. The updated capacity function is described in~\cref{tab:updated-capacity-function}.
 %
 %
 \begin{table}
@@ -783,7 +781,7 @@ where the constant $M$ is defined such that
 \begin{align*}
 M &= \max_{e \in \mathcal{E} }{ c(e) }.
 \end{align*}
-\caption{\textbf{Updated capacity function.} The capacity function of table~\ref{tab:edge-capacity} is updated to accommodate the data term.}
+\caption{\textbf{Updated capacity function.} The capacity function of~\cref{tab:edge-capacity} is updated to accommodate the data term.}
 \label{tab:updated-capacity-function}
 \end{table}
 %
@@ -805,7 +803,7 @@ That means that by setting $\alpha=\gamma_r=\gamma_b=1$, the shape of minimum el
 \subsubsection{Experiment}
 We need an initial contour to start the GFA. The initial contour is given by the grabcut algorithm~\cite{rother04grabcut}, a variant of classical graph cut segmentation~\cite{boykov01graphcut} which is implemented in the OpenCV library.
 
-For this experiment, we used a selection of $212$ images of the Validation 2017 subset of the Coco dataset~\cite{lin2014microsoft}. The Coco dataset comprises over $328$k images spreaded over $91$ categories and $11$ super-categories. Table~\ref{tab:image-categories-distribution} summarizes the quantity of selected images per super-category. 
+For this experiment, we used a selection of $212$ images of the Validation 2017 subset of the Coco dataset~\cite{lin2014microsoft}. The Coco dataset comprises over $328$k images spreaded over $91$ categories and $11$ super-categories.\Cref{tab:image-categories-distribution} summarizes the quantity of selected images per super-category. 
 %
 %
 \begin{table}
@@ -820,9 +818,9 @@ For this experiment, we used a selection of $212$ images of the Validation 2017 
 \end{table}
 %
 %
-This experiment consisted in manually select foreground and background seeds for each selected image; compute the grabcut segmentation; and then use the grabcut segmentation as input for two versions of the GFA: one with the data term described in the previous section and another without. In figure~\ref{fig:coco-experiment-sample} we show a sample of the images used in the experiment. All the results are available online and can be conveniently visualized in this webpage~\footnote{https://danoan.github.io/content/papers/coco-experiment/report.html}. 
+This experiment consisted in manually select foreground and background seeds for each selected image; compute the grabcut segmentation; and then use the grabcut segmentation as input for two versions of the GFA: one with the data term described in the previous section and another without. In~\cref{fig:coco-experiment-sample} we show a sample of the images used in the experiment. All the results are available online and can be conveniently visualized in this webpage~\footnote{https://danoan.github.io/content/papers/coco-experiment/report.html}. 
 
-In table~\ref{tab:coco-experiment-parameter} we list the GFA parameters for this experiment.
+In~\cref{tab:coco-experiment-parameter} we list the GFA parameters for this experiment.
 %
 %
 \begin{table}
@@ -882,15 +880,15 @@ $\boldsymbol{(\alpha)}$ & $\boldsymbol{(\beta)}$ & $\boldsymbol{(\gamma_b)}$ & $
 \end{figure}
 %
 %
-The first observation is that the GFA regularizes the initial grabcut segmentation contour with respect to the elastica energy. In figure~\ref{fig:coco-tangent-profile} we display the tangent profile of both grabcut segmentation and the one corrected by the GFA. We clearly observe the regularization effect of the GFA with respect the grabcut profile. The value of the elastica energy of the contour and its number of inflection points is also greatly reduced, as it is summarized in figure~\ref{fig:coco-summary-regularization}.
+The first observation is that the GFA regularizes the initial grabcut segmentation contour with respect to the elastica energy. In~\cref{fig:coco-tangent-profile} we display the tangent profile of both grabcut segmentation and the one corrected by the GFA. We clearly observe the regularization effect of the GFA with respect the grabcut profile. The value of the elastica energy of the contour and its number of inflection points is also greatly reduced, as it is summarized in~\cref{fig:coco-summary-regularization}.
 
-The second observation is that the data term has an important role in the quality of the segmentation with respect to precision and recall metrics, as shown in the box plot of figure~\ref{fig:coco-summary-precision-recall}. That means that by using a model with no data term, such as threshold dynamics, is insufficient to recover segmentations of good quality. In fact, executing the GFA without data term will eventually transform the contour in one or more circles, and we can have an arbitrary bad value for the recall. We can see some of these undesirable effects in the fourth line of figure~\ref{fig:coco-experiment-sample}: the kite area is overly reduced; the motorcycle is separated in two disconnected components; and the giraffe loses part of its ears.
+The second observation is that the data term has an important role in the quality of the segmentation with respect to precision and recall metrics, as shown in the box plot of~\cref{fig:coco-summary-precision-recall}. That means that by using a model with no data term, such as threshold dynamics, is insufficient to recover segmentations of good quality. In fact, executing the GFA without data term will eventually transform the contour in one or more circles, and we can have an arbitrary bad value for the recall. We can see some of these undesirable effects in the fourth line of~\cref{fig:coco-experiment-sample}: the kite area is overly reduced; the motorcycle is separated in two disconnected components; and the giraffe loses part of its ears.
 
-The third observation is that the GFA presents the completion effect that is expected from regularization by the elastica energy. This property is particularly useful for the segmentation of thin and elongated objects, but not only. It also helps to remove oversegmented components which are particularly common in graph cut based models. In figure~\ref{fig:coco-completion} we give some examples of contour completion.
+The third observation is that the GFA presents the completion effect that is expected from regularization by the elastica energy. This property is particularly useful for the segmentation of thin and elongated objects, but not only. It also helps to remove oversegmented components which are particularly common in graph cut based models. In~\cref{fig:coco-completion} we give some examples of contour completion.
 
-Finally, we remark that all images were executed using the same set of parameters. That is not ideal. Low resolution images should be segmented using a smaller estimation radius, for example. Therefore, all the results presented here could be eventually improved by tuning the parameters accordingly. An example of this is given in figure~\ref{fig:coco-parameter-tuning}.
+Finally, we remark that all images were executed using the same set of parameters. That is not ideal. Low resolution images should be segmented using a smaller estimation radius, for example. Therefore, all the results presented here could be eventually improved by tuning the parameters accordingly. An example of this is given in~\cref{fig:coco-parameter-tuning}.
 
-A summary of the running time is presented in table~\ref{tab:coco-experiment-running-time}. The average running time per iteration is of $0.7$s. We remark that in several cases we need fewer than $5$ iterations to greatly improve regularization metrics such as elastica and inflection points. However, to recover the completion effect we may need more iterations.
+A summary of the running time is presented in~\cref{tab:coco-experiment-running-time}. The average running time per iteration is of $0.7$s. We remark that in several cases we need fewer than $5$ iterations to greatly improve regularization metrics such as elastica and inflection points. However, to recover the completion effect we may need more iterations.
 %
 %
 \begin{figure}
@@ -939,7 +937,7 @@ The goal of this experiment is to illustrate the flexibility of the GFA with res
 
 In this application, our strategy to avoid local minima is slightly different. We use a neighborhood of shapes composed by random perturbations of the initial contour and we allow evolution if and only if the previous energy value is reduced. This strategy lead to higher running times, but since the digital components are treated independently, we believe that running times can be greatly reduced by implementing a more agressive parallelization strategy, for example, using GPUs. 
 
-The algorithm can evolve the contours in favor of contour completion or breaking them according to the relative weights given for the elastica and data terms. We show the results of some experiments in figure~\ref{fig:GF-chan-vese-alike}.
+The algorithm can evolve the contours in favor of contour completion or breaking them according to the relative weights given for the elastica and data terms. We show the results of some experiments in~\cref{fig:GF-chan-vese-alike}.
 
 \begin{figure}
 \center
