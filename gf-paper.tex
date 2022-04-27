@@ -13,12 +13,15 @@
 \usepackage[
 backend=biber,
 style=alphabetic]{biblatex}
+\usepackage{changes}
+
+\definechangesauthor[name=Jaco,color=magenta]{jaco}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclarePairedDelimiter\norm{\lVert}{\rVert}%
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}%
 
-\newcommand{\todo}[1]{{\textcolor{blue}{#1}}}
+%\newcommand{\todo}[1]{{\textcolor{blue}{#1}}}
 \newcommand{\jaco}[1]{{\textcolor{green!50!black}{#1}}}
 \newcommand{\HT}[1]{{\textcolor{violet}{#1}}}
 \newcommand{\daniel}[1]{\textcolor{NavyBlue}{#1}}
@@ -52,7 +55,7 @@ An important and challenging energy to optimize is the Elastica. Previous works 
 	E(C) &= \int_{C}{\alpha + \beta \kappa^2 ds}.
 \end{align*}
 %
-In this paper, we propose a purely discrete model to minimize the Elastica energy using \emph{multigrid convergent estimators}. These estimators are conceived for digital sets and provide guarantees of convergence with respect to finer and finer image grid resolutions. We show that our model evolves digital shapes to the shape of optimum elastica energy, escaping local minimum. Moreover, we show how to use our model in image processing tasks and give several illustrations. Finally, the model is parallelizable and present competitive running times with respect to state of the art methods. We also strongly believe that these running times could be improved in a GPU setting.
+In this paper, we propose a purely discrete model to minimize the Elastica energy using \emph{multigrid convergent estimators}. These estimators are conceived for digital sets and provide guarantees of convergence with respect to finer and finer image grid resolutions. \added[id=jaco]{We show how to use a convergent curvature estimator to define a  digital analogue to a curve shortening flow. By combining it with a set of morphologically dilated shapes, our digital model} evolves digital shapes to the shape of optimum elastica energy, escaping local minimum. Moreover, we show how to use our model in image processing tasks and give several illustrations. Finally, the model is parallelizable and present competitive running times with respect to state of the art methods. We also strongly believe that these running times could be improved in a GPU setting.
 %
 %
 
@@ -60,43 +63,52 @@ In this paper, we propose a purely discrete model to minimize the Elastica energ
 
 The elastica has been introduced in image processing by Mumford~\cite{mumford1994elastica} 
 where the completion property (i.e., its preference for connected curves) is 
-particularly emphasized. The application of the completion property is explored 
+particularly emphasized.
+\replaced[id=jaco]{The completion property is interesting for solving classical 
+problems in imaging such as inpainting and segmentation, either to complete contours of 
+wrongly disconnected segmented regions or to better extrapolate image level sets in regions without data.}{The application of the completion property is explored 
 in the literature under different aspects (e.g., to complete contours of 
 segmentation contours or to complete the image level sets) to solve classical 
-problems in imaging such as inpainting and segmentation. 
+problems in imaging such as inpainting and segmentation.} 
 
 
-In~\cite{chan02elasticainpainting}, the authors derive the 4th
-order Euler-Lagrange equation of their elastica regularized model to solve the 
-inpainting problem. A gradient descent alike method is employed to find its root, 
-but the model suffers from numerical instability and high running times. That is 
-one of the main difficulties in minimizing the elastica under a continuous 
-formulation. Some optimization properties of the elastica were studied 
-in~\cite{ambrosio2003direct} and some techniques can be applied to mitigate 
-the numerical instability as was done in~\cite{ballester01filljoint}. In this
-work, the curvature is implicitly represented by a vector field acting under 
-some constraints that are incorporated into the optimization energy. This alternative 
-representation allows an order reduction in the equation that is handled by the 
-optimization method. This strategy has been refined and explored 
-more recently by~\cite{tai11elastica} (inpainting) and~\cite{zhu2013image,duan2014two}
-(segmentation) where augmented lagrangian methods and variations such as ADMM
-are utilized. Nonetheless, these models are vulnerable to bad local optima and
-high running times. 
+In~\cite{chan02elasticainpainting}, the authors derive the 4th order
+Euler-Lagrange equation of their elastica regularized model to solve
+the inpainting problem. A gradient descent alike method is employed to
+find its root, but the model suffers from numerical instability and
+high running times. That is one of the main difficulties in minimizing
+the elastica under a continuous formulation. Some optimization
+properties of the elastica were studied in~\cite{ambrosio2003direct}
+and some techniques can be applied to mitigate the numerical
+instability as was done in~\cite{ballester01filljoint}. In this work,
+the curvature is implicitly represented by a vector field acting under
+some constraints that are incorporated into the optimization
+energy. This alternative representation \replaced[id=jaco]{induces a
+  reduction of one order in the equations solved during
+  optimization.}{allows an order reduction in the equation that is
+  handled by the optimization method.} This strategy has been refined
+and explored more recently by~\cite{tai11elastica} (inpainting)
+and~\cite{zhu2013image,duan2014two} (segmentation), where augmented
+lagrangian methods and variations such as ADMM are
+utilized. Nonetheless, these models are vulnerable to bad local optima
+and \added[id=jaco]{subject to} high running times.
 
 
-Due to the challenges posed by the global optimization of the elastica, some
-authors propose to use alternative energies that preserve, in some sense, 
-the elastica properties and are more tractable from the optimization point of
-view. In~\cite{bredies15convex} a convex relaxation of the elastica is proposed 
-and in~\cite{goldluecke11totalcurvature,zhong2020minimizing} the total curvature is
-used as an alternative to the elastica. The advantage of these models is, as 
-being convex, there are methods to globally optimize it. Nonetheless, the running 
-time issue persists.
+Due to the challenges posed by the necessary global optimization of
+the elastica, some authors propose to use alternative energies that
+preserve, in some sense, the elastica properties and are more
+tractable from the optimization point of
+view. In~\cite{bredies15convex} a convex relaxation of the elastica is
+proposed and in~\cite{goldluecke11totalcurvature,zhong2020minimizing}
+the total curvature is used as an alternative to the elastica. The
+advantage of these models is \added[id=jaco]{that they induce convex energies, with
+methods that can optimize them globally.} Nonetheless, the running time
+issue persists.
 
 
 Finally, combinatorial methods were also proposed for elastica minimization. The
-premise behind such methods is that a precision reduction in the energy
-computation would lead to a global optimization with smaller running times and
+premise behind such methods is that reducing the precision in the energy
+computation leads to a global optimization with smaller running times and
 without damping too much the results. In~\cite{zehiry10fast}, a quadratic binary
 energy is proposed to solve segmentation with elastica regularization, but only 
 squared angles are considered. A more general binary representation is given 
@@ -111,29 +123,31 @@ detection~\cite{schoenemann2011elastic}, and partial
 enumeration~\cite{olsson2013partial,antunes20} strategies were also explored 
 for the tasks of denoising and segmentation.
 
-In practice, the compromise between precision and running time do not play as 
-well as expected. To obtain results of good quality, these combinatorial methods must
-run for a long time. As an alternative, one may consider optimization over a
-subdomain of the image such as in contour-evolution models. The classical 
-active contour model (snakes)~\cite{kass1988snakes} and its 
-variants~\cite{caseles97geodesic,chan01} have an embedded curvature component 
-that is reflected on the curve-shortening flow of level sets in the case of 
-geodesic active contours, or the CSF of the segmentation curve in the case of 
-snakes. The CSF is the unidimensional case of the mean curvature flow and can 
-be reproduced in a discrete setting~\cite{merriman1992diffusion}. This has been 
-explored in processes such as 
-threshold dynamics~\cite{esedoglu2005threshold,esedoglu2008threshold}, or 
-morphological operations sequence~\cite{marquezneila14}. 
+In practice, the compromise between precision and running times does
+not play as well as expected. To obtain results of good quality, these
+combinatorial methods must run for a long time. As an alternative, one
+may consider optimization over a subdomain of the image such as in
+contour-evolution models. The classical active contour model
+(snakes)~\cite{kass1988snakes} and its
+variants~\cite{caseles97geodesic,chan01} have an embedded curvature
+component that is reflected on the Curve-Shortening Flow (CSF) of
+level sets in the case of geodesic active contours, or the CSF of the
+\added[id=jaco]{explicit curve} in the case of snakes. The CSF is the
+unidimensional case of the mean curvature flow and can be reproduced
+in a discrete setting~\cite{merriman1992diffusion}. This has been
+explored in processes such as threshold
+dynamics~\cite{esedoglu2005threshold,esedoglu2008threshold}, or
+morphological operations sequence~\cite{marquezneila14}.
+\comment[id=jaco]{Explain here that threshold dynamics cannot integrate easily a data term ?}
 
-
-Digital estimator
+Digital estimator \comment[id=jaco]{To do}
 
 
 In this paper, we devise a discrete process for the CSF that plays a fundamental
 role in a graph-cut segmentation model regularized by the elastica. We compute the
 elastica using proven multigrid convergent digital estimators and we point out
 the relation of the curvature estimator with our CSF process.
-
+\comment[id=jaco]{To complete}
 
 %Mean-curvature evolution:~\cite{marquezneila14}
 %
