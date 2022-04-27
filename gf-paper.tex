@@ -565,6 +565,8 @@ The set $\mathcal{E}_{st}$ comprises all the edges having the source as their st
 %
 %
 \begin{table}
+\footnotesize
+	\caption{\textbf{Edge capacity function.}}\label{tab:edge-capacity}
 \begin{center}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -585,8 +587,6 @@ $\{v_P, t\}$ & $M$ & $v_P \in \mathcal{V}_{t}$ \\
 \begin{align*}
 	M &= \max_{e \in \mathcal{E} }{ c(e) }.
 \end{align*}
-\caption{\textbf{Edge capacity function.}}
-\label{tab:edge-capacity}
 \end{table}
 %
 %
@@ -708,6 +708,7 @@ The computations can be done in parallel for each member of the neighborhood.\Cr
 \center
 \captionsetup{type=table}
 \footnotesize
+	\caption{\textbf{Running time of GFA}. The GFA achieves running times lower than one second per iteration when the shape neighbors are evaluated separately (executed in a Intel Corei7 $1.8GHz$ processor with $16gb$ of ram). There still room for other parallelization and these running times can be further improved.}\label{tab:summary-graph-flow-running-time} 
 \begin{tabular}{|l|c|c|c|c|}
 \hline
 & Pixels & It & Time & Time/It\\
@@ -718,8 +719,6 @@ Flower & 119789 & 150 & 132.8s & 0.9s \\
 Bean & 100504 & 300 & 148.4s & 0.5s \\
 \hline
 \end{tabular}
-\caption{\textbf{Running time of GFA}. The GFA achieves running times lower than one second per iteration when the shape neighbors are evaluated separately (executed in a Intel Corei7 $1.8GHz$ processor with $16gb$ of ram). There still room for other parallelization and these running times can be further improved.}
-\label{tab:summary-graph-flow-running-time} 
 \end{figure}
 %
 %
@@ -763,6 +762,8 @@ The terms $H_{bg}$ and $H_{fg}$ are mixed Gaussian distribution constructed from
 \begin{table}
 \setlength{\extrarowheight}{0.75em}
 \begin{center}
+\footnotesize
+	\caption{\textbf{Updated capacity function.} The capacity function of~\cref{tab:edge-capacity} is updated to accommodate the data term.}\label{tab:updated-capacity-function}
 \begin{tabular}{|c|c|c|}
 \hline
 \textbf{edge} $e$ & $\mathbf{c(e)}$ & \textbf{for}\\
@@ -781,8 +782,6 @@ where the constant $M$ is defined such that
 \begin{align*}
 M &= \max_{e \in \mathcal{E} }{ c(e) }.
 \end{align*}
-\caption{\textbf{Updated capacity function.} The capacity function of~\cref{tab:edge-capacity} is updated to accommodate the data term.}
-\label{tab:updated-capacity-function}
 \end{table}
 %
 %
@@ -807,14 +806,14 @@ For this experiment, we used a selection of $212$ images of the Validation 2017 
 %
 %
 \begin{table}
+\footnotesize
+	\caption{\textbf{Selected images distribution.} The quantity of selected images per Coco super-category. A total of $212$ images were selected.}\label{tab:image-categories-distribution}
 \begin{tabular}{cccccc}
 \textbf{Person} & \textbf{Vehicle} & \textbf{Food} & \textbf{Animal} & \textbf{Outdoor Obj.} & \textbf{Sports} \\
 24 & 22 & 22 & 34 & 16 & 19 \\[1em]
 \textbf{Kitchenware} & \textbf{Furniture} & \textbf{Appliance} & \textbf{Electronics} & \textbf{Indoor Obj.} & \\
 19 & 17 & 9 & 10 & 19 &
 \end{tabular}
-\caption{\textbf{Selected images distribution.} The quantity of selected images per Coco super-category. A total of $212$ images were selected.}
-\label{tab:image-categories-distribution}
 \end{table}
 %
 %
@@ -825,6 +824,8 @@ In~\cref{tab:coco-experiment-parameter} we list the GFA parameters for this expe
 %
 \begin{table}
 \center
+\footnotesize
+	\caption{\textbf{Supervised experiment parameters}. The list of the GFA parameters for the supervised segmentation experiment.}\label{tab:coco-experiment-parameter}
 \begin{tabular}{cccc}
 \textbf{Estimation radius} & \textbf{Opt. band width} & \textbf{Neighborhood size} & \textbf{Iterations} \\
 $\mathbf{(r)}$ & $\mathbf{(n)}$ & $\mathbf{(k)}$ & \textbf{(maxit)}\\
@@ -833,19 +834,17 @@ $\mathbf{(r)}$ & $\mathbf{(n)}$ & $\mathbf{(k)}$ & \textbf{(maxit)}\\
 $\boldsymbol{(\alpha)}$ & $\boldsymbol{(\beta)}$ & $\boldsymbol{(\gamma_b)}$ & $\boldsymbol{(\gamma_r)}$\\
 10 & 1 & 1 & 1
 \end{tabular}
-\caption{\textbf{Supervised experiment parameters}. The list of the GFA parameters for the supervised segmentation experiment.}
-\label{tab:coco-experiment-parameter}
 \end{table}
 %
 %
 \begin{table}
+\footnotesize
+	\caption{\textbf{Supervised experiment running time}. The average iteration is of $0.7$s.}\label{tab:coco-experiment-running-time}
 \center
 \begin{tabular}{cccc}
 \textbf{Highest} & \textbf{Lowest} & \textbf{Average} & \textbf{Average per iteration} \\
 50.3s & 3.3 & 15.1s & 0.7s\\
 \end{tabular}
-\caption{\textbf{Supervised experiment running time}. The average iteration is of $0.7$s.}
-\label{tab:coco-experiment-running-time}
 \end{table}
 %
 %
