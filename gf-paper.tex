@@ -725,7 +725,7 @@ curve-shortening flow when there is no topology change.
 %
 \begin{align*}
 	 & A_{\varepsilon} = \frac{\pi r ^2}{2} 
-	 && \Leftrightarrow & 2r\varepsilon = \int_{-r}^{r}{\frac{1}{2}\kappa x^2dx} \pm \Delta 
+	 && \Rightarrow & 2r\varepsilon = \int_{-r}^{r}{\frac{1}{2}\kappa x^2dx} \pm \Delta 
 	&& \Leftrightarrow & & \varepsilon = \frac{1}{6}\kappa r^2 \pm \frac{\Delta}{2r}.
 \end{align*}
 %
@@ -760,7 +760,7 @@ To conclude the argument, we have:
 \begin{align*}
   \| y - y' \| & = \| P + \epsilon^{(0)}(P)\mathbf{n}(P) - (P+t\kappa(P)\mathbf{n}(P)) \| \\
   & = | \varepsilon - t \kappa(P) | \\
-  & \le \left| \frac{1}{6}\kappa(P) r^2 - t\kappa(P) \right| + \frac{1}{48}|\kappa|^3r^4\\
+  & \le \left| \frac{1}{6}\kappa(P) r^2 - t\kappa(P) \right| + \frac{1}{48}|\kappa(P)|^3r^4\\
   & \le \frac{1}{48}|\kappa(P)|^3r^4 && \text{(since $t=\frac{1}{6}r^2$)} \\
   & \le \frac{3}{4}\kappa_{\max}^3 t^2 && \text{(since $|\kappa(P)| \le \kappa_{\max}$)}
 \end{align*}
