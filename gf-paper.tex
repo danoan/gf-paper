@@ -154,11 +154,26 @@ Digital estimator \comment[id=jaco]{To do}
 %
 %
 \section{Main contributions}
-In this paper, we devise a discrete process for the CSF that plays a fundamental
-role in a graph-cut segmentation model regularized by the elastica. We compute the
-elastica using proven multigrid convergent digital estimators and we point out
-the relation of the curvature estimator with our CSF process.
+We describe a discrete process to evolve digital shapes and we show that under
+some conditions this process behaves similarly to the curve-shortening flow. Next we demonstrate
+experimentally that the former process can be used to optimize shapes with respect to
+their elastica value and that the optimum shape is attained in some cases. Finally, we propose 
+a graph cut model that integrates our first two results to execute the task of image segmentation. 
+(the model is diagramized in~\cref{fig:model-overview}). We present several illustrations 
+of our segmentation model and we compare it against the grabcut model~\cite{rother04grabcut}. All figures,
+code and results are publicly available at: \comment[id=daniel]{To do}
 \comment[id=jaco]{To complete}
+\begin{figure}
+\center
+\includegraphics[scale=0.36]{figures/model-overview.png}
+\caption{Proposed segmentation model. Our iterative segmentation model builds one graph for each member of a pre-defined
+neighborhood of the current shape. A cost function is defined such that the minimu cut of the graphs reflect the
+energy we aim to optimize with its desired regularization terms. In our experiments, we use regularization terms for 
+data and curvature. Finally, we select the shape with minimum elastica value, estimated via a multigrid convergent 
+estimator. The process is repeated for the selected shape and it stops after a fixed number of iterations.}
+\label{fig:model-overview}
+\end{figure}
+%
 %
 %
 %
