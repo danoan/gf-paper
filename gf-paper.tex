@@ -168,17 +168,17 @@ the relation of the curvature estimator with our CSF process.
 Let $C:[0,t] \rightarrow \mathbb{R}^2$ a parameterized plane curve with continuous first and second derivatives. In this case, we can easily compute the curvature at some point $P(t) = \big( x(t),y(t) \big) \in C$ by using the formula
 
 \begin{align*}
-\kappa (t) &= \frac{y'x'' -x'y''}{(x'^2 + y'^2)^{3/2}}.
+\kappa (t) &= \frac{y'(t)x''(t) -x'(t)y''(t)}{(x'(t)^2 + y'(t)^2)^{3/2}}.
 \end{align*}
 
-What about if we do not know the curve equations, but instead, we have finite set of points that is an \emph{exact sampling} $C$ ? That is, a finite sequence $P$ is an {\em exact sampling} of $C$ whenever each element of $P$ is an element of $C$ and the order of the sequence corresponds to the ordering of points $P$ when moving along $C$. In this case, we can approach the curve by a sequence of straight lines joining consecutive points of the sequence and estimate the curvature by computing the angle defect between consecutive lines. The estimation is convergent (in the epi-convergent sense) as long as the sampling points are sufficiently numerous~\cite{bruckstein01discrete,bruckstein01convergence}.
+What about if we do not know the curve equation, but instead, we have a finite set of points that is an \emph{exact sampling} $C$ ? That is, a finite sequence $P$ is an {\em exact sampling} of $C$ whenever each element of $P$ is an element of $C$ and the order of the points in the sequence corresponds to the ordering of points $P$ when moving along $C$. In this case, we can approach the curve $C$ by a sequence of straight lines joining consecutive points of $P$ and estimate the curvature by computing the angle defect between consecutive lines. This estimation is convergent (in the epi-convergent sense) as long as the sampling points are sufficiently numerous~\cite{bruckstein01discrete,bruckstein01convergence}.
 
-The result above is not valid for digital domains. We do not have an exact sampling, instead, samples are constrained to lie in the digital grid. That condition creates ambiguities, which are clearly illustrated in~\cref{fig:digitization-ambiguity} where the same digitization represents two quite distinct shapes. Of course, one may refine the grid to such a precision that is close to an exact sampling, but this is highly undesirable due to memory and running time complexity, in particular for image processing tasks. Furthermore, the polygonal contour is still locally very jagged, with only 4 possible directions.
+The result above is not valid for curves \added[id=jaco]{lying in digital domains like images}. We do not have an exact sampling. Instead, curve samples are constrained to lie in the digital grid. That condition creates ambiguities, which are clearly illustrated in~\cref{fig:digitization-ambiguity} where the same digitization represents two quite distinct shapes. Of course, one may refine the grid to \replaced[id=jaco]{reach a precision close to an exact sampling}{such a precision that is close to an exact sampling}, but this is highly undesirable due to memory and running time complexity, in particular for image processing tasks. Furthermore, the polygonal contour is still locally very jagged, with only 4 possible directions. \added[id=jaco]{The above mentionned curvature estimator would not be convergent whatever the refinement.}
 
-Ideally, we should have a criteria to evaluate the quality and speed
+Consequently we need a criterion to evaluate the quality and speed
 of convergence of geometric estimators according to the resolution of
-the digital grid. Such criteria is the \emph{multigrid convergence
-property} (e.g., see \cite{klette2004digital}). Let $X$ be an Euclidean
+the digital grid. This criterion is the \emph{multigrid convergence
+property} (e.g., see \cite{klette2004digital}). Let $X$ be a Euclidean
 shape and $D(X,h)$ a possible digitization (for example, using Gauss
 digitization, that is $D(X,h) = X \cap h\mathbb{Z}^2$).
 %
@@ -193,10 +193,10 @@ digitization, that is $D(X,h) = X \cap h\mathbb{Z}^2$).
 %
 \begin{definition}[Multigrid convergence for local geometric quantites]
   A local discrete geometric estimator $\hat{z}$ of some geometric
-  quantity $z$ is (uniformly) multigrid convergent for some family $\mathbb{X}$ of Euclidean shapes if
+  quantity $z$ is uniformly multigrid convergent for some family $\mathbb{X}$ of Euclidean shapes if
   and only if, for any $X \in \mathbb{X}$, there exists a grid step
   $h_X>0$ such that the estimate $\hat{z}(D(X,h), P,h)$ is
-  defined for all $P \in \partial_hX$ with $ 0 < h < h_X$, and
+  defined for all $P \in \partial_hX$ with $ 0 < h < h_X$\comment[id=jaco]{$\partial_hX$ is not defined}, and
   for any $Q \in \partial X$,
   \begin{equation*}
     \forall P \in  \partial_hX \text{ with } \norm{ P - Q }_{\infty} \leq h, \norm{ \hat{z}(D(X,h),P,h) - z(X,Q)} \leq \tau_{X}(h),			
@@ -209,7 +209,7 @@ digitization, that is $D(X,h) = X \cap h\mathbb{Z}^2$).
 For a global geometric quantity (e.g. perimeter, area, volume), the definition remains the same, except that the mapping
 between $\partial X$ and $\partial_h X$ is no longer necessary.
 
-Recently, estimator for curvature and perimeter estimators have been proved multigrid convergent. We propose to use such estimators to estimate the elastica energy of digital shapes
+Recently, estimator for curvature and perimeter estimators have been proved multigrid convergent. We propose to use such estimators to estimate the elastica energy of digital shapes. \added[id=jaco]{Let us define a digital analogue to the Elastica energy, which uses two such estimators:}
 %
 %
 \begin{align}
@@ -218,9 +218,9 @@ Recently, estimator for curvature and perimeter estimators have been proved mult
 \end{align}
 %
 %
-The function $\hat{s}$ denotes the elementary length estimator, i.e., a measure of length is assigned to each edge $\vec{e}$ of digital curve $\partial D(X,h)$. The elementary length is computed using the \emph{$\lambda$-MST} estimator of tangent~\cite{lachaud07tangent,lachaud06hdr}, proven multigrid convergent for the family of convex shapes that are twice differentiable and have continuous curvature. The speed of convergence is $O(h^{1/3})$.
+The function $\hat{s}$ denotes the elementary length estimator, i.e., a measure of length is assigned to each edge $\vec{e}$ of digital curve $\partial D(X,h)$\comment[id=jaco]{$\partial D(X,h)$ is not defined. Do we need it ? Or do we use only $\partial_h X$ ?}. The elementary length is computed using the \emph{$\lambda$-MST} estimator of tangent~\cite{lachaud07tangent,lachaud06hdr}, proven multigrid convergent for the family of convex shapes that are twice differentiable and have continuous curvature. The speed of convergence is $O(h^{1/3})$. \added[id=jaco]{It simply defines the elementary length of an edge as the scalar product between the edge vector and the convergent tangent vector estimate.}
 
-The function $\hat{\kappa} _r$ denotes an estimator of curvature. We use the integral \emph{invariant estimator}~\cite{coeurjolly13integral}, proven multigrid convergent for the family of compact shapes in the plane with $3$-smooth contour. Its convergence speed is of the order of $O(h^{\frac{1}{3}})$ for radii chosen as $r=\Theta (h^{\frac{1}{3}})$~\cite{lachaud2017robust}. We present its definition since it is in the core of the proposed model in this paper.
+The function $\hat{\kappa} _r$ denotes an estimator of curvature. We use the integral \emph{invariant estimator}~\cite{coeurjolly13integral}, proven multigrid convergent for the family of compact shapes in the plane with $3$-times differentiable contour. \added[id=jaco]{The radius of the integration ball is a parameter of this curvature estimator and} its convergence speed is of the order of $O(h^{\frac{1}{3}})$ for radii chosen as $r=\Theta (h^{\frac{1}{3}})$~\cite{lachaud2017robust}. We present its definition since it is at the core of the model proposed in this paper.
 %
 %
 \begin{align}
@@ -229,9 +229,9 @@ The function $\hat{\kappa} _r$ denotes an estimator of curvature. We use the int
 \end{align}
 %
 %
-where the estimation of area for some digital set $S$ can be defined as $\widehat{\text{Area}}(S,h) \coloneqq h^2\text{Card}\left( S \right).$ 
+where the estimation of area for some digital set $S$ is defined as $\widehat{\text{Area}}(S,h) \coloneqq h^2\text{Card}\left( S \right).$ 
 
-\Cref{eq:curvature_approximation} estimates the curvature as a scaling factor of the difference between the intersection area of a disk of radius $r$ centered at point $P$ of the contour with half of the disk area. Therefore, we can say that the curvature is lower at points in which the balance between intersected and non intersected points is closer to zero.
+\Cref{eq:curvature_approximation} estimates the curvature as a scaling factor of the difference between the intersection area \added[id=jaco]{of the digitized shape with} a disk of radius $r$ centered at point $P$ of the contour and half the disk area. Therefore, we can say that the curvature is lower at points in which the balance between intersected and non intersected points is closer to zero.
 
 In the following, we simply write $S$ to specify a digital shape and we omit the grid step $h$ to simplify expressions (or, putting it differently, we assume that the shape of interest is rescaled by $1/h$ and we set $h = 1$).
 %
