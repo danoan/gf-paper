@@ -167,7 +167,7 @@ code and results are publicly available at: \comment[id=daniel]{To do}
 \center
 \includegraphics[scale=0.36]{figures/model-overview.png}
 \caption{Proposed segmentation model. Our iterative segmentation model builds one graph for each member of a pre-defined
-neighborhood of the current shape. A cost function is defined such that the minimu cut of the graphs reflect the
+neighborhood of the current shape. A cost function is defined such that the minimum cut of the graphs reflect the
 energy we aim to optimize with its desired regularization terms. In our experiments, we use regularization terms for 
 data and curvature. Finally, we select the shape with minimum elastica value, estimated via a multigrid convergent 
 estimator. The process is repeated for the selected shape and it stops after a fixed number of iterations.}
@@ -388,7 +388,8 @@ the boundary of $X^{(1)}$ under some hypotheses.
   X^{(1)}$.  Finally, the interior of $X^{(1)}$ must coincide with
   $I$ since both are finite, they share the same boundary, and they
   share points (whether the boundary is convexe or concave).
-  \qed
+  %% \qed %% does not work
+  %% \hfill $\square$
 \end{proof}
 
 The proof tells us that the radius $r$ must be smaller that
@@ -415,7 +416,7 @@ curve-shortening flow when there is no topology change.
 \begin{figure}
 \center
 \includegraphics[scale=0.75]{figures/analysis-error/geometry-argument.png}
-\caption{\textbf{Balance coefficient and curve-shortening flow (CSF).} We approximate the contour $\partial X$ at $P$ by a parabola. Next, we compute the point $P'$ such that the balance coefficient equals to zero. Our approximation produces an error $\Delta$, highlighted in red, that is of order $O(r^4)$. \label{fig:geometric-argument}}
+\caption{\textbf{Balance coefficient and curve-shortening flow (CSF).} We approximate the contour $\partial X$ at $P$ by a parabola. Next, we compute the point $P'$ such that the balance coefficient equals to zero. Our approximation produces an error $\Delta$, highlighted in magenta, that is of order $O(r^4)$. \label{fig:geometric-argument}}
 \end{figure}
 %
 
@@ -429,8 +430,8 @@ curve-shortening flow when there is no topology change.
 \begin{proof}
   Let $y \in C^{(1)}$. According to~\cref{prop-C-equ-X},
   there is a point $P \in C^{(0)}$ such that
-  $y=\sigma^{(0)}(x)$. Finally, let $y'=P+t\kappa(P)\mathbf{n}(P)$. We
-  will show that $\| y-y' \| \le \frac{3}{4} \kappa_{\max}^3 t^2$,
+  $y=\sigma^{(0)}(P)$. Let $y'=P+t\kappa(P)\mathbf{n}(P)$. We
+  show that $\| y-y' \| \le \frac{3}{4} \kappa_{\max}^3 t^2$,
   which induces the result (we could have chosen $y'$ first, and
   obtain the same $y$).
 
@@ -441,13 +442,16 @@ curve-shortening flow when there is no topology change.
 
   We know that $y = P + \epsilon^{(0)}(P)\mathbf{n}(P)$ according
   to~\cref{eq-null-balance-coefficient}, where $\epsilon^{(0)}(P)$ is
-  the local displacement of $P$ which induce a zero balance
+  the local displacement of $P$ which gives a zero balance
   coefficient. Let us determine this displacement $\varepsilon :=
   \epsilon^{(0)}(P)$ in the normal direction, such that the
   intersection of the disk with $X$ equals half of the disk area. Let
   us say that the point of zero balance coefficient is $P'$ and that
-  $A_{\varepsilon}$ is the intersection area of the displaced
-  disk (see~\cref{fig:geometric-argument}, right, for notations). Then,
+  $A_{\varepsilon}$ is the intersection area of the displaced disk
+  (see~\cref{fig:geometric-argument}, right, for
+  notations). \comment[id=jaco]{Attention, c'est l'ancienne figure. Il
+    me semble que j'avais fait une figure avec les notations $A^3$,
+    etc.} Then,
 %
 %
 \begin{align*}
@@ -491,7 +495,7 @@ To conclude the argument, we have:
   & \le \frac{1}{48}|\kappa(P)|^3r^4 && \text{(since $t=\frac{1}{6}r^2$)} \\
   & \le \frac{3}{4}\kappa_{\max}^3 t^2 && \text{(since $|\kappa(P)| \le \kappa_{\max}$)}
 \end{align*}
-\mbox{~}\hfill\qed
+\added[id=jaco]{which shows that the two contours are close in the Hausdorff sense.}
 \end{proof}
 
 Applying~\cref{prop-C-equ-X} at each time step $k$ (writing
