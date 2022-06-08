@@ -538,17 +538,19 @@ We recall our estimator for the elastica energy
 %
 Notice that we group all parameters in vector $\vec{\Theta}=(h,r,\alpha,\beta)$. We remark that, since it is composed of multigrid convergent estimators, the elastica estimator is also multigrid convergent~\cite{lachaud06hdr}.
 
-In this section we describe a graph cut model for the optimization of digital shapes with respect the elastica energy.
+In this section we describe a graph cut model for the optimization of digital shapes with respect to the elastica energy.\comment[id=jaco]{Ne devrait-on pas dire/rappeler que le graph-cut model est appliqué sur plusieurs formes ?}
 
  
 \subsection{Graph cut model}\label{sec:graph-cut-model}
 
-We are going to evolve the initial contour $\partial S$ of some digital shape $S$ to the zero-level set of its balance coeficient by computing the minimum cut of some directed graph. Since the balance coefficient is a local quantity, it is sufficient to define the graph in a band around the initial contour.
+We are going to evolve the initial contour $\partial S$ of some digital shape $S$ to the zero-level set of its balance coefficient by computing the minimum cut of some directed graph. Since the balance coefficient is a local quantity, it is sufficient to define the graph in a band around the initial contour.
 
-Let $d_{S}:\Omega \rightarrow \mathbb{R}$ be the signed Euclidean distance transformation with respect to shape $S$. The value $d_{S}(P)$ gives the Euclidean distance between $P \notin S$ and the closest point in $S$. For points $P \in S$, $d_{S}(P)$ gives the negative of the distance between $P$ and the closest point not in $S$.
+Let $d_{S}:\Omega \rightarrow \mathbb{R}$ be the signed Euclidean distance transformation with respect to shape $S$. The value $d_{S}(P)$ gives the Euclidean distance between $P \notin S$ and the closest point in $S$. For points $P \in S$, $d_{S}(P)$ gives the negative of the distance between $P$ and the closest point not in $S$. \added[id=jaco]{Let $n$ be a positive integer number.}
 
 \begin{definition}[Optimization band]
-Let $S \subset \Omega \subset \mathbb{Z}^2$ a digital set and natural number $n>0$. The optimization band $O_n(S)$ is defined as
+Let $S \subset \Omega \subset \mathbb{Z}^2$ be a digital set
+\deleted[id=jaco]{and natural number $n>0$}. The optimization band
+$O_n(S)$ is defined as
 %
 %
 \begin{align*}
@@ -558,7 +560,7 @@ Let $S \subset \Omega \subset \mathbb{Z}^2$ a digital set and natural number $n>
 %
 %
 \begin{definition}[Candidate graph]
-Let $S \subset \Omega \subset \mathbb{Z}^2$ a digital set and natural number $n>0$. We define $\mathcal{G}(n,S,\mathcal{V},\mathcal{E})$ as the candidate graph of $S$ with optimization band $n$ such that
+Let $S \subset \Omega \subset \mathbb{Z}^2$ a digital set\deleted[id=jaco]{and natural number $n>0$}. The {\em candidate graph} $\mathcal{G}(n,S,\mathcal{V},\mathcal{E})$ of $S$ with optimization band $n$ is defined such that:
 %
 %
 \begin{align*}
@@ -571,7 +573,7 @@ Let $S \subset \Omega \subset \mathbb{Z}^2$ a digital set and natural number $n>
 %
 \end{definition}
 
-The vertices $s,t$ are virtual vertices representing the source and target vertices as it is usual in a minimum cut framework. We denote $\mathcal{N}_4(P)$ the set of $4$-adjacent neighbors of $P$. The innermost (outermost) pixels of the optimization band are connected to the source (target), and we identify such vertices as
+The vertices $s,t$ are virtual vertices representing the source and target vertices as it is common in a minimum cut framework. We denote $\mathcal{N}_4(P)$ the set of $4$-adjacent neighbors of $P$. The innermost (outermost) pixels of the optimization band are connected to the source (target), and we identify such vertices as
 %
 %
 \begin{align*}
@@ -585,7 +587,7 @@ The set $\mathcal{E}_{st}$ comprises all the edges having the source as their st
 %
 \begin{table}
 \footnotesize
-	\caption{\textbf{Edge capacity function.}}\label{tab:edge-capacity}
+	\caption{\textbf{Edge capacity function.} $M$ is defined as $\max_{e \in \mathcal{E} }{ c(e) }$.}\label{tab:edge-capacity}
 \begin{center}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -599,13 +601,13 @@ $\{v_P, t\}$ & $M$ & $v_P \in \mathcal{V}_{t}$ \\
 \hline
 \end{tabular}
 \end{center}
-,where $M$ is defined such that
-%\begin{align*}
-%	M &= 1+\max_{p \in O_n(S)} 2*u(S,h,r,p).
-%\end{align*}
-\begin{align*}
-	M &= \max_{e \in \mathcal{E} }{ c(e) }.
-\end{align*}
+%% ,where $M$ is defined such that
+%% %\begin{align*}
+%% %	M &= 1+\max_{p \in O_n(S)} 2*u(S,h,r,p).
+%% %\end{align*}
+%% \begin{align*}
+%% 	M &= \max_{e \in \mathcal{E} }{ c(e) }.
+%% \end{align*}
 \end{table}
 %
 %
