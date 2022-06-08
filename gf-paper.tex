@@ -253,7 +253,7 @@ In the following, we simply write $S$ to specify a digital shape and we omit the
 %
 %
 %
-\section{Balance coeficient and curve-shortening flow}
+\section{Balance coefficient and curve-shortening flow}
 %
 %
 \begin{figure}
@@ -340,11 +340,13 @@ the boundary of $X^{(1)}$ under some hypotheses.
 \end{proposition}
 \begin{proof}
   By definition, the curve $C^{(0)}$ is the boundary of shape
-  $X^{(0)}$. 
-  Being twice differentiable the curve $C^{(0)}$ has a reach that is
-  greater than some $\rho > 0$. Hence, any point at distance lower
-  than $\rho$ from $C^{(0)}$ has a unique closest point on this
-  curve, in the direction normal to the curve.
+  $X^{(0)}$.  Being twice differentiable the curve $C^{(0)}$ has a
+  reach that is greater than some $\rho > 0$.\footnote{\added[id=jaco]{Let us recall
+  recall that the {\em reach} is the infimum distance between a shape
+  and its medial axis. Any point within the reach has a unique closest
+  point to the shape by definition.}} Hence, any point at distance lower than $\rho$
+  from $C^{(0)}$ has a unique closest point on this curve, in the
+  direction normal to the curve.
 
   Let $x$ be a point on $C^{(1)}$ and let
   $y=\sigma^{(0)}(x)=x+\epsilon^{(0)}(x) \mathbf{n}^{(0)}(x)$.
@@ -542,7 +544,15 @@ In this section we describe a graph cut model for the optimization of digital sh
  
 \subsection{Graph cut model}\label{sec:graph-cut-model}
 
-We are going to evolve the initial contour $\partial S$ of some digital shape $S$ to the zero-level set of its balance coefficient by computing the minimum cut of some directed graph. Since the balance coefficient is a local quantity, it is sufficient to define the graph in a band around the initial contour.
+We are going to evolve the initial contour $\partial S$ of some
+digital shape $S$ to the zero-level set of its balance coefficient by
+computing the minimum cut of some directed graph. Since the balance
+coefficient is a local quantity, it is sufficient to define the graph
+in a band around the initial contour. \added[id=jaco]{This somewhat
+  complex approach to computing a zero-level set of a function has the
+  great advantage of allowing the integration of other terms in its
+  formulation, like fitting to data. Experiments will show that it has
+  a tremendous effect on the quality of image segmentation results.}
 
 Let $d_{S}:\Omega \rightarrow \mathbb{R}$ be the signed Euclidean distance transformation with respect to shape $S$. The value $d_{S}(P)$ gives the Euclidean distance between $P \notin S$ and the closest point in $S$. For points $P \in S$, $d_{S}(P)$ gives the negative of the distance between $P$ and the closest point not in $S$. \added[id=jaco]{Let $n$ be a positive integer number.}
 
