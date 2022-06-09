@@ -582,7 +582,7 @@ Let $S \subset \Omega \subset \mathbb{Z}^2$ a digital set\deleted[id=jaco]{and n
 %
 \end{definition}
 
-The vertices $s,t$ are virtual vertices representing the source and target vertices as it is common in a minimum cut framework. We denote $\mathcal{N}_4(P)$ the set of $4$-adjacent neighbors of $P$. The innermost (outermost) pixels of the optimization band are connected to the source (target), and we identify such vertices as
+The vertices $s,t$ are virtual vertices representing the source and target vertices as it is common in a minimum cut framework. We denote $\mathcal{N}_4(P)$ the set of $4$-adjacent neighbors of $P$.\comment[id=jaco]{Should $P$ be also in $O_n(S)$ ?} The innermost (outermost) pixels of the optimization band are connected to the source (target), and we identify such vertices as
 %
 %
 \begin{align*}
@@ -630,9 +630,10 @@ A cut in a graph separates the vertices in source and target components. Our mod
 \end{align}
 %
 %
-where $S^{(0)}$ is the initial shape. Here and in the following, we omit some parameters of the candidate graph to simplify notation. They are going to be explicitly defined if necessary.
+where $S^{(0)}$ is the initial shape.\comment[id=jaco]{May be misleading for the whole process since there are several candidate graphs at each step.} Here and in the following, we omit some parameters of the candidate graph to simplify notation. They are going to be explicitly defined if necessary.
 
-In~\cref{fig:no-neighborhood-shapes-evolution}, we show some examples of this process. As expected, the flow is very similar to the CSF. Next, we describe how to optimize the shape with respect the elastica energy by using a neighborhood of shapes.
+In~\cref{fig:no-neighborhood-shapes-evolution}, we show some examples of this process. As expected, the flow is very similar to the CSF. Next, we describe how to optimize the shape with respect to the elastica energy by using a neighborhood of shapes.
+%% \added[id=jaco]{More precisely, the graph cut is performed on several candidate graphs, one for each shape in a neighborhood of shapes, and the best one according to the elastica energy is selected.}
 %
 %
 %
@@ -644,7 +645,7 @@ In~\cref{fig:no-neighborhood-shapes-evolution}, we show some examples of this pr
 	\includegraphics[scale=0.11]{figures/no-neighborhood-flow/square.png}}\hspace{2em}%	
 	\subfloat[]{%
 	\includegraphics[scale=0.14]{figures/no-neighborhood-flow/flower.png}}	
-	\caption{\textbf{No neighborhood of shapes}. Evolution with no neighborhood of shapes defined $(h=1/8,r=2)$. The evolution miicks the curve-shortening flow. Initial contour is colored in red and each other contour is ploted every 10 iterations.}
+	\caption{\textbf{No neighborhood of shapes}. Evolution with no neighborhood of shapes defined $(h=1/8,r=2)$. The evolution mimicks the curve-shortening flow. Initial contour is colored in red and each other contour is ploted every 10 iterations.}
 	\label{fig:no-neighborhood-shapes-evolution}
 \end{figure}
 %
@@ -654,11 +655,16 @@ In~\cref{fig:no-neighborhood-shapes-evolution}, we show some examples of this pr
 \subsection{Neighborhood of shapes}
 %
 %
-We are going to show how the process induced by~\cref{eq:no-neighborhood-process} can be modified to optimize the elastica energy. We start by defining a very simple neighborhood of shapes.
+\added{We now modify the process induced
+  by~\cref{eq:no-neighborhood-process} in order to} optimize the
+elastica energy. We start by defining a very simple neighborhood of
+shapes. \added{Of course, richer neighborhoods could be used, but we
+  stick here to this elementary one, which will prove to be sufficient
+  in our experiments.}
 %
 %
 \begin{definition}[Neighborhood of shapes]
-	Let $S$ a digital shape. We define its neighborhood $\mathcal{N}(S)$ as the set
+	Let $S \subset \mathbb{Z}^2$ a digital shape. We define its {\em neighborhood}  $\mathcal{N}(S)$ as the set
 	\begin{align*}
 		\mathcal{N}(S) &= \Big\{S, S^{+1},S^{-1} \big\},
 	\end{align*}
@@ -666,23 +672,23 @@ We are going to show how the process induced by~\cref{eq:no-neighborhood-process
 \end{definition}
 %
 %
-The Graph Flow Algorithm (GFA)~\ref{alg:graphflow-algorithm} summarizes the process and~\cref{fig:graph-flow-experiments} show some experiments.
+The {\em Graph Flow Algorithm} (GFA), Algorithm~\ref{alg:graphflow-algorithm}, summarizes the process. \added{Some experiments are shown on \cref{fig:graph-flow-experiments} and \cref{fig:graph-flow-expand}.}
 %
 %
 \begin{algorithm}
  \caption{Graph Flow Algorithm (GFA).}
  \label{alg:graphflow-algorithm}  
 \begin{algorithmic} 
- \STATE{Input: A digital set $S$; the optimization band $n$; parameter vector $\vec{\theta}=(h,r,\alpha,\beta)$; the maximum number of iterations $maxIt$;} 
+ \STATE{\textbf{Input}: A digital set $S$; the optimization band $n$; parameter vector $\vec{\theta}=(h,r,\alpha,\beta)$; the maximum number of iterations $maxIt$;} 
  
  \STATE{$S^{(0)} \longleftarrow S$}
  \STATE{$t \longleftarrow 0$}
  \WHILE{ $t$ $<$ $maxIt$  } 	
 	\STATE{$\mathcal{C}^{(t)} \longleftarrow \bigcup_{S' \in \mathcal{N}(S^{(t)})} \Big\{ mincut(\mathcal{G}(S') \Big\}$}
-	\COMMENT{Candidate selection}
+	\COMMENT{\replaced{Computation of candidates}{candidate selection}}
 	\STATE{$S^{(t+1)} \longleftarrow \displaystyle \argmin_{ S' \in \mathcal{C}^{(t)} }{ \hat{E}_{\vec{\theta}}(S')}$}		
-	\COMMENT{Candidate validation}
-	\STATE{$t$ $\longleftarrow$ $t$ $+1$}
+	\COMMENT{Candidate \replaced{selection}{validation}}
+	\STATE{$t$ $\longleftarrow$ $t+1$}
   \ENDWHILE
 \end{algorithmic}
 \end{algorithm}
@@ -711,11 +717,11 @@ The Graph Flow Algorithm (GFA)~\ref{alg:graphflow-algorithm} summarizes the proc
 
 \includegraphics[scale=0.22]{figures/shape-flow/plots/bars.png}
 \end{minipage}
-\caption{\textbf{GFA experiments}. In the left, the evolution of various shapes given by the GFA $(h=1/8,r=2)$. The red and blue contours highlight initial and final contours. The green contour is the optimum solution. The top right graph describes the reduction in elastica energy. The dotted line marks the optimum energy value (a disk of radius $8$). The bottom right graph points out the importance of a right choice of the balance coefficient radius (the optimum solution in this case is a disk of radius 32).}
+\caption{\textbf{GFA experiments}. In the left, the evolution of various shapes given by the GFA $(h=1/8,r=2)$. The red and blue contours highlight initial and final contours. The green contour is the optimum solution. The top right graph describes the reduction in elastica energy. The dotted line marks the optimum energy value (a disk of radius $8$). The bottom right graph points out the importance of a right choice of the balance coefficient radius (the optimum solution in this case is a disk of radius 32).\added[id=jaco]{???}}
 \label{fig:graph-flow-experiments}
 \end{figure}
 
-Remarkably, the GFA escapes premature local minimum and even achieves the global optimum of the elastica energy for some cases. In~\cref{fig:graph-flow-expand} we show the results of elastica minimization for $\vec{\Theta} = ( r=2,h=1/8,\alpha=1/1024,\beta=1 )$. The GFA correctly expands the shapes to the optimum disk of radius $32$. However, we may have a premature interruption of the evolution if a small estimation disk radius is chosen, as illustrated in the bottom right graph of~\cref{fig:graph-flow-experiments}.
+Remarkably, the GFA escapes premature local minima and even achieves the global optimum of the elastica energy for some cases. In~\cref{fig:graph-flow-expand} we show the results of elastica minimization for $\vec{\Theta} = ( r=2,h=1/8,\alpha=1/1024,\beta=1 )$. The GFA correctly expands the shapes to the optimum disk of radius $32$. However, we may have a premature interruption of the evolution if a small estimation disk radius is chosen, as illustrated in the bottom right graph of~\cref{fig:graph-flow-experiments}.
 %
 %
 \begin{figure}
@@ -731,14 +737,14 @@ Remarkably, the GFA escapes premature local minimum and even achieves the global
 \end{figure}
 %
 %
-The computations can be done in parallel for each member of the neighborhood.\Cref{tab:summary-graph-flow-running-time} shows the running times where the candidate graphs are evaluated in parallel. These times can be further improved by parallelizing the computation of the balance coefficient as well the elastica estimator evaluation.
+The computations can be done in parallel for each member of the neighborhood of shapes. \Cref{tab:summary-graph-flow-running-time} shows the running times where the candidate graphs are evaluated in parallel. These times can be further improved by parallelizing the computation of the balance coefficient as well as the elastica estimator evaluation.
 %
 %
 \begin{figure}[h!]
 \center
 \captionsetup{type=table}
 \footnotesize
-	\caption{\textbf{Running time of GFA}. The GFA achieves running times lower than one second per iteration when the shape neighbors are evaluated separately (executed in a Intel Corei7 $1.8GHz$ processor with $16gb$ of ram). There still room for other parallelization and these running times can be further improved.}\label{tab:summary-graph-flow-running-time} 
+	\caption{\textbf{Running time of GFA}. The GFA achieves running times lower than one second per iteration when the shape neighbors are evaluated separately (executed in a Intel Corei7 $1.8GHz$ processor with $16gb$ of ram). \replaced{These running times could be further improved, for instance by parallelization of balance coefficient  or elastica energy computations.}{There still room for other parallelization and these running times can be further improved.}}\label{tab:summary-graph-flow-running-time} 
 \begin{tabular}{|l|c|c|c|c|}
 \hline
 & Pixels & It & Time & Time/It\\
@@ -752,12 +758,13 @@ Bean & 100504 & 300 & 148.4s & 0.5s \\
 \end{figure}
 %
 %
-Finnaly, the GFA is easily modifiable to accomodate image terms, which makes it suitable for image processing tasks. Next, we are going to explore some of these possibilitites in image segmentation.
+Finally, the GFA is easily modifiable to accomodate image terms, which makes it suitable for image processing tasks. Next, we are going to explore some of these possibilitites in image segmentation.
 %
 %
+
 \section{Applications in image processing}
 
-The GFA can be extended to include a data fidelity term. In this section, we explore the potential of the GFA to be used in image processing tasks. We present the results of two experiments. The first is targeted to supervised segmentation and the second to unsupervised segmentation. Since we do not have an explicit expression for the input shapes (that is, the objects to segment), the grid resolution is set to $h=1$ in all experiments. The experiments were executed in a Intel Corei7 $1.8GHz$ processor with $16gb$ of ram.
+\replaced{In this section, we explore the potential of the GFA in image segmentation tasks. The GFA can indeed be extended to include a data fidelity term.}{The GFA can be extended to include a data fidelity term. In this section, we explore the potential of the GFA to be used in image processing tasks.} We present the results of two experiments. The first one is a supervised segmentation and the second one is an unsupervised segmentation. Since we do not have an explicit expression for the input shapes (that is, the objects to segment), the grid resolution is set to $h=1$ in all experiments.\comment{Not very clear. We do not have any unit ?} The experiments were executed on an Intel Corei7 $1.8GHz$ processor with $16gb$ of RAM.
 
 
 \subsection{Supervised segmentation}
@@ -765,7 +772,7 @@ The GFA can be extended to include a data fidelity term. In this section, we exp
 The goal of this experiment is to illustrate the regularization properties of the GFA and to highlight the role of the data term in our approach. The data term employed in this experiment is the same used by Boykov-Jolly in their classical graph cut model~\cite{boykov01graphcut}. 
 
 \subsubsection{Data term}
-We are going to update the graph construction described in~\cref{sec:graph-cut-model} to accomodate the data term. In particular, we define two new sets of vertices $\mathcal{V}_{fg}$ and $\mathcal{V}_{bg}$ as the set of foreground and background seeds, respectively. Those are given as input.
+\replaced{We}{We are going to} update the graph construction described in~\cref{sec:graph-cut-model} to accomodate the data term. In particular, we define two new sets of vertices $\mathcal{V}_{fg}$ and $\mathcal{V}_{bg}$ as the set of foreground and background seeds, respectively. Those are given as input.
 
 Let $\vec{x} \in \{0,1\}^{|S|}$ represent the label of each pixel in the image ($0$ for background and $1$ for foreground). We define the data term as
 %
@@ -793,7 +800,7 @@ The terms $H_{bg}$ and $H_{fg}$ are mixed Gaussian distribution constructed from
 \setlength{\extrarowheight}{0.75em}
 \begin{center}
 \footnotesize
-	\caption{\textbf{Updated capacity function.} The capacity function of~\cref{tab:edge-capacity} is updated to accommodate the data term.}\label{tab:updated-capacity-function}
+	\caption{\textbf{Updated capacity function.} The capacity function of~\cref{tab:edge-capacity} is updated to accommodate the data term. \added{The constant $M$ is simply the maximum if all capacities, i.e. $M = \max_{e \in \mathcal{E} }{ c(e) }$.}}\label{tab:updated-capacity-function}
 \begin{tabular}{|c|c|c|}
 \hline
 \textbf{edge} $e$ & $\mathbf{c(e)}$ & \textbf{for}\\
@@ -808,10 +815,10 @@ $\{v_P, v_Q\}$ & $\beta \cdot \big(u_r(S,P) + u_r(S,Q)\big) + \gamma_b \cdot \ph
 \hline
 \end{tabular}
 \end{center}
-where the constant $M$ is defined such that
-\begin{align*}
-M &= \max_{e \in \mathcal{E} }{ c(e) }.
-\end{align*}
+%% where the constant $M$ is defined such that
+%% \begin{align*}
+%% M &= \max_{e \in \mathcal{E} }{ c(e) }.
+%% \end{align*}
 \end{table}
 %
 %
@@ -826,18 +833,18 @@ To minimize parameter dependence from the image input, we also apply a parameter
 	\gamma_b & = \gamma_b \times \hat{E}(I_0)/data(I_0)		
 \end{align*}
 
-That means that by setting $\alpha=\gamma_r=\gamma_b=1$, the shape of minimum elastica is the disk of perimeter $Per$ (assuming no data term); and that $data(I_0)=\hat{E}(I_0)$.
+That means that by setting $\alpha=\gamma_r=\gamma_b=1$, the shape of minimum elastica is the disk of perimeter $Per$ (assuming no data term); and that $data(I_0)=\hat{E}(I_0)$.\comment[id=jaco]{I do not understand what is $data(I_0)$}
 %
 %
-\subsubsection{Experiment}
+\subsubsection{Experiments}
 We need an initial contour to start the GFA. The initial contour is given by the grabcut algorithm~\cite{rother04grabcut}, a variant of classical graph cut segmentation~\cite{boykov01graphcut} which is implemented in the OpenCV library.
 
-For this experiment, we used a selection of $212$ images of the Validation 2017 subset of the Coco dataset~\cite{lin2014microsoft}. The Coco dataset comprises over $328$k images spreaded over $91$ categories and $11$ super-categories.\Cref{tab:image-categories-distribution} summarizes the quantity of selected images per super-category. 
+For this experiment, we used a selection of $212$ images of the Validation 2017 subset of the Coco dataset~\cite{lin2014microsoft}. The Coco dataset comprises over $328$k images spreaded over $91$ categories and $11$ super-categories. \Cref{tab:image-categories-distribution} summarizes the quantity of selected images per super-category. 
 %
 %
 \begin{table}
 \footnotesize
-	\caption{\textbf{Selected images distribution.} The quantity of selected images per Coco super-category. A total of $212$ images were selected.}\label{tab:image-categories-distribution}
+	\caption{\textbf{Distribution of selected images.} The quantity of selected images per Coco super-category. A total of $212$ images were selected.}\label{tab:image-categories-distribution}
 \begin{tabular}{cccccc}
 \textbf{Person} & \textbf{Vehicle} & \textbf{Food} & \textbf{Animal} & \textbf{Outdoor Obj.} & \textbf{Sports} \\
 24 & 22 & 22 & 34 & 16 & 19 \\[1em]
@@ -847,15 +854,25 @@ For this experiment, we used a selection of $212$ images of the Validation 2017 
 \end{table}
 %
 %
-This experiment consisted in manually select foreground and background seeds for each selected image; compute the grabcut segmentation; and then use the grabcut segmentation as input for two versions of the GFA: one with the data term described in the previous section and another without. In~\cref{fig:coco-experiment-sample} we show a sample of the images used in the experiment. All the results are available online and can be conveniently visualized in this webpage~\footnote{https://danoan.github.io/content/papers/coco-experiment/report.html}. 
+\added{The following experiment studies the influence of inserting the data term into the graphcut formulation. It consists in the following steps:}
+\begin{enumerate}
+\item manual selection of foreground and background seeds for each selected image;
+\item computation of the grabcut segmentation;
+\item and then using the grabcut segmentation as input for two versions of the GFA: one with the data term described in the previous section and another without.
+\end{enumerate}
 
-In~\cref{tab:coco-experiment-parameter} we list the GFA parameters for this experiment.
+In~\cref{fig:coco-experiment-sample} we show a sample of the images
+used in the experiment. All the results are available online and can
+be conveniently visualized on this
+webpage~\footnote{https://danoan.github.io/content/papers/coco-experiment/report.html}.
+
+\cref{tab:coco-experiment-parameter} lists the GFA parameters used for this experiment.
 %
 %
 \begin{table}
 \center
 \footnotesize
-	\caption{\textbf{Supervised experiment parameters}. The list of the GFA parameters for the supervised segmentation experiment.}\label{tab:coco-experiment-parameter}
+	\caption{\textbf{Supervised experiment parameters}. List of the GFA parameters for the supervised segmentation experiment.}\label{tab:coco-experiment-parameter}
 \begin{tabular}{cccc}
 \textbf{Estimation radius} & \textbf{Opt. band width} & \textbf{Neighborhood size} & \textbf{Iterations} \\
 $\mathbf{(r)}$ & $\mathbf{(n)}$ & $\mathbf{(k)}$ & \textbf{(maxit)}\\
@@ -869,7 +886,7 @@ $\boldsymbol{(\alpha)}$ & $\boldsymbol{(\beta)}$ & $\boldsymbol{(\gamma_b)}$ & $
 %
 \begin{table}
 \footnotesize
-	\caption{\textbf{Supervised experiment running time}. The average iteration is of $0.7$s.}\label{tab:coco-experiment-running-time}
+	\caption{\textbf{Supervised experiment running times}. The average time per iteration is of $0.7$s.}\label{tab:coco-experiment-running-time}
 \center
 \begin{tabular}{cccc}
 \textbf{Highest} & \textbf{Lowest} & \textbf{Average} & \textbf{Average per iteration} \\
@@ -909,15 +926,15 @@ $\boldsymbol{(\alpha)}$ & $\boldsymbol{(\beta)}$ & $\boldsymbol{(\gamma_b)}$ & $
 \end{figure}
 %
 %
-The first observation is that the GFA regularizes the initial grabcut segmentation contour with respect to the elastica energy. In~\cref{fig:coco-tangent-profile} we display the tangent profile of both grabcut segmentation and the one corrected by the GFA. We clearly observe the regularization effect of the GFA with respect the grabcut profile. The value of the elastica energy of the contour and its number of inflection points is also greatly reduced, as it is summarized in~\cref{fig:coco-summary-regularization}.
+The first observation is that the GFA regularizes the initial grabcut segmentation contour with respect to the elastica energy. In~\cref{fig:coco-tangent-profile} we display the tangent profile of both grabcut segmentation and the one corrected by the GFA. We clearly observe the regularization effect of the GFA with respect to the grabcut profile. The value of the elastica energy of the contour and its number of inflection points is also greatly reduced, as \added{summed up} in~\cref{fig:coco-summary-regularization}.
 
-The second observation is that the data term has an important role in the quality of the segmentation with respect to precision and recall metrics, as shown in the box plot of~\cref{fig:coco-summary-precision-recall}. That means that by using a model with no data term, such as threshold dynamics, is insufficient to recover segmentations of good quality. In fact, executing the GFA without data term will eventually transform the contour in one or more circles, and we can have an arbitrary bad value for the recall. We can see some of these undesirable effects in the fourth line of~\cref{fig:coco-experiment-sample}: the kite area is overly reduced; the motorcycle is separated in two disconnected components; and the giraffe loses part of its ears.
+The second observation is that the data term has an important role in the quality of the segmentation with respect to precision and recall metrics. \added{This is} shown in the box plot of~\cref{fig:coco-summary-precision-recall}. That means that \added{a contour evolution model} with no data term, such as threshold dynamics, is insufficient to recover segmentations of good quality. In fact, executing the GFA without data term will eventually transform the contour in one or more circles, and we can have an arbitrary bad value for the recall. We can see some of these undesirable effects in the \replaced{third}{fourth} line of~\cref{fig:coco-experiment-sample}: the kite area is overly reduced; the motorcycle is separated in two disconnected components; and the giraffe loses parts of its ears.
 
-The third observation is that the GFA presents the completion effect that is expected from regularization by the elastica energy. This property is particularly useful for the segmentation of thin and elongated objects, but not only. It also helps to remove oversegmented components which are particularly common in graph cut based models. In~\cref{fig:coco-completion} we give some examples of contour completion.
+The third observation is that the GFA \added{indeed} presents the completion effect, \added{which was} expected from regularization by the elastica energy. This property is particularly useful for the segmentation of thin and elongated objects, but not only. It also helps to remove oversegmented components which are particularly common in graph cut based models. In~\cref{fig:coco-completion} we give some examples of contour completion.
 
-Finally, we remark that all images were executed using the same set of parameters. That is not ideal. Low resolution images should be segmented using a smaller estimation radius, for example. Therefore, all the results presented here could be eventually improved by tuning the parameters accordingly. An example of this is given in~\cref{fig:coco-parameter-tuning}.
+Finally, we remark that all \replaced{image segmentations}{images} were executed using the same set of parameters. That is not ideal. Low resolution images should be segmented using a smaller estimation radius, for example. Therefore, all the results presented here could be eventually improved by tuning the parameters accordingly. An example of this is given in~\cref{fig:coco-parameter-tuning}.
 
-A summary of the running time is presented in~\cref{tab:coco-experiment-running-time}. The average running time per iteration is of $0.7$s. We remark that in several cases we need fewer than $5$ iterations to greatly improve regularization metrics such as elastica and inflection points. However, to recover the completion effect we may need more iterations.
+A summary of the running time is presented in~\cref{tab:coco-experiment-running-time}. The average running time per iteration is of $0.7$s. We remark that in several cases we need fewer than $5$ iterations to greatly improve the regularization metrics such as elastica and inflection points. However, to recover the completion effect we may need more iterations.
 %
 %
 \begin{figure}
@@ -931,7 +948,7 @@ A summary of the running time is presented in~\cref{tab:coco-experiment-running-
 \includegraphics[scale=0.42]{figures/coco-experiment/tangent-profile/baseball/tangent-profile-gc.png}\hspace{1em}
 \includegraphics[scale=0.42]{figures/coco-experiment/tangent-profile/baseball/tangent-profile-cc.png}
 }
-\caption{\textbf{Contour regularization.} The GFA normlalizes the contour with respect the elastica energy. This is illustrated by the tangent profile of the grabcut segmentation and the one corrected by GFA.}
+\caption{\textbf{Contour regularization.} The GFA normalizes the contour with respect to the elastica energy. This is illustrated by the tangent profile of the grabcut segmentation and the one corrected by GFA.}
 \label{fig:coco-tangent-profile}
 \end{figure}
 %
@@ -962,9 +979,9 @@ A summary of the running time is presented in~\cref{tab:coco-experiment-running-
 %
 %
 \subsection{Unsupervised binary segmentation}
-The goal of this experiment is to illustrate the flexibility of the GFA with respect to the data fidelity term. In this experiment, we employed a Chan-Vese allike data term~\cite{chan01}, i.e., we penalize the square mean error between pixel intensity and the average foreground color (similarly for the background). We define the initial solution as an uniform collection of disks covering the image domain.
+The goal of this experiment is to illustrate the flexibility of the GFA with respect to the data fidelity term. In this experiment, we employed a Chan-Vese alike data term~\cite{chan01}, i.e., we penalize the square mean error between pixel intensity and the average foreground color (similarly for the background). We define the initial solution as an uniform collection of disks covering the image domain.
 
-In this application, our strategy to avoid local minima is slightly different. We use a neighborhood of shapes composed by random perturbations of the initial contour and we allow evolution if and only if the previous energy value is reduced. This strategy lead to higher running times, but since the digital components are treated independently, we believe that running times can be greatly reduced by implementing a more agressive parallelization strategy, for example, using GPUs. 
+In this application, our strategy to avoid local minima is slightly different. We use a neighborhood of shapes composed by random perturbations of the initial contour and we allow evolution if and only if the previous energy value is reduced. This strategy leads to higher running times, but since the digital components are treated independently, we believe that running times can be greatly reduced by implementing a more agressive parallelization strategy, for example, using GPUs. 
 
 The algorithm can evolve the contours in favor of contour completion or breaking them according to the relative weights given for the elastica and data terms. We show the results of some experiments in~\cref{fig:GF-chan-vese-alike}.
 
@@ -983,7 +1000,7 @@ The algorithm can evolve the contours in favor of contour completion or breaking
 \hspace{0.5em}
 \includegraphics[scale=0.16]{figures/coco-experiment/completion/train/corrected-seg-with-data.png}
 }%
-\caption{\textbf{Contour completion.} The GFA favors connected components due to the completion effect of the elastica energy. That is particularly useful to avoid oversegmentation.}
+\caption{\textbf{Contour completion.} The GFA favors connected components due to the completion effect of the elastica energy. That is particularly useful to avoid oversegmentation artefacts.}
 \label{fig:coco-completion}
 \end{figure}
 
@@ -1007,13 +1024,13 @@ The algorithm can evolve the contours in favor of contour completion or breaking
 \section{Conclusion}
 %
 %
-We presented a discrete shape evolution algorithm driven by the elastica energy. The GFA is built on recent results on the multigrid convergence of curvature and tangent estimators and its main step consists in to compute the minimum cut of candidate graphs. A candidate graph is constructed for each element in a neighborhood of shapes of the current digital set and its minimum cut gives a candidate shape. At each iteration, the GFA selects the candidate shape with lowest elastica energy. We have shown that our model can escape local minimum in the shape evolution problem by using a very simple neighborhood scheme of shapes. Indeed, our experiments converged to the shape of minimum elastica energy. 
+We presented a discrete shape evolution algorithm driven by the elastica energy. The GFA is built on recent results on the multigrid convergence of curvature and tangent estimators and its main step consists in \replaced{computin}{to compute} the minimum cut of candidate graphs. A candidate graph is constructed for each element in a neighborhood of shapes of the current digital set and its minimum cut gives a candidate shape. At each iteration, the GFA selects the candidate shape with lowest elastica energy. We have shown that our model can escape local \added{energy minima} during the shape evolution by using a very simple neighborhood \deleted{scheme} of shapes. Indeed, our experiments converged to the shape of minimum elastica energy. 
 
-Next, we presented some applications in image processing tasks. The GFA delivery contours with fewer inflection points, smoother tangent profiles and lower elastica energy than those produced from grabcut. That is done while keeping high values of precision and recall with respect to the Coco annotated images used in our experiments. Finally, we presented an unsupervised segmentation model based on the classical Chan-Vese data term, which demonstrate the flexibility of the model. 
+Next, we presented some applications in image processing. The GFA \replaced{produces}{delivery} contours with fewer inflection points, smoother tangent profiles and lower elastica energy than those produced from grabcut. That is done while keeping high values of precision and recall with respect to the Coco annotated images used in our experiments. Finally, we presented an unsupervised segmentation model based on the classical Chan-Vese data term, which demonstrates the flexibility of the model. 
 
-One of the strengths of our model is that the curvature estimation is based on digital data solely and it is not attached to a curve model, which may restrict the curve evolution and pose technical difficults regarding its update. Secondly, the GFA is highly parallelizable. We believe that a GPU implementation will greatly reduce the running times of our algorithm for all presented applications. The bottleneck is in the minimum cut computation, as it is difficult to come up with a parallel implementation, but since the latter is computed along a thin band of the shape contour, we believe that this is a minor problem.
+One of the strengths of our model is that the curvature estimation is based on digital data solely and it is not attached to a curve model, which may restrict the curve evolution and pose technical difficulties regarding its update. Secondly, the GFA is highly parallelizable. We believe that a GPU implementation will greatly reduce the running times of our algorithm for all presented applications. The bottleneck is in the minimum cut computation, as it is difficult to come up with a parallel implementation, but since the latter is computed along a thin band of the shape contour, we believe that this is a minor problem.
 
-There are some possible paths for future work. Firstly, the graph construction part of the algorithm can be optimized. In the current version, the graph is constructed at every iteration, but most of the time, the graph structure changes very slightly and this can be used to optimize its construction. Secondly, we use a very rough neighborhood of shapes in the supervised segmentation problem, i.e., based on dilations and erosions of the initial shape. The contour completion property of the model can be better exploited by employing different neighborhoods. For example, we could alongate the initial shapes in regions of high curvature to obtain a stretched neighborhood of shapes. This could be particularly useful in the segmentation of thin and elongated objects such as blood vessels.
+There are some possible paths for future work. Firstly, the graph construction part of the algorithm can be optimized. In the current version, the graph is constructed at every iteration, but most of the time, the graph structure changes very slightly and this can be used to optimize its construction. Secondly, we use a very simple neighborhood of shapes in the supervised segmentation problem, i.e., based on dilations and erosions of the initial shape. The contour completion property of the model \replaced{could be enhanced}{can be better exploited} by employing different neighborhoods. For example, we could elongate the initial shapes in regions of high curvature to obtain a stretched neighborhood of shapes. This could be particularly useful in the segmentation of thin and elongated objects such as blood vessels.
 %
 %
 %
