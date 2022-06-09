@@ -800,7 +800,7 @@ The terms $H_{bg}$ and $H_{fg}$ are mixed Gaussian distribution constructed from
 \setlength{\extrarowheight}{0.75em}
 \begin{center}
 \footnotesize
-	\caption{\textbf{Updated capacity function.} The capacity function of~\cref{tab:edge-capacity} is updated to accommodate the data term. \added{The constant $M$ is simply the maximum if all capacities, i.e. $M = \max_{e \in \mathcal{E} }{ c(e) }$.}}\label{tab:updated-capacity-function}
+	\caption{\textbf{Updated capacity function.} The capacity function of~\cref{tab:edge-capacity} is updated to accommodate the data term. \added{The constant $M$ is simply the maximum of all capacities, i.e. $M = \max_{e \in \mathcal{E} }{ c(e) }$.}}\label{tab:updated-capacity-function}
 \begin{tabular}{|c|c|c|}
 \hline
 \textbf{edge} $e$ & $\mathbf{c(e)}$ & \textbf{for}\\
@@ -824,16 +824,25 @@ $\{v_P, v_Q\}$ & $\beta \cdot \big(u_r(S,P) + u_r(S,Q)\big) + \gamma_b \cdot \ph
 %
 To handle bias due to the magnitude difference between data and geometry terms, we normalize them in groups. Regional and boundary terms $\psi,\phi$ are normalized to the interval $[0,1]$ with respect to their values. The same is done, separately, for the curvature term.
 
-To minimize parameter dependence from the image input, we also apply a parameter normalization. Given parameters $\alpha, \gamma_b, \gamma_r$ and an initial segmentation $I_0$, we apply the following normalization factors.
+To minimize parameter dependence from the image input, we also apply a parameter normalization. Given parameters $\alpha, \gamma_b, \gamma_r$ and an initial segmentation $I_0$ (which is necessary to start segmentation by GFA), we apply the following normalization factors.
 %
 %
 \begin{align*}
-	\alpha & = \alpha \times 4\pi^2/Per^2 \\
+    \alpha & = \alpha \times 4\pi^2/Per^2(I_0) \\
 	\gamma_r & = \gamma_r \times \hat{E}(I_0)/data(I_0) \\	
 	\gamma_b & = \gamma_b \times \hat{E}(I_0)/data(I_0)		
 \end{align*}
 
-That means that by setting $\alpha=\gamma_r=\gamma_b=1$, the shape of minimum elastica is the disk of perimeter $Per$ (assuming no data term); and that $data(I_0)=\hat{E}(I_0)$.\comment[id=jaco]{I do not understand what is $data(I_0)$}
+\replaced[id=daniel]{Given that segmentation with GFA was started with parameters $\alpha=\gamma_r=\gamma_b=1$, 
+the normalization factors set the disk of perimeter $Per(I_0)$ as the optimum shape 
+for the elastica energy and make the data contribution from $I_0$ to have the same
+value as the elastica energy computed for the initial segmentation. That is, after
+normalization, $data(I_0) = \hat{E}(I_0)$.}
+{
+Assuming that $\beta=1$, the normalized $\alpha$   
+If segmentation with GFA is started with parameters $\alpha=\gamma_r=\gamma_b=1$, 
+the normalization factors the shape of minimum elastica is the disk of perimeter $Per$ (assuming no data term); and that $data(I_0)=\hat{E}(I_0)$.}
+\comment[id=jaco]{I do not understand what is $data(I_0)$}
 %
 %
 \subsubsection{Experiments}
@@ -862,9 +871,10 @@ For this experiment, we used a selection of $212$ images of the Validation 2017 
 \end{enumerate}
 
 In~\cref{fig:coco-experiment-sample} we show a sample of the images
-used in the experiment. All the results are available online and can
+used in the experiment. All the results are available online \replaced[id=daniel]{at the paper's
+website.}{ and can
 be conveniently visualized on this
-webpage~\footnote{https://danoan.github.io/content/papers/coco-experiment/report.html}.
+webpage}
 
 \cref{tab:coco-experiment-parameter} lists the GFA parameters used for this experiment.
 %
@@ -1024,7 +1034,7 @@ The algorithm can evolve the contours in favor of contour completion or breaking
 \section{Conclusion}
 %
 %
-We presented a discrete shape evolution algorithm driven by the elastica energy. The GFA is built on recent results on the multigrid convergence of curvature and tangent estimators and its main step consists in \replaced{computin}{to compute} the minimum cut of candidate graphs. A candidate graph is constructed for each element in a neighborhood of shapes of the current digital set and its minimum cut gives a candidate shape. At each iteration, the GFA selects the candidate shape with lowest elastica energy. We have shown that our model can escape local \added{energy minima} during the shape evolution by using a very simple neighborhood \deleted{scheme} of shapes. Indeed, our experiments converged to the shape of minimum elastica energy. 
+We presented a discrete shape evolution algorithm driven by the elastica energy. The GFA is built on recent results on the multigrid convergence of curvature and tangent estimators and its main step consists in \replaced{computing}{to compute} the minimum cut of candidate graphs. A candidate graph is constructed for each element in a neighborhood of shapes of the current digital set and its minimum cut gives a candidate shape. At each iteration, the GFA selects the candidate shape with lowest elastica energy. We have shown that our model can escape local \added{energy minima} during the shape evolution by using a very simple neighborhood \deleted{scheme} of shapes. Indeed, our experiments converged to the shape of minimum elastica energy. 
 
 Next, we presented some applications in image processing. The GFA \replaced{produces}{delivery} contours with fewer inflection points, smoother tangent profiles and lower elastica energy than those produced from grabcut. That is done while keeping high values of precision and recall with respect to the Coco annotated images used in our experiments. Finally, we presented an unsupervised segmentation model based on the classical Chan-Vese data term, which demonstrates the flexibility of the model. 
 
