@@ -203,8 +203,8 @@ Consequently we need a criterion to evaluate the quality and speed
 of convergence of geometric estimators according to the resolution of
 the digital grid. This criterion is the \emph{multigrid convergence
 property} (e.g., see \cite{klette2004digital}). Let $X$ be a Euclidean
-shape and $D(X,h)$ a possible digitization (for example, using Gauss
-digitization, that is $D(X,h) = X \cap h\mathbb{Z}^2$). \added[id=daniel]{We denote the topological boundary of $D(X,h)$ as $\partial_hX$. For example, if $D(X,h)$ is represented as a union of axis-aligned squares centered at points in $Z^2$, then $\partial_hX$ is the boundary of this union of squares.}
+shape and \added{$\partial X$ its topological boundary}. \added[id=jaco]{We further denote $D(X,h):=X \cap h\mathbb{Z}^2$ its Gauss digitization as a collection  of points, $Q(x,h)$ its pixel representation (a collection  of squares of side $h$), $\Delta_h X$ its interpixel contour as a collection  of axis aligned edge segments of length $h$, and finally $\partial_hX$ the digitized contour, which is the union of all edge segments of $\Delta_h X$. See \cref{fig-notations} for an illustration of notations.}
+%% \added[id=daniel]{We denote the topological boundary of $D(X,h)$ as $\partial_hX$. For example, if $D(X,h)$ is represented as a union of axis-aligned squares centered at points in $Z^2$, then $\partial_hX$ is the boundary of this union of squares.}
 %
 %
 \begin{figure}
@@ -233,16 +233,31 @@ digitization, that is $D(X,h) = X \cap h\mathbb{Z}^2$). \added[id=daniel]{We den
 For a global geometric quantity (e.g. perimeter, area, volume), the definition remains the same, except that the mapping
 between $\partial X$ and $\partial_h X$ is no longer necessary.
 
+\begin{figure}
+  \input{gauss-digit.tikz}
+  \caption{Illustration of notations: the shape $X$, its topological boundary $\partial X$, its (Gauss) digitization $D(X,h)=X \cap h \Z^2$ seen as a collection of points, its pixel representation $Q(X,h)$ which is a set of squares of side $h$, the interpixel contour $\Delta_h X$ as a set of axis-aligned edge segments, and the digitized boundary $\partial_h X$, a subset of $\R^2$ that is the union of all edges of the interpixel contour, or equivalently the topological boundary of the union of all the squares of $Q(X,h)$.\label{fig-notations}}
+\end{figure}
+
 Recently, estimator for curvature and perimeter estimators have been proved multigrid convergent. We propose to use such estimators to estimate the elastica energy of digital shapes. \added[id=jaco]{Let us define a digital analogue to the Elastica energy, which uses two such estimators:}
 %
 %
 \begin{align}
-	\hat{E}_r\big( D(X,h),h,\alpha,\beta) \big) = \sum_{\vec{e} \in \partial D(X,h)}{ \hat{s}(\vec{e})\left(\; \alpha + \beta \hat{\kappa}_{r}^2(D(X,h),\dot{\vec{e}},h) \; \right)}.
+	\hat{E}_r\big( D(X,h),h,\alpha,\beta) \big) = \sum_{e \in \Delta_h X}{ \hat{s}(e)\left(\; \alpha + \beta \hat{\kappa}_{r}^2(D(X,h),\dot{e},h) \; \right)}.
 	\label{eq:digital-energy}
 \end{align}
 %
 %
-The function $\hat{s}$ denotes the elementary length estimator, i.e., a measure of length is assigned to each edge $\vec{e}$ of digital curve $\partial_h$. The elementary length is computed using the \emph{$\lambda$-MST} estimator of tangent~\cite{lachaud07tangent,lachaud06hdr}, proven multigrid convergent for the family of convex shapes that are twice differentiable and have continuous curvature. The speed of convergence is $O(h^{1/3})$. \added[id=jaco]{It simply defines the elementary length of an edge as the scalar product between the edge vector and the convergent tangent vector estimate.}
+\added{The symbol $\dot{e}$ denotes the center of the edge $e$}.  The
+function $\hat{s}$ denotes the elementary length estimator, i.e., a
+measure of length is assigned to each edge $e$ of the digital curve
+$\Delta_h X$. The elementary length is computed using the
+\emph{$\lambda$-MST} estimator of
+tangent~\cite{lachaud07tangent,lachaud06hdr}, proven multigrid
+convergent for the family of convex shapes that are twice
+differentiable and have continuous curvature. The speed of convergence
+is $O(h^{1/3})$. \added[id=jaco]{It simply defines the elementary
+  length of an edge as the scalar product between the edge vector and
+  the convergent tangent vector estimate.}
 
 The function $\hat{\kappa} _r$ denotes an estimator of curvature. We use the integral \emph{invariant estimator}~\cite{coeurjolly13integral}, proven multigrid convergent for the family of compact shapes in the plane with $3$-times differentiable contour. \added[id=jaco]{The radius of the integration ball is a parameter of this curvature estimator and} its convergence speed is of the order of $O(h^{\frac{1}{3}})$ for radii chosen as $r=\Theta (h^{\frac{1}{3}})$~\cite{lachaud2017robust}. We present its definition since it is at the core of the model proposed in this paper.
 %
