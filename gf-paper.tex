@@ -144,10 +144,20 @@ unidimensional case of the mean curvature flow and can be reproduced
 in a discrete setting~\cite{merriman1992diffusion}. This has been
 explored in processes such as threshold
 dynamics~\cite{esedoglu2005threshold,esedoglu2008threshold}, or
-morphological operations sequence~\cite{marquezneila14}.
+morphological operations sequence~\cite{marquezneila14}\added[id=daniel]{, but these methods
+cannot integrate easily a data term and their application in imaging tasks
+is limited.}
 \comment[id=jaco]{Explain here that threshold dynamics cannot integrate easily a data term ?}
 
-Digital estimator \comment[id=jaco]{To do}
+\added[id=daniel]{
+In the last years, novel estimators of geometric properties have appeared~\cite{roussillon11mdca,coeurjolly13integral,coeurjolly12multigrid}. 
+In common, they have the desirable property of multigrid convergence which defines
+a notion of convergence across digitizations of the target shape with higher and
+higher resolutions. This is important because it tells that the estimator holds a
+notion of convergence independent of the object resolution. This is not true for
+the Bruckstein's curvature estimator, for example. These novel estimators motivate
+us to propose models for imaging tasks that could take advantage of theirs multigrid
+convergence property.}
 %
 %
 %
