@@ -122,8 +122,7 @@ squared angles are considered. A more general binary representation is given
 in~\cite{nieuwenhuis14efficient} using concepts of integral geometry to obtain
 nice results for segmentation and inpainting. We also found elastica 
 regularization in~\cite{schoenemann09linear,strandmark11globalframework} models 
-for segmentation. In these works, the Bruckstein's 
-formula~\cite{bruckstein01convergence} is utilized to estimate the curvature 
+for segmentation. In these works, the epiconvergent curvature estimator of \cite{bruckstein01convergence} is used to approach the curvature term 
 in a linear programming formulation for segmentation. Finally, 
 graph cuts~\cite{bae2010graph}, negative cycle 
 detection~\cite{schoenemann2011elastic}, and partial 
@@ -150,13 +149,11 @@ is limited.}
 \comment[id=jaco]{Explain here that threshold dynamics cannot integrate easily a data term ?}
 
 \added[id=daniel]{
-In the last years, novel estimators of geometric properties have appeared~\cite{roussillon11mdca,coeurjolly13integral,coeurjolly12multigrid}. 
+In the last years, novel estimators of geometric properties have appeared, for instance to estimate accurately the curvature along the boundary of digitized shapes~\cite{roussillon11mdca,schindele17mdca,coeurjolly13integral,coeurjolly12multigrid}. 
 In common, they have the desirable property of multigrid convergence which defines
 a notion of convergence across digitizations of the target shape with higher and
-higher resolutions. This is important because it tells that the estimator holds a
-notion of convergence independent of the object resolution. This is not true for
-the Bruckstein's curvature estimator, for example. These novel estimators motivate
-us to propose models for imaging tasks that could take advantage of theirs multigrid
+higher resolutions. This is important because it guarantees an upper bound on the curvature estimation error which decreases to zero as the resolution increases. This is not true for the curvature estimator of Bruckstein {\em et al.} \cite{bruckstein01convergence} for example, which is acccurate only for finer and finer {\em sampling} of continuous curves. These novel estimators motivate
+us to propose models for imaging tasks that could take advantage of their multigrid
 convergence property.}
 %
 %
