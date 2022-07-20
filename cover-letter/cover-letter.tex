@@ -1,0 +1,66 @@
+\documentclass{letter}
+%\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref,cite}
+\usepackage[a4paper, total={7in, 10in}]{geometry}
+%\signature{Daniel Antunes, Jacques-Olivier Lachaud, Hugues Talbot}
+%\address{}
+
+\makeatletter
+\newenvironment{thebibliography}[1]
+     {\list{\@biblabel{\@arabic\c@enumiv}}%
+           {\settowidth\labelwidth{\@biblabel{#1}}%
+            \leftmargin\labelwidth
+            \advance\leftmargin\labelsep
+            \usecounter{enumiv}%
+            \let\p@enumiv\@empty
+            \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+      \sloppy
+      \clubpenalty4000
+      \@clubpenalty \clubpenalty
+      \widowpenalty4000%
+      \sfcode`\.\@m}
+     {\def\@noitemerr
+       {\@latex@warning{Empty `thebibliography' environment}}%
+      \endlist}
+\newcommand\newblock{\hskip .11em\@plus.33em\@minus.07em}
+\makeatother
+
+\signature{Daniel Martins Antunes, Jacques-Olivier Lachaud, Hugues Talbot}
+\begin{document}
+\begin{letter}{Cover letter for paper ``Elastica Energy Regularization via Graph Cuts''}
+\opening{Dear editors,}
+
+Our article is an extension of DGMM'21 paper ``A Maximum-Flow Model
+for Digital Elastica Shape Optimization''~\cite{antunes21}. We have
+included two new significant contributions. In section~5, we formally
+establish the link between the curve-shortening flow and the balance
+coefficient flow. The latter is described in the paper and it is of
+fundamental importance in our segmentation algorithm.  In section~7 we
+present the results of applying our segmentation algorithm on more
+than 200 images of the Coco dataset~\cite{lin2014microsoft}. We reach
+similar values of precision and recall metrics compared to the grabcut
+algorithm~\cite{rother04grabcut}, but with a much smoother
+contour. The elastica energy value is reduced by $90\%$ in average.
+This is also reflected in the quality of achieved segmentations. Our
+algorithm suffers much less from oversegmentation and is capable to
+correctly complete the contours of objects that were considered
+disjoint by grabcut. We also made available the source code of our
+algorithm and a report showing the results for all the images in the
+experiment.
+
+Thank you for your time and consideration.
+
+\closing{Sincerely yours,}
+
+\bibliographystyle{plain}
+\bibliography{../gf-paper.bib}
+
+\end{letter}
+
+
+%\end{letter}
+
+
+\end{document}
