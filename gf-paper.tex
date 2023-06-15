@@ -850,23 +850,33 @@ we normalize them in groups. Regional and boundary terms $\psi,\phi$ are
 normalized to the interval $[0,1]$ with respect to their values. The same is
 done, separately, for the curvature term.
 
-To minimize parameter dependence from the image input, we also apply a parameter
-normalization. Given parameters $\alpha, \gamma_b, \gamma_r$ and an initial
-segmentation $I_0$ (which is necessary to start segmentation by GFA), consider
-the corresponding normalized parameters:
+\added[id=daniel]{To minimize parameter dependence from the image input, 
+we apply the following normalization factor to the data term.}
 %
 %
 \begin{align*}
-    \alpha' & = \alpha \times 4\pi^2/Per^2(I_0) \\
-	\gamma_r' & = \gamma_r \times \hat{E}(I_0)/data(I_0,\gamma_r,\gamma_b) \\	
-	\gamma_b' & = \gamma_b \times \hat{E}(I_0)/data(I_0,\gamma_r,\gamma_b)		
+    \frac{\hat{E}(I_0,\alpha=1,\beta=1)}{data(I_0,\gamma_r=1, \gamma_b=1)}.
 \end{align*}
+%
+%
+\added[id=daniel]{That is, $data(I_0,\gamma_r=1, \gamma_b=1)$ will have the 
+same value as $\hat{E}(I_0, \alpha=1, \beta=1)$ after normalization.}
+%Given parameters $\alpha, \gamma_b, \gamma_r$ and an initial
+%segmentation $I_0$ (which is necessary to start segmentation by GFA), consider
+%the corresponding normalized parameters:
+%%
+%%
+%\begin{align*}
+%    \alpha' & = \alpha \times 4\pi^2/Per^2(I_0) \\
+%	\gamma_r' & = \gamma_r \times \hat{E}(I_0)/data(I_0,\gamma_r,\gamma_b) \\	
+%	\gamma_b' & = \gamma_b \times \hat{E}(I_0)/data(I_0,\gamma_r,\gamma_b)		
+%\end{align*}
 
-Given that segmentation with GFA was started with parameters
-$\alpha=\gamma_r=\gamma_b=1$, the normalized parameters set the disk of
-perimeter $Per(I_0)$ as the optimum shape for the elastica energy and make the
-data contribution from $I_0$ to have the same value as the elastica energy
-computed for the initial segmentation and unormalized parameters.
+% Given that segmentation with GFA was started with parameters
+% $\alpha=\gamma_r=\gamma_b=1$, the normalized parameters set the disk of
+% perimeter $Per(I_0)$ as the optimum shape for the elastica energy and make the
+% data contribution from $I_0$ to have the same value as the elastica energy
+% computed for the initial segmentation and unormalized parameters.
 %
 %
 \subsection{Experiments}
