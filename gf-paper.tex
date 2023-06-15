@@ -757,26 +757,32 @@ possibilitites in image segmentation.
 %
 %
 
-\section{Applications in image processing}
+% \section{Applications in image processing}
 
-In this section, we explore the potential of the GFA in image segmentation
-tasks. The GFA can indeed be extended to include a data fidelity term. We
-present the results of two experiments. The first one is a supervised
-segmentation and the second one is an unsupervised segmentation. For images,
+% In this section, we explore the potential of the GFA in image segmentation
+% tasks. The GFA can indeed be extended to include a data fidelity term. We
+% present the results of two experiments. The first one is a supervised
+% segmentation and the second one is an unsupervised segmentation. For images,
+% since the digitization process cannot be done with an arbitrary resolution, we
+% set $h=1$ in all experiments. The experiments were executed on an Intel Corei7
+% $1.8GHz$ processor with $16gb$ of RAM. The source code and complete experiment
+% report are available at: \url{https://danoan.github.io/graph-flow}.
+
+
+\section{Application in image segmentation}
+\added[id=daniel]{In this section, we explore the potential of the GFA in the image segmentation
+task. The GFA can indeed be extended to include a data fidelity term.For images,
 since the digitization process cannot be done with an arbitrary resolution, we
 set $h=1$ in all experiments. The experiments were executed on an Intel Corei7
 $1.8GHz$ processor with $16gb$ of RAM. The source code and complete experiment
-report are available at: \url{https://danoan.github.io/graph-flow}.
-
-
-\subsection{Supervised segmentation}
+report are available at: \url{https://danoan.github.io/graph-flow}.}
 
 The goal of this experiment is to illustrate the regularization properties of
 the GFA and to highlight the role of the data term in our approach. The data
 term employed in this experiment is the same used by Boykov-Jolly in their
-classical graph cut model~\cite{boykov01graphcut}. 
+classical graph cut model~\cite{boykov01graphcut}.
 
-\subsubsection{Data term}
+\subsection{Data term}
 We update the graph construction described in~\cref{sec:graph-cut-model} to
 accomodate the data term. In particular, we define two new sets of vertices
 $\mathcal{V}_{fg}$ and $\mathcal{V}_{bg}$ as the set of foreground and
@@ -863,16 +869,7 @@ data contribution from $I_0$ to have the same value as the elastica energy
 computed for the initial segmentation and unormalized parameters.
 %
 %
-\subsubsection{Experiments}
-We need an initial contour to start the GFA. The initial contour is given by the
-grabcut algorithm~\cite{rother04grabcut}, a variant of classical graph cut
-segmentation~\cite{boykov01graphcut} which is implemented in the OpenCV library.
-
-For this experiment, we used a selection of $212$ images of the Validation 2017
-subset of the Coco dataset~\cite{lin2014microsoft}. The Coco dataset comprises
-over $328$k images spreaded over $91$ categories and $11$ super-categories.
-\Cref{tab:image-categories-distribution} summarizes the quantity of selected
-images per super-category. 
+\subsection{Experiments}
 %
 %
 \begin{table}[h!]
@@ -920,6 +917,17 @@ iteration is of $0.7$s.}
 \end{table}
 %
 %
+We need an initial contour to start the GFA. The initial contour is given by the
+grabcut algorithm~\cite{rother04grabcut}, a variant of classical graph cut
+segmentation~\cite{boykov01graphcut} which is implemented in the OpenCV library.
+
+For this experiment, we used a selection of $212$ images of the Validation 2017
+subset of the Coco dataset~\cite{lin2014microsoft}. The Coco dataset comprises
+over $328$k images spreaded over $91$ categories and $11$ super-categories.
+\Cref{tab:image-categories-distribution} summarizes the quantity of selected
+images per super-category. 
+%
+%
 The following experiment studies the influence of inserting the data term into
 the graphcut formulation. It consists in the following steps:
 %
@@ -934,14 +942,7 @@ the graphcut formulation. It consists in the following steps:
 \end{enumerate}
 %
 %
-In~\cref{fig:coco-experiment-sample} we show a sample of the images used in the
-experiment. All the results are available online at the paper's website.
-
-\cref{tab:coco-experiment-parameter} lists the GFA parameters used for this
-experiment.
-%
-%
-\begin{figure}
+\begin{figure}[h!]
 \center
 \subfloat[Coco annotations for kite, moto and giraffe]{
 \includegraphics[scale=0.2]{figures/coco-experiment/sample-images/kite/coco-annotation.png}\hspace{1em}
@@ -967,12 +968,18 @@ experiment.
 \includegraphics[scale=0.2]{figures/coco-experiment/sample-images/moto/corrected-seg-with-data.png}
 \includegraphics[scale=0.2]{figures/coco-experiment/sample-images/giraffe/corrected-seg-with-data.png}
 }
-\caption{\textbf{Some results of the supervised segmentation experiment}. Coco annotations are shown in the first line. In the next rows we present the same image segmented by grabcut and corrected by the GFA without and with data term.  }
+    \caption{\textbf{Some results of the \replaced[id=daniel]{image}{supervised image} segmentation experiment}. Coco annotations are shown in the first line. In the next rows we present the same image segmented by grabcut and corrected by the GFA without and with data term.  }
 \label{fig:coco-experiment-sample}
 \end{figure}
 %
 %
-\begin{figure}
+In~\cref{fig:coco-experiment-sample} we show a sample of the images used in the
+experiment. All the results are available online at the paper's website. 
+\cref{tab:coco-experiment-parameter} lists the GFA parameters used for this
+experiment.
+%
+%
+\begin{figure}[t]
 \center
 \subfloat[Grabcut segmentation (left) and corrected segmentation by GFA (right).]{
 \includegraphics[scale=0.25]{figures/coco-experiment/tangent-profile/baseball/gc-seg.png}\hspace{1em}
@@ -1014,7 +1021,7 @@ avoid oversegmentation artefacts.}
 \end{figure}
 %
 %
-\begin{figure}
+\begin{figure}[]
 \center
 \subfloat[Recall and precision results with respect to Coco annotations.\label{fig:coco-summary-precision-recall} ]{
 \includegraphics[scale=0.25]{figures/coco-experiment/box-plot-mixed.png}
@@ -1030,7 +1037,7 @@ describe (and to store) contour.}
 \end{figure}
 %
 %
-\begin{figure}
+\begin{figure}[]
 \center
 \subfloat[Using $r=5$ ($(P+R)/2=0.78$)]{
 \includegraphics[scale=0.25]{figures/coco-experiment/parameter-tuning/sheep_r5/corrected-seg-with-data.png}}\hspace{1em}
@@ -1045,6 +1052,7 @@ goes from $0.78$ to $0.94$ by using a radius of $3$ instead of $5$. }
 \end{figure}
 %
 %
+
 The first observation is that the GFA regularizes the initial grabcut
 segmentation contour with respect to the elastica energy.
 In~\cref{fig:coco-tangent-profile} we display the tangent profile of both
@@ -1086,43 +1094,45 @@ inflection points. However, to recover the completion effect we may need more
 iterations.
 %
 %
-\subsection{Unsupervised binary segmentation}
-The goal of this experiment is to illustrate the flexibility of the GFA with
-respect to the data fidelity term. In this experiment, we employed a Chan-Vese
-alike data term~\cite{chan01}, i.e., we penalize the square mean error between
-pixel intensity and the average foreground color (similarly for the background).
-We define the initial solution as an uniform collection of disks covering the
-image domain.
 
-In this application, our strategy to avoid local minima is slightly different.
-We use a neighborhood of shapes composed by random perturbations of the initial
-contour and we allow evolution if and only if the previous energy value is
-reduced. This strategy leads to higher running times, but since the digital
-components are treated independently, we believe that running times can be
-greatly reduced by implementing a more agressive parallelization strategy, for
-example, using GPUs. 
+\deleted[id=daniel]{\textbf{Section: Unsupervised binary segementation}}
+% \subsection{Unsupervised binary segmentation}
+% The goal of this experiment is to illustrate the flexibility of the GFA with
+% respect to the data fidelity term. In this experiment, we employed a Chan-Vese
+% alike data term~\cite{chan01}, i.e., we penalize the square mean error between
+% pixel intensity and the average foreground color (similarly for the background).
+% We define the initial solution as an uniform collection of disks covering the
+% image domain.
 
-The algorithm can evolve the contours in favor of contour completion or breaking
-them according to the relative weights given for the elastica and data terms. We
-show the results of some experiments in~\cref{fig:GF-chan-vese-alike}.
+% In this application, our strategy to avoid local minima is slightly different.
+% We use a neighborhood of shapes composed by random perturbations of the initial
+% contour and we allow evolution if and only if the previous energy value is
+% reduced. This strategy leads to higher running times, but since the digital
+% components are treated independently, we believe that running times can be
+% greatly reduced by implementing a more agressive parallelization strategy, for
+% example, using GPUs.
 
-
-\begin{figure}
-\center
-\subfloat[$22$ iterations ($52$s).]{
-\includegraphics[scale=0.5]{figures/chan-vese-alike/branch/branch-noisy.png}
-\includegraphics[scale=0.5]{figures/chan-vese-alike/branch/contours.png}
-}\hspace{1em}%
-\subfloat[$26$ iterations ($76$s).]{
-\includegraphics[scale=0.5]{figures/chan-vese-alike/simple-geometry/simple-geometry-noisy.png}
-\includegraphics[scale=0.5]{figures/chan-vese-alike/simple-geometry/contours.png}
-}%
-\caption{\textbf{Chan-Vese alike data term.} The initial contour is highlighted
-in pink and the final contour in yellow. An intermediate contour is also
-highlighted in green. A proper parameter setting favors component completion
-(left) or component break (right). Images are $100\times100$. }
-\label{fig:GF-chan-vese-alike}
-\end{figure}
+% The algorithm can evolve the contours in favor of contour completion or breaking
+% them according to the relative weights given for the elastica and data terms. We
+% show the results of some experiments in~\cref{fig:GF-chan-vese-alike}.
+%
+%
+% \begin{figure}
+% \center
+% \subfloat[$22$ iterations ($52$s).]{
+% \includegraphics[scale=0.5]{figures/chan-vese-alike/branch/branch-noisy.png}
+% \includegraphics[scale=0.5]{figures/chan-vese-alike/branch/contours.png}
+% }\hspace{1em}%
+% \subfloat[$26$ iterations ($76$s).]{
+% \includegraphics[scale=0.5]{figures/chan-vese-alike/simple-geometry/simple-geometry-noisy.png}
+% \includegraphics[scale=0.5]{figures/chan-vese-alike/simple-geometry/contours.png}
+% }%
+% \caption{\textbf{Chan-Vese alike data term.} The initial contour is highlighted
+% in pink and the final contour in yellow. An intermediate contour is also
+% highlighted in green. A proper parameter setting favors component completion
+% (left) or component break (right). Images are $100\times100$. }
+% \label{fig:GF-chan-vese-alike}
+% \end{figure}
 %
 %
 \section{Balance coefficient and curve-shortening flow}\label{sec:balance-coefficient-and-csf}
