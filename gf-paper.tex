@@ -872,7 +872,7 @@ over $328$k images spreaded over $91$ categories and $11$ super-categories.
 images per super-category. 
 %
 %
-\begin{table}
+\begin{table}[h!]
 \footnotesize
     \caption{\textbf{Distribution of selected images.} The quantity of selected
     images per Coco super-category. A total of $212$ images were
@@ -882,6 +882,37 @@ images per super-category.
 24 & 22 & 22 & 34 & 16 & 19 \\[1em]
 \textbf{Kitchenware} & \textbf{Furniture} & \textbf{Appliance} & \textbf{Electronics} & \textbf{Indoor Obj.} & \\
 19 & 17 & 9 & 10 & 19 &
+\end{tabular}
+\end{table}
+%
+%
+\begin{table}[h!]
+\center
+\footnotesize
+\caption{\textbf{Supervised experiment parameters}. List of the GFA
+parameters for the supervised segmentation
+experiment.}
+\label{tab:coco-experiment-parameter}
+\begin{tabular}{cccc}
+\textbf{Estimation radius} & \textbf{Opt. band width} & \textbf{Neighborhood size} & \textbf{Iterations} \\
+$\mathbf{(r)}$ & $\mathbf{(n)}$ & $\mathbf{(k)}$ & \textbf{(maxit)}\\
+5 & 4 & 3 & 20\\[1em]
+\textbf{Length weight} & \textbf{Curvature weight} & \textbf{Boundary weight} & \textbf{Region weight}\\
+$\boldsymbol{(\alpha)}$ & $\boldsymbol{(\beta)}$ & $\boldsymbol{(\gamma_b)}$ & $\boldsymbol{(\gamma_r)}$\\
+10 & 1 & 1 & 1
+\end{tabular}
+\end{table}
+%
+%
+\begin{table}[h!]
+\footnotesize
+\caption{\textbf{Supervised experiment running times}. The average time per
+iteration is of $0.7$s.}
+\label{tab:coco-experiment-running-time}
+\center
+\begin{tabular}{cccc}
+\textbf{Highest} & \textbf{Lowest} & \textbf{Average} & \textbf{Average per iteration} \\
+50.3s & 3.3 & 15.1s & 0.7s\\
 \end{tabular}
 \end{table}
 %
@@ -905,37 +936,6 @@ experiment. All the results are available online at the paper's website.
 
 \cref{tab:coco-experiment-parameter} lists the GFA parameters used for this
 experiment.
-%
-%
-\begin{table}
-\center
-\footnotesize
-\caption{\textbf{Supervised experiment parameters}. List of the GFA
-parameters for the supervised segmentation
-experiment.}
-\label{tab:coco-experiment-parameter}
-\begin{tabular}{cccc}
-\textbf{Estimation radius} & \textbf{Opt. band width} & \textbf{Neighborhood size} & \textbf{Iterations} \\
-$\mathbf{(r)}$ & $\mathbf{(n)}$ & $\mathbf{(k)}$ & \textbf{(maxit)}\\
-5 & 4 & 3 & 20\\[1em]
-\textbf{Length weight} & \textbf{Curvature weight} & \textbf{Boundary weight} & \textbf{Region weight}\\
-$\boldsymbol{(\alpha)}$ & $\boldsymbol{(\beta)}$ & $\boldsymbol{(\gamma_b)}$ & $\boldsymbol{(\gamma_r)}$\\
-10 & 1 & 1 & 1
-\end{tabular}
-\end{table}
-%
-%
-\begin{table}
-\footnotesize
-\caption{\textbf{Supervised experiment running times}. The average time per
-iteration is of $0.7$s.}
-\label{tab:coco-experiment-running-time}
-\center
-\begin{tabular}{cccc}
-\textbf{Highest} & \textbf{Lowest} & \textbf{Average} & \textbf{Average per iteration} \\
-50.3s & 3.3 & 15.1s & 0.7s\\
-\end{tabular}
-\end{table}
 %
 %
 \begin{figure}
@@ -966,6 +966,79 @@ iteration is of $0.7$s.}
 }
 \caption{\textbf{Some results of the supervised segmentation experiment}. Coco annotations are shown in the first line. In the next rows we present the same image segmented by grabcut and corrected by the GFA without and with data term.  }
 \label{fig:coco-experiment-sample}
+\end{figure}
+%
+%
+\begin{figure}
+\center
+\subfloat[Grabcut segmentation (left) and corrected segmentation by GFA (right).]{
+\includegraphics[scale=0.25]{figures/coco-experiment/tangent-profile/baseball/gc-seg.png}\hspace{1em}
+\includegraphics[scale=0.25]{figures/coco-experiment/tangent-profile/baseball/corrected-seg-with-data.png}
+}
+
+\subfloat[Tangent profile for grabcut (left) and GFA (right) segmentations.]{
+\includegraphics[scale=0.42]{figures/coco-experiment/tangent-profile/baseball/tangent-profile-gc.png}\hspace{1em}
+\includegraphics[scale=0.42]{figures/coco-experiment/tangent-profile/baseball/tangent-profile-cc.png}
+}
+\caption{\textbf{Contour regularization.} The GFA normalizes the contour with
+respect to the elastica energy. This is illustrated by the tangent profile
+of the grabcut segmentation and the one corrected by GFA.}
+\label{fig:coco-tangent-profile}
+\end{figure}
+%
+%
+\begin{figure}[h!]
+\center
+\subfloat[Segmentation by grabcut]{
+\includegraphics[scale=0.15]{figures/coco-experiment/completion/cup/gc-seg.png}\hspace{0.125em}
+\includegraphics[scale=0.13]{figures/coco-experiment/completion/zebra/gc-seg.png}
+\hspace{0.125em}
+\includegraphics[scale=0.13]{figures/coco-experiment/completion/train/gc-seg.png}\hspace{0.125em}
+\includegraphics[scale=0.12]{figures/coco-experiment/completion/scissors/gc-seg.png}
+}%
+
+\subfloat[Segmentation corrected by GFA]{
+\includegraphics[scale=0.15]{figures/coco-experiment/completion/cup/corrected-seg-with-data.png}\hspace{0.125em}
+\includegraphics[scale=0.13]{figures/coco-experiment/completion/zebra/corrected-seg-with-data.png}
+\hspace{0.125em}
+\includegraphics[scale=0.13]{figures/coco-experiment/completion/train/corrected-seg-with-data.png}\hspace{0.125em}
+\includegraphics[scale=0.12]{figures/coco-experiment/completion/scissors/corrected-seg-with-data.png}
+}%
+\caption{\textbf{Contour completion.} The GFA favors connected components due to
+the completion effect of the elastica energy. That is particularly useful to
+avoid oversegmentation artefacts.}
+\label{fig:coco-completion}
+\end{figure}
+%
+%
+\begin{figure}
+\center
+\subfloat[Recall and precision results with respect to Coco annotations.\label{fig:coco-summary-precision-recall} ]{
+\includegraphics[scale=0.25]{figures/coco-experiment/box-plot-mixed.png}
+}
+
+\subfloat[Contour regularization metrics for GFA with respect grabcut.\label{fig:coco-summary-regularization}]{
+\includegraphics[scale=0.25]{figures/coco-experiment/box-plot-correction.png}
+}
+
+\caption{\textbf{Summary statistics.} The GFA give results as good as grabcut
+with respect to precision and recall, but with a much simpler and easy to
+describe (and to store) contour.}
+\end{figure}
+%
+%
+\begin{figure}
+\center
+\subfloat[Using $r=5$ ($(P+R)/2=0.78$)]{
+\includegraphics[scale=0.25]{figures/coco-experiment/parameter-tuning/sheep_r5/corrected-seg-with-data.png}}\hspace{1em}
+\subfloat[Using $r=3$ ($(P+R)/2=0.94$)]{
+\includegraphics[scale=0.25]{figures/coco-experiment/parameter-tuning/sheep_r3/corrected-seg-with-data.png}}
+\caption{\textbf{Parameter tuning.} The GFA was executed with the same set of
+parameters for all images, but we can recover better results by tuning the
+parameter for each image separately. In this example, the low scale of the
+image asks for a lower estimation radius. The precision plus recall average
+goes from $0.78$ to $0.94$ by using a radius of $3$ instead of $5$. }
+\label{fig:coco-parameter-tuning}
 \end{figure}
 %
 %
@@ -1010,55 +1083,6 @@ inflection points. However, to recover the completion effect we may need more
 iterations.
 %
 %
-\begin{figure}
-\center
-\subfloat[Grabcut segmentation (left) and corrected segmentation by GFA (right).]{
-\includegraphics[scale=0.25]{figures/coco-experiment/tangent-profile/baseball/gc-seg.png}\hspace{1em}
-\includegraphics[scale=0.25]{figures/coco-experiment/tangent-profile/baseball/corrected-seg-with-data.png}
-}
-
-\subfloat[Tangent profile for grabcut (left) and GFA (right) segmentations.]{
-\includegraphics[scale=0.42]{figures/coco-experiment/tangent-profile/baseball/tangent-profile-gc.png}\hspace{1em}
-\includegraphics[scale=0.42]{figures/coco-experiment/tangent-profile/baseball/tangent-profile-cc.png}
-}
-\caption{\textbf{Contour regularization.} The GFA normalizes the contour with
-respect to the elastica energy. This is illustrated by the tangent profile
-of the grabcut segmentation and the one corrected by GFA.}
-\label{fig:coco-tangent-profile}
-\end{figure}
-%
-%
-\begin{figure}
-\center
-\subfloat[Recall and precision results with respect to Coco annotations.\label{fig:coco-summary-precision-recall} ]{
-\includegraphics[scale=0.25]{figures/coco-experiment/box-plot-mixed.png}
-}
-
-\subfloat[Contour regularization metrics for GFA with respect grabcut.\label{fig:coco-summary-regularization}]{
-\includegraphics[scale=0.25]{figures/coco-experiment/box-plot-correction.png}
-}
-
-\caption{\textbf{Summary statistics.} The GFA give results as good as grabcut
-with respect to precision and recall, but with a much simpler and easy to
-describe (and to store) contour.}
-\end{figure}
-%
-%
-\begin{figure}
-\center
-\subfloat[Using $r=5$ ($(P+R)/2=0.78$)]{
-\includegraphics[scale=0.25]{figures/coco-experiment/parameter-tuning/sheep_r5/corrected-seg-with-data.png}}\hspace{1em}
-\subfloat[Using $r=3$ ($(P+R)/2=0.94$)]{
-\includegraphics[scale=0.25]{figures/coco-experiment/parameter-tuning/sheep_r3/corrected-seg-with-data.png}}
-\caption{\textbf{Parameter tuning.} The GFA was executed with the same set of
-parameters for all images, but we can recover better results by tuning the
-parameter for each image separately. In this example, the low scale of the
-image asks for a lower estimation radius. The precision plus recall average
-goes from $0.78$ to $0.94$ by using a radius of $3$ instead of $5$. }
-\label{fig:coco-parameter-tuning}
-\end{figure}
-%
-%
 \subsection{Unsupervised binary segmentation}
 The goal of this experiment is to illustrate the flexibility of the GFA with
 respect to the data fidelity term. In this experiment, we employed a Chan-Vese
@@ -1079,28 +1103,6 @@ The algorithm can evolve the contours in favor of contour completion or breaking
 them according to the relative weights given for the elastica and data terms. We
 show the results of some experiments in~\cref{fig:GF-chan-vese-alike}.
 
-\begin{figure}
-\center
-\subfloat[Segmentation by grabcut]{
-\includegraphics[scale=0.15]{figures/coco-experiment/completion/cup/gc-seg.png}\hspace{0.125em}
-\includegraphics[scale=0.13]{figures/coco-experiment/completion/zebra/gc-seg.png}
-\hspace{0.125em}
-\includegraphics[scale=0.13]{figures/coco-experiment/completion/train/gc-seg.png}\hspace{0.125em}
-\includegraphics[scale=0.12]{figures/coco-experiment/completion/scissors/gc-seg.png}
-}%
-
-\subfloat[Segmentation corrected by GFA]{
-\includegraphics[scale=0.15]{figures/coco-experiment/completion/cup/corrected-seg-with-data.png}\hspace{0.125em}
-\includegraphics[scale=0.13]{figures/coco-experiment/completion/zebra/corrected-seg-with-data.png}
-\hspace{0.125em}
-\includegraphics[scale=0.13]{figures/coco-experiment/completion/train/corrected-seg-with-data.png}\hspace{0.125em}
-\includegraphics[scale=0.12]{figures/coco-experiment/completion/scissors/corrected-seg-with-data.png}
-}%
-\caption{\textbf{Contour completion.} The GFA favors connected components due to
-the completion effect of the elastica energy. That is particularly useful to
-avoid oversegmentation artefacts.}
-\label{fig:coco-completion}
-\end{figure}
 
 \begin{figure}
 \center
