@@ -182,8 +182,11 @@ snakes. The CSF is the unidimensional case of the mean curvature flow and can be
 reproduced in a discrete setting~\cite{merriman1992diffusion}. This has been
 explored in processes such as threshold
 dynamics~\cite{esedoglu2005threshold,esedoglu2008threshold}, or morphological
-operations sequence~\cite{marquezneila14}. \added[id=daniel]{Threshold dynamics was employed to efficiently solve a Chan-Vese alike model for image segmentation~\cite{wang2017efficient}, but its formulation for shape evolution via elastica energy} cannot integrate
-easily a data term. \deleted[id=daniel]{and their application in imaging tasks is limited.}
+operations sequence~\cite{marquezneila14}. However, these methods cannot easily
+integrate a data term. \added[id=daniel]{In~\cite{wang2017efficient}, 
+a two-step optimization process is proposed to solve a Chan-Vese alike model and threshold 
+dynamics is used to optimize the length penalization term of the model, not the data term.}
+\deleted[id=daniel]{and their application in imaging tasks is limited.}
 
 In the last years, novel estimators of geometric properties have appeared, for
 instance to estimate accurately the curvature along the boundary of digitized
